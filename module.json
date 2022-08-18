@@ -1,24 +1,44 @@
 {
-    "name": "pf2e-utils-mks",
-    "title": "PF2e Utils by MKS",
-    "description": "General Utilities and Action Macros for Pathfinder 2e",
-    "author": "Jaelad",
-    "version": "0.1",
-    "compatibleCoreVersion": "9",
-    "minimumCoreVersion": "0.8.9",
-    "type": "module",
-    "systems": ["pf2e"],
-    "esmodules": ["./module/index.js"],
-    "languages": [
-        {
-            "lang": "en",
-            "name": "English",
-            "path": "lang/en.json"
-        }
-    ],
-    "url": "https://github.com/Jaelad/pf2e-utils-mks",
-    "socket": false,
-    "manifest": "https://raw.githubusercontent.com/Jaelad/pf2e-utils-mks/main/module.json",
-    "protected": false,
-    "coreTranslation": false
+	"name": "pf2e-utils-mks",
+	"title": "PF2e Utils by MKS",
+	"description": "General Utilities and Action Macros for Pathfinder 2e",
+	"author": "Jaelad",
+	"version": "0.1",
+	"compatibleCoreVersion": "9",
+	"minimumCoreVersion": "0.8.9",
+	"type": "module",
+	"systems": ["pf2e"],
+	"esmodules": ["./module/index.js"],
+	"packs": [
+		{
+			"name": "mks-action-macros",
+			"label": "MKS Action Macros",
+			"system": "pf2e",
+			"path": "./packs/action-macros.db",
+			"entity": "Macro",
+			"module": "pf2e-utils-mks",
+			"private": false
+		},
+		{
+			"name": "journalentries",
+			"label": "MKS PF2e Iconic Adventurers",
+			"system": "pf2e",
+			"path": "./packs/journalentries.db",
+			"entity": "JournalEntry",
+			"module": "pf2e-utils-mks",
+			"private": false
+		}
+	],
+	"languages": [
+		{
+			"lang": "en",
+			"name": "English",
+			"path": "lang/en.json"
+		}
+	],
+	"url": "https://github.com/Jaelad/pf2e-utils-mks",
+	"socket": false,
+	"manifest": "https://raw.githubusercontent.com/Jaelad/pf2e-utils-mks/main/module.json",
+	"protected": false,
+	"coreTranslation": false
 }

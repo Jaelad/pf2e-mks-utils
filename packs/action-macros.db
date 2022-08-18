@@ -1,0 +1,16 @@
+{
+    "_id": "j3kEcsIkqaEaVIQr",
+    "name": "New Macro",
+    "type": "script",
+    "author": "bzGXNPVMokeAtvac",
+    "img": "icons/svg/dice-target.svg",
+    "scope": "global",
+    "command": "console.log(actor.data.data)\n\ngame.pf2e.Check.roll(\n    new game.pf2e.CheckModifier(\n      `<span class=\"pf2-icon\">A</span> <b>Test</b> - <p class=\"compact-text\">Spell Check</p>`,\n      null, []), {\n      actor,\n      type: 'spell-check',\n      options: {},\n      notes: null,\n      dc: {\n        value: DC\n      }\n    },\n    event\n  );",
+    "folder": null,
+    "sort": 0,
+    "permission": {
+        "default": 0,
+        "bzGXNPVMokeAtvac": 3
+    },
+    "flags": {}
+}

@@ -122,7 +122,7 @@ export default class MksUtils {
 
 		if (!messageTemplate)
 			messageTemplate = this.i18n("utils.mks.skill.roll.check.defaulttitle.firstpart")
-				+ (dc > 0 && (dcVisibility == 'all' || dcVisibility == 'owner') ? " " + this.i18n("utils.mks.skill.roll.check.defaulttitle.dcpart") : "")
+				+ (dc > 0 && dcVisibility == 'all' ? " " + this.i18n("utils.mks.skill.roll.check.defaulttitle.dcpart") : "")
 
         const promises = {}
 
@@ -145,6 +145,12 @@ export default class MksUtils {
         })
         return promises
     }
+
+	// type examples: "ac" | "fortitude" | "reflex" | "will" | "class" | "spell[arcane]" | "skill[athletics]"
+	// reductionType: "max" | "min" | "avg"
+	resolveDC(type, reductionType = "max") {
+
+	}
 }
 /*
 let spellCasting = actor.data.items.find(i => i.type == 'spellcastingEntry')
