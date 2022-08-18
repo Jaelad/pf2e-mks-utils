@@ -1,6 +1,6 @@
 {
-    "name": "pf2e-mks-utils",
-    "title": "PF2e MKS Utils",
+    "name": "pf2e-utils-mks",
+    "title": "PF2e Utils by MKS",
     "description": "General Utilities and Action Macros for Pathfinder 2e",
     "author": "Jaelad",
     "version": "0.1",
@@ -16,5 +16,9 @@
             "path": "lang/en.json"
         }
     ],
-    "url": "https://github.com/Jaelad/pf2e-mks-utils"
+    "url": "https://github.com/Jaelad/pf2e-utils-mks",
+    "socket": false,
+    "manifest": "https://raw.githubusercontent.com/Jaelad/pf2e-utils-mks/main/module.json",
+    "protected": false,
+    "coreTranslation": false
 }
