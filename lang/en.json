@@ -1,4 +1,7 @@
 {
-    "PF2E-MKS": {
-    }
+    "utils.mks.warning.actor.onemustbeselected": "You must select exactly one actor!",
+    "utils.mks.warning.actor.atleastonemustbeselected": "You must select at least one actor!",
+    "utils.mks.warning.target.onemustbeselected": "You must target exactly one token!",
+    "utils.mks.skill.roll.check.defaulttitle.firstpart": "${actor.name} ${skill.label} Check",
+    "utils.mks.skill.roll.check.defaulttitle.dcpart": "DC [${dc}]"
 }
