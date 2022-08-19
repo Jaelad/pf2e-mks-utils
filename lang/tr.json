@@ -1,0 +1,8 @@
+{
+    "utils.mks.warning.actor.onemustbeselected": "Bir aktör seçmelisiniz!",
+    "utils.mks.warning.actor.atleastonemustbeselected": "En az bir aktör seçmelisiniz!",
+    "utils.mks.warning.target.onemustbeselected": "Bir hedef seçmelisiniz!",
+    "utils.mks.warning.target.atleastonemustbeselected": "En az bir hedef seçmelisiniz!",
+    "utils.mks.skill.roll.check.defaulttitle.firstpart": "${actor.name} ${skill.label} Atışı",
+    "utils.mks.skill.roll.check.defaulttitle.dcpart": "DC [${dc}]"
+}

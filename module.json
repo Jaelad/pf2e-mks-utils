@@ -34,11 +34,16 @@
 			"lang": "en",
 			"name": "English",
 			"path": "lang/en.json"
+		},
+		{
+			"lang": "tr",
+			"name": "Türkçe",
+			"path": "lang/tr.json"
 		}
 	],
 	"url": "https://github.com/Jaelad/pf2e-utils-mks",
-	"socket": false,
 	"manifest": "https://raw.githubusercontent.com/Jaelad/pf2e-utils-mks/main/module.json",
 	"protected": false,
-	"coreTranslation": false
+	"coreTranslation": false,
+	"socket": false
 }

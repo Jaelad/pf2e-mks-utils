@@ -2,6 +2,12 @@
     "utils.mks.warning.actor.onemustbeselected": "You must select exactly one actor!",
     "utils.mks.warning.actor.atleastonemustbeselected": "You must select at least one actor!",
     "utils.mks.warning.target.onemustbeselected": "You must target exactly one token!",
+    "utils.mks.warning.target.atleastonemustbeselected": "You must target at least one token!",
     "utils.mks.skill.roll.check.defaulttitle.firstpart": "${actor.name} ${skill.label} Check",
-    "utils.mks.skill.roll.check.defaulttitle.dcpart": "DC [${dc}]"
+    "utils.mks.skill.roll.check.defaulttitle.dcpart": "DC [${dc}]",
+    "utils.mks.roll.skill-check.defaulttitle.firstpart": "${actor.name} ${stat.label} Check",
+    "utils.mks.roll.perception-check.defaulttitle.firstpart": "${actor.name} Perception Check",
+    "utils.mks.roll.spell-attack.defaulttitle.firstpart": "${actor.name} Spell Attack",
+    "utils.mks.roll.saving-throw.defaulttitle.firstpart": "${actor.name} ${stat.label} Check",
+    "utils.mks.roll.defaulttitle.dcpart": "DC [${dc}]"
 }
