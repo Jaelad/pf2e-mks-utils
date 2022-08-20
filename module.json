@@ -11,20 +11,47 @@
 	"esmodules": ["./module/index.js"],
 	"packs": [
 		{
-			"name": "mks-action-macros",
-			"label": "MKS Action Macros",
+			"name": "mks-combat-macros-tr",
+			"label": "MKS Combat Macros - Turkish",
 			"system": "pf2e",
-			"path": "./packs/action-macros.db",
+			"path": "./packs/action-combat-macros-tr.db",
 			"entity": "Macro",
 			"module": "pf2e-utils-mks",
 			"private": false
 		},
 		{
-			"name": "journalentries",
-			"label": "MKS PF2e Iconic Adventurers",
+			"name": "mks-movement-macros-tr",
+			"label": "MKS Movement Macros - Turkish",
 			"system": "pf2e",
-			"path": "./packs/journalentries.db",
-			"entity": "JournalEntry",
+			"path": "./packs/action-movement-macros-tr.db",
+			"entity": "Macro",
+			"module": "pf2e-utils-mks",
+			"private": false
+		},
+		{
+			"name": "mks-other-macros-tr",
+			"label": "MKS Other Action Macros - Turkish",
+			"system": "pf2e",
+			"path": "./packs/action-other-macros-tr.db",
+			"entity": "Macro",
+			"module": "pf2e-utils-mks",
+			"private": false
+		},
+		{
+			"name": "mks-explore-macros-tr",
+			"label": "MKS Exploration Macros - Turkish",
+			"system": "pf2e",
+			"path": "./packs/explore-macros-tr.db",
+			"entity": "Macro",
+			"module": "pf2e-utils-mks",
+			"private": false
+		},
+		{
+			"name": "mks-downtime-macros-tr",
+			"label": "MKS Downtime Macros - Turkish",
+			"system": "pf2e",
+			"path": "./packs/downtime-macros-tr.db",
+			"entity": "Macro",
 			"module": "pf2e-utils-mks",
 			"private": false
 		}
