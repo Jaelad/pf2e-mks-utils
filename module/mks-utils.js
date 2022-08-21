@@ -1,5 +1,5 @@
 export default class MksUtils {
-	i18n = (toTranslate) => game.i18n.localize(toTranslate)
+	static i18n = (toTranslate) => game.i18n.localize(toTranslate)
 
 	static MODULEID = 'pf2e-utils-mks'
 	static FOUNDRY_VERSION = 0
@@ -77,7 +77,7 @@ export default class MksUtils {
 	_ensureOneActor(player) {
 		let tokens = canvas.tokens.controlled
 		if (tokens.length != 1) {
-			ui.notifications.warn(this.i18n("utils.mks.warning.actor.onemustbeselected"))
+			ui.notifications.warn(MksUtils.i18n("utils.mks.warning.actor.onemustbeselected"))
 			return null
 		}
 		return tokens[0].actor
@@ -86,7 +86,7 @@ export default class MksUtils {
 	_ensureAtLeastOneActor(player) {
 		let tokens = canvas.tokens.controlled
 		if (tokens.length < 1) {
-			ui.notifications.warn(this.i18n("utils.mks.warning.actor.atleastonemustbeselected"))
+			ui.notifications.warn(MksUtils.i18n("utils.mks.warning.actor.atleastonemustbeselected"))
 			return null
 		}
 		return tokens.map(token => token.actor)
@@ -99,7 +99,7 @@ export default class MksUtils {
 		else
 			tokens = game.user.targets
 		if (tokens.size != 1) {
-			ui.notifications.warn(this.i18n("utils.mks.warning.target.onemustbeselected"))
+			ui.notifications.warn(MksUtils.i18n("utils.mks.warning.target.onemustbeselected"))
 			return null
 		}
 		return Array.from(tokens).map(token => token.actor)
@@ -112,7 +112,7 @@ export default class MksUtils {
 		else
 			tokens = game.user.targets
 		if (tokens.length < 1) {
-			ui.notifications.warn(this.i18n("utils.mks.warning.target.atleastonemustbeselected"))
+			ui.notifications.warn(MksUtils.i18n("utils.mks.warning.target.atleastonemustbeselected"))
 			return null
 		}
 		return Array.from(tokens).map(token => token.actor)
@@ -141,6 +141,14 @@ export default class MksUtils {
 				return skill
 		})
 		return skillStats.filter(s => s)
+	}
+
+	getCheckTypes(actor) {
+		const checkTypes = ["perception", "fortitude", "reflex", "will", ...Object.keys(actor.skills)]
+		actor.spellcasting.forEach(sc => {
+			checkTypes.push("spell[" + sc.tradition + "]")
+		})
+		return checkTypes
 	}
 
 	getStat(actor, type) {
@@ -223,8 +231,8 @@ export default class MksUtils {
 			domain = this._getDefaultDomain(checkType)
 
 		if (!messageTemplate)
-			messageTemplate = this.i18n("utils.mks.check."+ domain +".defaulttitle.firstpart")
-				+ (dc > 0 && dcVisibility == 'all' ? " " + this.i18n("utils.mks.check.defaulttitle.dcpart") : "")
+			messageTemplate = MksUtils.i18n("utils.mks.check."+ domain +".defaulttitle.firstpart")
+				+ (dc > 0 && dcVisibility == 'all' ? " " + MksUtils.i18n("utils.mks.check.defaulttitle.dcpart") : "")
 
 		const promises = {}
 		actors.forEach(actor => {
