@@ -1,38 +1,62 @@
-import MksUtils from "./mks-utils.js"
+import MksUtils from "./mks-utils.js";
 
-const DEBUG = MksUtils.debug
-const INFO = MksUtils.info
-const WARN = MksUtils.warn
-const ERROR = MksUtils.error
-const I18N = MksUtils.i18n
-const MKS = game["PF2E_Utils_MKS"]
+export default class ActionAid {
 
-export class ActionAid {
+	constructor(MKS) {
+		this._ = MKS
+	}
 
-	static readyAid () {
-		const subject = I18N("actions.aid.ready.dialog.subject")
+	checkTypeToLabel(checkType) {
+		if (checkType.startsWith("strike"))
+			return MksUtils.i18n("utils.mks.checkType.strike") + " (" + checkType.substring(7, checkType.length - 1) + ")"
+		return MksUtils.i18n("utils.mks.checkType." + checkType)
+	}
 
-		const actor = MKS._ensureOneActor()
-		const willBeAided = MKS._ensureOneTarget()
+	readyAid () {
+		const actor = this._._ensureOneActor()
+		const willBeAided = this._._ensureOneTarget()
 
-		const checkTypes = MKS.getCheckTypes(actor).filter(ct => ct.indexOf("-lore") == -1)
+		const checkTypes = this._.getCheckTypes(actor).filter(ct => ct.indexOf("-lore") == -1)
 
-		const dialog = `
+
+
+		const dialogContent = `
 		<form>
 		<div class="form-group">
-			<label>${subject}</label>
+			<label>${MksUtils.i18n("actions.aid.ready.dialog.select")}</label>
 			<select name="checkType">
 				${checkTypes
 				.map(
 					(c) =>
 						`<option value="${c}" ${
-							checkType === c ? 'selected' : ''
-						}>${escapeHtml(I18N("utils.mks.checkType." + c))}</option>`,
+							"perception" === c ? 'selected' : ''
+						}>${MksUtils.escapeHtml(this.checkTypeToLabel(c))}</option>`,
 				)
 				.join('')}
 			</select>
 		</div>
 		</form>
 		`
+
+		new Dialog({
+			title: MksUtils.i18n("actions.aid.ready.dialog.title"),
+			content: dialogContent,
+			buttons: {
+				no: {
+					icon: '<i class="fas fa-times"></i>',
+					label: MksUtils.i18n("utils.mks.ui.actions.cancel"),
+				},
+				yes: {
+					icon: '<i class="fas fa-hands-helping"></i>',
+					label: MksUtils.i18n("actions.aid.ready.dialog.yesaction"),
+					callback: ($html) => {
+						const checkType = $html[0].querySelector('[name="checkType"]').value
+						this._._localSave("AID", {target: willBeAided.id, checkType})
+					},
+				},
+			},
+			default: 'yes',
+		}).render(true);
 	}
 }
+

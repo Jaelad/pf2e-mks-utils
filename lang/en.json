@@ -1,4 +1,5 @@
 {
+    "utils.mks.ui.actions.cancel": "Cancel",
     "utils.mks.checkType.perception": "Perception",
     "utils.mks.checkType.fortitude": "Fortitude",
     "utils.mks.checkType.reflex": "Reflex",
@@ -23,6 +24,7 @@
     "utils.mks.checkType.skill[stealth]": "Stealth",
     "utils.mks.checkType.skill[survival]": "Survival",
     "utils.mks.checkType.skill[thievery]": "Thievery",
+    "utils.mks.checkType.strike": "Strike",
     "utils.mks.warning.actor.onemustbeselected": "You must select exactly one actor!",
     "utils.mks.warning.actor.atleastonemustbeselected": "You must select at least one actor!",
     "utils.mks.warning.target.onemustbeselected": "You must target exactly one token!",
@@ -34,5 +36,7 @@
     "utils.mks.roll.spell-attack.defaulttitle.firstpart": "${actor.name} Spell Attack",
     "utils.mks.roll.saving-throw.defaulttitle.firstpart": "${actor.name} ${stat.label} Check",
     "utils.mks.roll.defaulttitle.dcpart": "DC [${dc}]",
-    "actions.aid.ready.dialog.subject": ""
+    "actions.aid.ready.dialog.title": "Ready Aid Reaction",
+    "actions.aid.ready.dialog.select": "Select How To Aid:",
+    "actions.aid.ready.dialog.yesaction": "Ready"
 }

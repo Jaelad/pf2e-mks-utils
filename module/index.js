@@ -1,4 +1,5 @@
 import MksUtils from "./mks-utils.js"
+import ActionAid from "./aid.js"
 
 /*Enable Debug Module */
 Hooks.once('devModeReady', ({ registerPackageDebugFlag }) => {
@@ -6,5 +7,10 @@ Hooks.once('devModeReady', ({ registerPackageDebugFlag }) => {
 })
 
 Hooks.on("init", () => {
-	game["PF2E_Utils_MKS"] = new MksUtils()
+	const MKS = new MksUtils()
+	game["PF2E_Utils_MKS"] = MKS
+	MKS.actions = {
+		aid: new ActionAid(MKS)
+	}
+
 })

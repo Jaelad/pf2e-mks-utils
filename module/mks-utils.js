@@ -31,6 +31,13 @@ export default class MksUtils {
         return handler(vars)
     }
 
+	static escapeHtml(html) {
+		const text = document.createTextNode(html);
+		const p = document.createElement('p');
+		p.appendChild(text);
+		return p.innerHTML;
+	}
+
 	static log(force, level, ...args) {
 		const shouldLog = force || game.modules.get('_dev-mode')?.api?.getPackageDebugValue(MksUtils.MODULEID)
 
@@ -53,21 +60,17 @@ export default class MksUtils {
 		}
 	}
 
-	static debug(perdicate, ...args) {
-		if (perdicate)
-			MksUtils.log(true, MksUtils.LOG_LEVEL.Debug, ...args)
+	static debug(...args) {
+		MksUtils.log(true, MksUtils.LOG_LEVEL.Debug, ...args)
 	}
-	static info(perdicate, ...args) {
-		if (perdicate)
-			MksUtils.log(true, MksUtils.LOG_LEVEL.Info, ...args)
+	static info(...args) {
+		MksUtils.log(true, MksUtils.LOG_LEVEL.Info, ...args)
 	}
-	static warn(perdicate, ...args) {
-		if (perdicate)
-			MksUtils.log(true, MksUtils.LOG_LEVEL.Warn, ...args)
+	static warn(...args) {
+		MksUtils.log(true, MksUtils.LOG_LEVEL.Warn, ...args)
 	}
-	static error(perdicate, ...args) {
-		if (perdicate)
-			MksUtils.log(true, MksUtils.LOG_LEVEL.Error, ...args)
+	static error(...args) {
+		MksUtils.log(true, MksUtils.LOG_LEVEL.Error, ...args)
 	}
 
 	initHooks() {
@@ -77,8 +80,9 @@ export default class MksUtils {
 	_ensureOneActor(player) {
 		let tokens = canvas.tokens.controlled
 		if (tokens.length != 1) {
-			ui.notifications.warn(MksUtils.i18n("utils.mks.warning.actor.onemustbeselected"))
-			return null
+			const warning = MksUtils.i18n("utils.mks.warning.actor.onemustbeselected")
+			ui.notifications.warn(warning)
+			throw new Error(warning)
 		}
 		return tokens[0].actor
 	}
@@ -86,8 +90,9 @@ export default class MksUtils {
 	_ensureAtLeastOneActor(player) {
 		let tokens = canvas.tokens.controlled
 		if (tokens.length < 1) {
-			ui.notifications.warn(MksUtils.i18n("utils.mks.warning.actor.atleastonemustbeselected"))
-			return null
+			const warning = MksUtils.i18n("utils.mks.warning.actor.atleastonemustbeselected")
+			ui.notifications.warn(warning)
+			throw new Error(warning)
 		}
 		return tokens.map(token => token.actor)
 	}
@@ -99,10 +104,11 @@ export default class MksUtils {
 		else
 			tokens = game.user.targets
 		if (tokens.size != 1) {
-			ui.notifications.warn(MksUtils.i18n("utils.mks.warning.target.onemustbeselected"))
-			return null
+			const warning = MksUtils.i18n("utils.mks.warning.target.onemustbeselected")
+			ui.notifications.warn(warning)
+			throw new Error(warning)
 		}
-		return Array.from(tokens).map(token => token.actor)
+		return Array.from(tokens)[0].actor
 	}
 
 	_ensureAtLeastOneTarget(player) {
@@ -112,10 +118,29 @@ export default class MksUtils {
 		else
 			tokens = game.user.targets
 		if (tokens.length < 1) {
-			ui.notifications.warn(MksUtils.i18n("utils.mks.warning.target.atleastonemustbeselected"))
-			return null
+			const warning = MksUtils.i18n("utils.mks.warning.target.atleastonemustbeselected")
+			ui.notifications.warn(warning)
+			throw new Error(warning)
 		}
 		return Array.from(tokens).map(token => token.actor)
+	}
+
+	_localSave(key, value, actor = null) {
+		const storeKey = (actor ? actor.id + "/" : "") + key
+		const storeValue = JSON.stringify(value)
+		localStorage.setItem(storeKey, storeValue)
+		MksUtils.info("Store: " + storeKey + ":" + storeValue)
+	}
+
+	_localLoad(key, actor = null) {
+		const storeKey = (actor ? actor.id + "/" : "") + key
+		const storeValue = localStorage.getItem(storeKey)
+		return JSON.parse(storeValue)
+	}
+
+	_localDelete(key, actor = null) {
+		const storeKey = (actor ? actor.id + "/" : "") + key
+		localStorage.removeItem(storeKey)
 	}
 
 	getAttackActionStats(ready=null) {
@@ -144,9 +169,16 @@ export default class MksUtils {
 	}
 
 	getCheckTypes(actor) {
-		const checkTypes = ["perception", "fortitude", "reflex", "will", ...Object.keys(actor.skills)]
+		const checkTypes = ["perception", "fortitude", "reflex", "will"]
+		Object.keys(actor.skills).forEach(skillName => {
+			checkTypes.push("skill[" + skillName + "]")
+		})
 		actor.spellcasting.forEach(sc => {
 			checkTypes.push("spell[" + sc.tradition + "]")
+		})
+		actor.data.data.actions.forEach(action => {
+			if (action.type === 'strike' && action.ready)
+				checkTypes.push("strike[" + action.slug + "]")
 		})
 		return checkTypes
 	}
@@ -308,7 +340,7 @@ export default class MksUtils {
 	}
 
 	async test(actor) {
-		const ITEM_UUID = "Compendium.pf2e.equipment-effects.z3ATL8DcRVrT0Uzt"
+		const ITEM_UUID = "Compendium.pf2e.feature-effects.AHMUpMbaVkZ5A1KX"
 
 		const item = await fromUuid(ITEM_UUID);
 		console.info(item)
