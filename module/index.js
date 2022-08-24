@@ -20,8 +20,8 @@ Hooks.on("init", () => {
 			MKS.onAttackRoll(chatMessage.token.id, options.flags.pf2e)
 	})
 
-	Hooks.on("preCreateItem", (item) => {
-		MKS.onPreCreateItem(item).then()
+	Hooks.on("createItem", (item) => {
+		MKS.onCreateItem(item).then()
 	})
 
 	Hooks.on("pf2e.startTurn", (combatant) => {

@@ -1,4 +1,5 @@
-import Compendium from "./compendium.js";
+import Compendium from "./compendium.js"
+import $$objects from "../utils/objects.js"
 
 export default class MksUtils {
 	static i18n = (toTranslate) => game.i18n.localize(toTranslate)
@@ -250,16 +251,13 @@ export default class MksUtils {
 	// dcType examples: "ac" | "perception" | "fortitude" | "reflex" | "will" | "class" | "spell[arcane]" | "skill[athletics]"
 	// dcReduce: "max" | "min" | "avg"
 	// dcVisibility?: "none" | "gm" | "owner" | "all"
-	check(checkType, dcType ,domain = null, playerWhoTargets = null, dcReduce = "max", dcVisibility = 'gm', messageTemplate = null) {
-		let targets = this._ensureAtLeastOneTarget(playerWhoTargets)
+	check(tokens, targets, checkType, dcType ,domain = null, playerWhoTargets = null, dcReduce = "max", dcVisibility = 'gm', messageTemplate = null) {
 		let dc = this.resolveDC(targets, dcType, dcReduce)
-		return this.checkStatic(checkType, domain, dc, dcVisibility, messageTemplate)
+		return this.checkStatic(tokens, checkType, domain, dc, dcVisibility, messageTemplate)
 	}
 
 	// dcVisibility?: "none" | "gm" | "owner" | "all"
-	checkStatic(checkType, domain = null, dc = null, dcVisibility = 'gm', messageTemplate = null) {
-		let tokens = this._ensureAtLeastOneSelected()
-
+	checkStatic(tokens, checkType, domain = null, dc = null, dcVisibility = 'gm', messageTemplate = null) {
 		if (!domain)
 			domain = this._getDefaultDomain(checkType)
 
@@ -275,7 +273,7 @@ export default class MksUtils {
 			delete context.stat
 			let message = MksUtils.withTemplate(messageTemplate, {actor, stat, dc})
 
-			promises[actor.id] = game.pf2e.Check.roll(new game.pf2e.CheckModifier(message, stat, []), context)
+			promises[token.id] = game.pf2e.Check.roll(new game.pf2e.CheckModifier(message, stat, []), context)
 		})
 		return promises
 	}
@@ -350,9 +348,9 @@ export default class MksUtils {
 			this.incrementEffect(token.actor, Compendium.EFFECT_MULTIPLE_ATTACK).then()
 	}
 
-	onPreCreateItem(item) {
-		if (typeof item === 'EffectPF2e') {
-			if (item.sourceId === Compendium.EFFECT_AID_READY) {
+	async onCreateItem(item, options, userId) {
+		if (item.constructor.name === 'EffectPF2e') {
+			if (item.sourceId === Compendium.EFFECT_AID_READY && game.user.isGM) {
 				this.actions.aid.setDC(item)
 			}
 		}
@@ -376,39 +374,62 @@ export default class MksUtils {
 		}
 	}
 
-	async incrementEffect(actor, effectSourceId) {
-		const existingEffect = actor.itemTypes.effect.find((e) => e.flags.core?.sourceId === effectSourceId)
+	getEffect(actor, effectSourceId) {
+		return actor.itemTypes.effect.find((e) => e.flags.core?.sourceId === effectSourceId)
+	}
+
+	async incrementEffect(actor, effectSourceId, flags, changes) {
+		const existingEffect = this.getEffect(actor, effectSourceId)
 		if (existingEffect) {
+			const updates = {_id: existingEffect.id}
 			const badge = existingEffect.system?.badge
-			if (badge.type === 'counter' && badge.value > 0)
-				await actor.updateEmbeddedDocuments("Item", [{ _id: existingEffect.id, "data.badge": {type:"counter", value: existingEffect.system.badge.value + 1} }])
+			if (badge && badge.type === 'counter' && badge.value > 0) {
+				updates["data.badge"] = {type: "counter", value: existingEffect.system.badge.value + 1}
+				//await actor.updateEmbeddedDocuments("Item", [{ _id: existingEffect.id, "data.badge": {type:"counter", value: existingEffect.system.badge.value + 1} }])
+			}
+			for (let flagKey in flags) {
+				updates["flags." + flagKey] = flags[flagKey]
+			}
+			await actor.updateEmbeddedDocuments("Item", [updates])
 		}
 		else {
 			const effect = await fromUuid(effectSourceId)
-			await actor.createEmbeddedDocuments("Item", [effect.toObject()])
+			const effectData = effect.toObject()
+			for (let flagKey in flags) {
+				effectData.flags[flagKey] = flags[flagKey]
+			}
+			for (let change in changes) {
+				const val = changes[change]
+				eval("effectData." + change + "=" + val)
+			}
+			await actor.createEmbeddedDocuments("Item", [effectData])
 		}
 	}
 
 	async decrementEffect(actor, effectSourceId) {
-		const existingEffect = actor.itemTypes.effect.find((e) => e.flags.core?.sourceId === effectSourceId)
+		const existingEffect = this.getEffect(actor, effectSourceId)
 		if (existingEffect) {
 			const badge = existingEffect.system?.badge
-			if (badge.type === 'counter' && badge.value > 1)
+			if (badge && badge.type === 'counter' && badge.value > 1)
 				await actor.updateEmbeddedDocuments("Item", [{ _id: existingEffect.id, "data.badge": {type:"counter", value: existingEffect.system.badge.value - 1} }])
 			else
 				await existingEffect.delete()
 		}
 	}
 
-	async updateEffectFlags(actor, effectSourceId, ...flags) {
-		const existingEffect = actor.itemTypes.effect.find((e) => e.flags.core?.sourceId === effectSourceId)
+	async updateEffectFlags(actor, effectSourceId, flags) {
+		const existingEffect = this.getEffect(actor, effectSourceId)
 		if (existingEffect) {
-
+			const updates = {_id: existingEffect.id}
+			for (let flagKey in flags) {
+				updates["flags." + flagKey] = flags[flagKey]
+			}
+			await actor.updateEmbeddedDocuments("Item", [updates])
 		}
 	}
 
 	async removeEffect(actor, effectSourceId) {
-		const existingEffect = actor.itemTypes.effect.find((e) => e.flags.core?.sourceId === effectSourceId)
+		const existingEffect = this.getEffect(actor, effectSourceId)
 		if (existingEffect) {
 			await existingEffect.delete()
 		}
