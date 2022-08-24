@@ -1,7 +1,9 @@
+import Compendium from "./compendium.js";
+
 export default class MksUtils {
 	static i18n = (toTranslate) => game.i18n.localize(toTranslate)
 
-	static MODULEID = 'pf2e-utils-mks'
+	static MODULEID = 'pf2e-tools-mks'
 	static FOUNDRY_VERSION = 0
 	static GAME_SYSTEM = null
 	static LOG_LEVEL = {
@@ -77,7 +79,7 @@ export default class MksUtils {
 
 	}
 
-	_ensureOneActor(player) {
+	_ensureOneActor() {
 		let tokens = canvas.tokens.controlled
 		if (tokens.length != 1) {
 			const warning = MksUtils.i18n("utils.mks.warning.actor.onemustbeselected")
@@ -87,7 +89,7 @@ export default class MksUtils {
 		return tokens[0].actor
 	}
 
-	_ensureAtLeastOneActor(player) {
+	_ensureAtLeastOneActor() {
 		let tokens = canvas.tokens.controlled
 		if (tokens.length < 1) {
 			const warning = MksUtils.i18n("utils.mks.warning.actor.atleastonemustbeselected")
@@ -339,70 +341,39 @@ export default class MksUtils {
 		}
 	}
 
-	async test(actor) {
-		const ITEM_UUID = "Compendium.pf2e.feature-effects.AHMUpMbaVkZ5A1KX"
+	tokensTurnInCombat(token) {
+		return token.inCombat && token.combatant.encounter.started && token.combatant.encounter.current.tokenId === token.id
+	}
 
-		const item = await fromUuid(ITEM_UUID);
-		console.info(item)
-		actor.createEmbeddedDocuments("Item", [item.toObject()])
+	onAttackRoll(tokenId, pf2e) {
+		const token = canvas.tokens.placeables.find(t => t.id === tokenId)
+		if (this.tokensTurnInCombat(token))
+			this.addMultipleAttackPenalty(token.actor).then()
+	}
 
-		// let existing = actor.items.find(e => e.name === item.name);
-		// if (existing) {
-		// 	await actor.deleteOwnedItem(existing._id);
-		// }
-		// else {
-		// 	let owneditemdata = await actor.createOwnedItem(item);
-		// 	owneditemdata.data.start.value = game.time.worldTime;
-		// }
+	async addMultipleAttackPenalty(actor) {
+		const existingEffect = actor.itemTypes.effect.find((e) => e.flags.core?.sourceId === Compendium.EFFECT_MULTIPLE_ATTACK)
+		if (existingEffect) {
+			await actor.updateEmbeddedDocuments("Item", [{ _id: existingEffect.id, "data.badge": {type:"counter", value: existingEffect.system.badge.value + 1} }])
+		}
+		else {
+			const effect = await fromUuid(Compendium.EFFECT_MULTIPLE_ATTACK)
+			await actor.createEmbeddedDocuments("Item", [effect.toObject()])
+		}
+	}
+
+	async removeMultipleAttackPenalty(actor) {
+		const existingEffect = actor.itemTypes.effect.find((e) => e.flags.core?.sourceId === Compendium.EFFECT_MULTIPLE_ATTACK)
+		if (existingEffect) {
+			await existingEffect.delete()
+		}
+	}
+
+	async onStartTurn(combatant) {
+		await this.removeMultipleAttackPenalty(combatant.actor)
+	}
+
+	async onEndTurn(combatant) {
+		await this.removeMultipleAttackPenalty(combatant.actor)
 	}
 }
-/*
-let spellCasting = actor.data.items.find(i => i.type == 'spellcastingEntry')
-console.log(spellCasting.statistic)
-const options = actor.getRollOptions(['arcane-spell-attack']);
-let promise = game.pf2e.Check.roll(
-	new game.pf2e.CheckModifier("TEST", spellCasting.statistic.check, []), {
-	  actor: actor, type: 'arcane-spell-attack',
-	  options, notes: [],
-	  dc: {
-		value: 20
-	  }
-	},
-	event
-  )
-promise.
-	then(function (value) {
-		console.log(value);
-	}).
-	catch(function (err) {
-		console.log(err);
-	});
-
-*/
-
-/*
-	const isSuccess = await (async (): Promise<boolean> => {
-        const existingEffect = actor.itemTypes.effect.find((e) => e.flags.core?.sourceId === ITEM_UUID);
-        if (existingEffect) {
-            await existingEffect.delete();
-            return false;
-        }
-
-        if (shield?.isBroken === false) {
-            const effect = await fromUuid(ITEM_UUID);
-            if (!(effect instanceof EffectPF2e)) {
-                throw ErrorPF2e("Raise a Shield effect not found");
-            }
-            await actor.createEmbeddedDocuments("Item", [effect.toObject()]);
-            return true;
-        } else if (shield?.isBroken) {
-            ui.notifications.warn(
-                game.i18n.format(translations.ShieldIsBroken, { actor: speaker.alias, shield: shield.name })
-            );
-            return false;
-        } else {
-            ui.notifications.warn(game.i18n.format(translations.NoShieldEquipped, { actor: speaker.alias }));
-            return false;
-        }
-    })();
-*/
