@@ -1,4 +1,5 @@
 import MksUtils from "./mks-utils.js";
+import Compendium from "./compendium";
 
 export default class ActionAid {
 
@@ -12,8 +13,38 @@ export default class ActionAid {
 		return MksUtils.i18n("utils.mks.checkType." + checkType)
 	}
 
-	readyAid () {
-		const actor = this._._ensureOneActor()
+	setDC(effect) {
+		const dialogContent = `
+		<form>
+		<div class="form-group">
+			<label>${MksUtils.i18n("actions.aid.setdc.dialog.dc")}</label>
+			<input type="number" name="dc" value="20">
+		</div>
+		</form>
+		`
+		new Dialog({
+			title: MksUtils.i18n("actions.aid.setdc.dialog.title"),
+			content: dialogContent,
+			buttons: {
+				no: {
+					icon: '<i class="fas fa-times"></i>',
+					label: MksUtils.i18n("utils.mks.ui.actions.cancel"),
+				},
+				yes: {
+					icon: '<i class="fas fa-hands-helping"></i>',
+					label: MksUtils.i18n("utils.mks.ui.actions.ok"),
+					callback: ($html) => {
+						const dc = parseInt($html[0].querySelector('[name="dc"]').value, 10) ?? 20
+						effect.data.flags.mks.dc = dc
+					},
+				},
+			},
+			default: 'yes',
+		}).render(true);
+	}
+
+	readyAid() {
+		const willAid = this._._ensureOneSelected()
 		const willBeAided = this._._ensureOneTarget()
 
 		const checkTypes = this._.getCheckTypes(actor).filter(ct => ct.indexOf("-lore") == -1)
@@ -51,7 +82,7 @@ export default class ActionAid {
 					label: MksUtils.i18n("actions.aid.ready.dialog.yesaction"),
 					callback: ($html) => {
 						const checkType = $html[0].querySelector('[name="checkType"]').value
-						this._._localSave("AID", {target: willBeAided.id, checkType})
+						this._.incrementEffect(willBeAided, Compendium.EFFECT_AID_READY, {mks: {"aidFrom":willAid.id,checkType,"dc":20}})
 					},
 				},
 			},

@@ -79,24 +79,24 @@ export default class MksUtils {
 
 	}
 
-	_ensureOneActor() {
+	_ensureOneSelected() {
 		let tokens = canvas.tokens.controlled
 		if (tokens.length != 1) {
 			const warning = MksUtils.i18n("utils.mks.warning.actor.onemustbeselected")
 			ui.notifications.warn(warning)
 			throw new Error(warning)
 		}
-		return tokens[0].actor
+		return tokens[0]
 	}
 
-	_ensureAtLeastOneActor() {
+	_ensureAtLeastOneSelected() {
 		let tokens = canvas.tokens.controlled
 		if (tokens.length < 1) {
 			const warning = MksUtils.i18n("utils.mks.warning.actor.atleastonemustbeselected")
 			ui.notifications.warn(warning)
 			throw new Error(warning)
 		}
-		return tokens.map(token => token.actor)
+		return tokens
 	}
 
 	_ensureOneTarget(player) {
@@ -110,7 +110,7 @@ export default class MksUtils {
 			ui.notifications.warn(warning)
 			throw new Error(warning)
 		}
-		return Array.from(tokens)[0].actor
+		return Array.from(tokens)[0]
 	}
 
 	_ensureAtLeastOneTarget(player) {
@@ -124,7 +124,7 @@ export default class MksUtils {
 			ui.notifications.warn(warning)
 			throw new Error(warning)
 		}
-		return Array.from(tokens).map(token => token.actor)
+		return Array.from(tokens)
 	}
 
 	_localSave(key, value, actor = null) {
@@ -146,21 +146,21 @@ export default class MksUtils {
 	}
 
 	getAttackActionStats(ready=null) {
-		let actor = this._ensureOneActor()
+		let actor = this._ensureOneSelected().actor
 		if (!actor) return
 
 		return actor.data.data.actions.filter(a => ready === null || a.ready === ready)
 	}
 
     getSkillStat(skill) {
-        let actor = this._ensureOneActor()
+        let actor = this._ensureOneSelected().actor
         if (!actor) return
 
         return actor.skills[skill]
     }
 
 	getSkillStats(proficiencyRankThreshold=null) {
-		let actor = this._ensureOneActor()
+		let actor = this._ensureOneSelected().actor
 		if (!actor) return
 
 		let skillStats = Object.entries(actor.skills).map(([key, skill]) => {
@@ -258,25 +258,24 @@ export default class MksUtils {
 
 	// dcVisibility?: "none" | "gm" | "owner" | "all"
 	checkStatic(checkType, domain = null, dc = null, dcVisibility = 'gm', messageTemplate = null) {
-		let actors = this._ensureAtLeastOneActor()
-		if (!actors || actors.length < 1) return
+		let tokens = this._ensureAtLeastOneSelected()
 
 		if (!domain)
 			domain = this._getDefaultDomain(checkType)
 
 		if (!messageTemplate)
 			messageTemplate = MksUtils.i18n("utils.mks.check."+ domain +".defaulttitle.firstpart")
-				+ (dc > 0 && dcVisibility == 'all' ? " " + MksUtils.i18n("utils.mks.check.defaulttitle.dcpart") : "")
+				+ (dc > 0 && dcVisibility === 'all' ? " " + MksUtils.i18n("utils.mks.check.defaulttitle.dcpart") : "")
 
 		const promises = {}
-		actors.forEach(actor => {
+		tokens.forEach(token => {
+			const actor = token.actor
 			const context = this._prepareCheckContext(actor, checkType, domain, dc, dcVisibility)
 			const stat = context.stat
 			delete context.stat
-			let message = MksUtils.withTemplate(messageTemplate, {actor, stat: stat, dc})
+			let message = MksUtils.withTemplate(messageTemplate, {actor, stat, dc})
 
-			let promise = game.pf2e.Check.roll(new game.pf2e.CheckModifier(message, stat, []), context)
-			promises[actor.id] = promise
+			promises[actor.id] = game.pf2e.Check.roll(new game.pf2e.CheckModifier(message, stat, []), context)
 		})
 		return promises
 	}
@@ -348,7 +347,15 @@ export default class MksUtils {
 	onAttackRoll(tokenId, pf2e) {
 		const token = canvas.tokens.placeables.find(t => t.id === tokenId)
 		if (this.tokensTurnInCombat(token))
-			this.addMultipleAttackPenalty(token.actor).then()
+			this.incrementEffect(token.actor, Compendium.EFFECT_MULTIPLE_ATTACK).then()
+	}
+
+	onPreCreateItem(item) {
+		if (typeof item === 'EffectPF2e') {
+			if (item.sourceId === Compendium.EFFECT_AID_READY) {
+				this.actions.aid.setDC(item)
+			}
+		}
 	}
 
 	async addMultipleAttackPenalty(actor) {
@@ -369,11 +376,49 @@ export default class MksUtils {
 		}
 	}
 
+	async incrementEffect(actor, effectSourceId) {
+		const existingEffect = actor.itemTypes.effect.find((e) => e.flags.core?.sourceId === effectSourceId)
+		if (existingEffect) {
+			const badge = existingEffect.system?.badge
+			if (badge.type === 'counter' && badge.value > 0)
+				await actor.updateEmbeddedDocuments("Item", [{ _id: existingEffect.id, "data.badge": {type:"counter", value: existingEffect.system.badge.value + 1} }])
+		}
+		else {
+			const effect = await fromUuid(effectSourceId)
+			await actor.createEmbeddedDocuments("Item", [effect.toObject()])
+		}
+	}
+
+	async decrementEffect(actor, effectSourceId) {
+		const existingEffect = actor.itemTypes.effect.find((e) => e.flags.core?.sourceId === effectSourceId)
+		if (existingEffect) {
+			const badge = existingEffect.system?.badge
+			if (badge.type === 'counter' && badge.value > 1)
+				await actor.updateEmbeddedDocuments("Item", [{ _id: existingEffect.id, "data.badge": {type:"counter", value: existingEffect.system.badge.value - 1} }])
+			else
+				await existingEffect.delete()
+		}
+	}
+
+	async updateEffectFlags(actor, effectSourceId, ...flags) {
+		const existingEffect = actor.itemTypes.effect.find((e) => e.flags.core?.sourceId === effectSourceId)
+		if (existingEffect) {
+
+		}
+	}
+
+	async removeEffect(actor, effectSourceId) {
+		const existingEffect = actor.itemTypes.effect.find((e) => e.flags.core?.sourceId === effectSourceId)
+		if (existingEffect) {
+			await existingEffect.delete()
+		}
+	}
+
 	async onStartTurn(combatant) {
-		await this.removeMultipleAttackPenalty(combatant.actor)
+		await this.removeEffect(combatant.actor, Compendium.EFFECT_MULTIPLE_ATTACK)
 	}
 
 	async onEndTurn(combatant) {
-		await this.removeMultipleAttackPenalty(combatant.actor)
+		await this.removeEffect(combatant.actor, Compendium.EFFECT_MULTIPLE_ATTACK)
 	}
 }

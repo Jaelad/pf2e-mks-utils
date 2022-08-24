@@ -1,5 +1,6 @@
 {
     "utils.mks.ui.actions.cancel": "Cancel",
+    "utils.mks.ui.actions.ok": "OK",
     "utils.mks.checkType.perception": "Perception",
     "utils.mks.checkType.fortitude": "Fortitude",
     "utils.mks.checkType.reflex": "Reflex",
@@ -38,5 +39,7 @@
     "utils.mks.roll.defaulttitle.dcpart": "DC [${dc}]",
     "actions.aid.ready.dialog.title": "Ready Aid Reaction",
     "actions.aid.ready.dialog.select": "Select How To Aid:",
-    "actions.aid.ready.dialog.yesaction": "Ready"
+    "actions.aid.ready.dialog.yesaction": "Ready",
+    "actions.aid.setdc.dialog.title": "Set DC",
+    "actions.aid.setdc.dialog.dc": "DC"
 }
