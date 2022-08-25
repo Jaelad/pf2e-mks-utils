@@ -329,7 +329,7 @@ export default class MksUtils {
 	}
 
 	getEffect(actor, effectSourceId) {
-		return actor.itemTypes.effect.find((e) => e.flags.core?.sourceId === effectSourceId)
+		return actor?.itemTypes?.effect.find((e) => e.flags.core?.sourceId === effectSourceId)
 	}
 
 	async incrementEffect(actor, effectSourceId, flags, changes) {
@@ -389,12 +389,64 @@ export default class MksUtils {
 		}
 	}
 
+	async incrementCondition(actor, conditionSlug, value = 1, flags) {
+		const condition = actor.itemTypes.condition.find(c => c.slug === conditionSlug)
+		if (condition) {
+			if (condition?.badge?.value > 0) {
+				return await game.pf2e.ConditionManager.updateConditionValue(condition.id, actor, condition?.badge?.value + value)
+			}
+			else
+				return condition
+		}
+		else
+			return await game.pf2e.ConditionManager.addConditionToActor(conditionSlug, actor)
+	}
+
+	async decrementCondition(actor, conditionSlug, value = 1) {
+		const condition = actor.itemTypes.condition.find(c => c.slug === conditionSlug)
+		if (condition) {
+			if (condition?.badge?.value > value) {
+				game.pf2e.ConditionManager.updateConditionValue(condition.id, actor, condition?.badge?.value - value).then()
+			}
+			else
+				game.pf2e.ConditionManager.removeConditionFromActor(condition.id, actor).then()
+		}
+	}
+
+	async updateConditionFlags(actor, conditionSlug, flags) {
+		const condition = actor.itemTypes.condition.find(c => c.slug === conditionSlug)
+		if (condition) {
+			const updates = {_id: condition.id}
+			for (let flagKey in flags) {
+				updates["flags." + flagKey] = flags[flagKey]
+			}
+			await actor.updateEmbeddedDocuments("Item", [updates])
+		}
+	}
+
 	async onStartTurn(combatant) {
 		await this.removeEffect(combatant.actor, Compendium.EFFECT_MULTIPLE_ATTACK)
+
+		this.onTurnCompleted(combatant.parent).then()
 	}
 
 	async onEndTurn(combatant) {
 		await this.removeEffect(combatant.actor, Compendium.EFFECT_MULTIPLE_ATTACK)
+	}
+
+	async onTurnCompleted(encounter) {
+		const tokenId = encounter.previous.tokenId
+		const token = this._getTokenById(tokenId)
+		const effects = token.actor.itemTypes.effect
+		effects.forEach(effect => {
+			if (effect.slug === 'effect-grabbing') {
+				if (effect.isExpired) {
+					const grabbedTokenId = effect.flags?.mks?.grapple?.grabbed
+					grabbedTokenId && this.actions.grapple.grabbingExpired(grabbedTokenId)
+					effect.delete().then()
+				}
+			}
+		})
 	}
 }
 
