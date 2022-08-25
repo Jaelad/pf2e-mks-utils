@@ -1,15 +1,11 @@
-import MksUtils from "../../module/mks-utils.js";
-import Compendium from "../../module/compendium.js";
+import MksUtils, {Action} from "../mks-utils.js";
+import Compendium from "../compendium.js";
 
-export default class ActionAid {
-
-	constructor(MKS) {
-		this._ = MKS
-	}
+export default class ActionAid extends Action {
 
 	checkTypeToLabel(checkType) {
 		if (checkType.startsWith("strike"))
-			return MksUtils.i18n("pf2e.mks.checkType.strike") + " (" + checkType.substring(7, checkType.length - 1) + ")"
+			return MksUtils.i18n("pf2e.mks.checkType.strike") + " (" + checkType.substring(7, checkType.length - 1).toUpperCase() + ")"
 		return MksUtils.i18n("pf2e.mks.checkType." + checkType)
 	}
 
@@ -24,14 +20,11 @@ export default class ActionAid {
 		<div class="form-group">
 			<label>${MksUtils.i18n("pf2e.mks.dialog.aid.ready.select")}</label>
 			<select name="checkType">
-				${checkTypes
-				.map(
-					(c) =>
-						`<option value="${c}" ${
-							"perception" === c ? 'selected' : ''
-						}>${MksUtils.escapeHtml(this.checkTypeToLabel(c))}</option>`,
-				)
-				.join('')}
+				${checkTypes.map((c) =>
+					`<option value="${c}" ${
+						"perception" === c ? 'selected' : ''
+					}>${MksUtils.escapeHtml(this.checkTypeToLabel(c))}</option>`,
+				).join('')}
 			</select>
 		</div>
 		</form>

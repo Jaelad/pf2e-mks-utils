@@ -1,4 +1,10 @@
 {
+    "PF2E.ActionsCheck.athletics": "Bilek Gücü - Athletics",
+    "PF2E.Actions.Grapple.Title": "Cebelleş",
+    "PF2E.ConditionTypeGrabbed": "Zaptedilmiş",
+    "PF2E.ConditionTypeProne": "Yere Düşmüş",
+
+
     "pf2e.mks.ui.actions.cancel": "İptal",
     "pf2e.mks.ui.actions.ok": "Tamam",
     "pf2e.mks.checkType.perception": "Algılama - Perception",
@@ -11,7 +17,7 @@
     "pf2e.mks.checkType.spell[divine]": "Kutsal - Divine Büyü",
     "pf2e.mks.checkType.skill[acrobatics]": "Akrobasi",
     "pf2e.mks.checkType.skill[arcana]": "Esrar İlmi - Arcana",
-    "pf2e.mks.checkType.skill[athletics]": "Bielk Gücü - Athletics",
+    "pf2e.mks.checkType.skill[athletics]": "Bilek Gücü - Athletics",
     "pf2e.mks.checkType.skill[crafting]": "Ustalık - Crafting",
     "pf2e.mks.checkType.skill[deception]": "Dalavere - Deception",
     "pf2e.mks.checkType.skill[diplomacy]": "Diplomasi",
@@ -40,5 +46,7 @@
     "pf2e.mks.dialog.aid.ready.yesaction": "Hazır",
     "pf2e.mks.dialog.setdc.title": "DC Belirle",
     "pf2e.mks.dialog.receiveaid.title": "Alacağın Yardımları Seç",
+    "pf2e.mks.dialog.grapple.grabbedorprone.title": "Fena Çuvalladınız... ",
+    "pf2e.mks.dialog.grapple.grabbedorprone.select": "Şimdi Ne Olacak ?",
     "pf2e.mks.dc": "DC"
 }

@@ -1,5 +1,4 @@
 import Compendium from "./compendium.js"
-import $$objects from "../utils/objects.js"
 
 export default class MksUtils {
 	static i18n = (toTranslate) => game.i18n.localize(toTranslate)
@@ -13,9 +12,9 @@ export default class MksUtils {
 		Warn: 2,
 		Error: 3
 	}
-	static REGEX_SPELLCASTING_SELECTOR = /spell\[(arcane|primal|divine|occult)\]/
-	static REGEX_SKILL_SELECTOR = /skill\[(\w+)\]/
-	static REGEX_STRIKE_SELECTOR = /strike\[(\w+)\]/
+	static REGEX_SPELLCASTING_SELECTOR = /spell\[(arcane|primal|divine|occult)]/
+	static REGEX_SKILL_SELECTOR = /skill\[(\w+)]/
+	static REGEX_STRIKE_SELECTOR = /strike\[(\w+)]/
 
 	constructor() {
 		this.initHooks()
@@ -123,7 +122,7 @@ export default class MksUtils {
 	_ensureAtLeastOneTarget(player) {
 		let tokens
 		if (player)
-			tokens = game.users.players.find(p => p.name == player).targets
+			tokens = game.users.players.find(p => p.name === player).targets
 		else
 			tokens = game.user.targets
 		if (tokens.length < 1) {
@@ -211,7 +210,7 @@ export default class MksUtils {
 			stat = actor.spellcasting.find(sc => true)?.statistic
 		else if (match = MksUtils.REGEX_SPELLCASTING_SELECTOR.exec(type)) {
 			let tradition = match[1]
-			stat = actor.spellcasting.find(sc => sc.tradition == tradition)?.statistic
+			stat = actor.spellcasting.find(sc => sc.tradition === tradition)?.statistic
 		}
 		else if (match = MksUtils.REGEX_SKILL_SELECTOR.exec(type)) {
 			let skill = match[1]
@@ -311,7 +310,7 @@ export default class MksUtils {
 		return token.inCombat && token.combatant.encounter.started && token.combatant.encounter.current.tokenId === token.id
 	}
 
-	onCheckRoll(token, checkRoll, pf2e, chatMessage, options) {
+	onCheckRoll(token, checkRoll, pf2e) {
 		const traits = pf2e.context?.traits
 		const attackTrait = traits?.find(t => t.name === "attack")
 		if (attackTrait && this.tokensTurnInCombat(token)) {
@@ -323,29 +322,9 @@ export default class MksUtils {
 			this.removeEffect(token.actor, Compendium.EFFECT_AIDED).then()
 	}
 
-	async onCreateItem(item, options, userId) {
-		if (item.constructor.name === 'EffectPF2e') {
-			if (item.sourceId === Compendium.EFFECT_AID_READY && game.user.isGM) {
-				this.actions.aid.setDC(item)
-			}
-		}
-	}
-
-	async addMultipleAttackPenalty(actor) {
-		const existingEffect = actor.itemTypes.effect.find((e) => e.flags.core?.sourceId === Compendium.EFFECT_MULTIPLE_ATTACK)
-		if (existingEffect) {
-			await actor.updateEmbeddedDocuments("Item", [{ _id: existingEffect.id, "data.badge": {type:"counter", value: existingEffect.system.badge.value + 1} }])
-		}
-		else {
-			const effect = await fromUuid(Compendium.EFFECT_MULTIPLE_ATTACK)
-			await actor.createEmbeddedDocuments("Item", [effect.toObject()])
-		}
-	}
-
-	async removeMultipleAttackPenalty(actor) {
-		const existingEffect = actor.itemTypes.effect.find((e) => e.flags.core?.sourceId === Compendium.EFFECT_MULTIPLE_ATTACK)
-		if (existingEffect) {
-			await existingEffect.delete()
+	async onCreateEffect(effect, options, userId) {
+		if (effect.sourceId === Compendium.EFFECT_AID_READY && game.user.isGM) {
+			this.actions.aid.setDC(effect)
 		}
 	}
 
@@ -416,5 +395,15 @@ export default class MksUtils {
 
 	async onEndTurn(combatant) {
 		await this.removeEffect(combatant.actor, Compendium.EFFECT_MULTIPLE_ATTACK)
+	}
+}
+
+export class Action {
+	constructor(MKS) {
+		this._ = MKS
+	}
+
+	isPossible() {
+		return true
 	}
 }

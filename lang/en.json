@@ -40,5 +40,7 @@
     "pf2e.mks.dialog.aid.ready.yesaction": "Ready",
     "pf2e.mks.dialog.setdc.title": "Set DC",
     "pf2e.mks.dialog.receiveaid.title": "Select Aids",
+    "pf2e.mks.dialog.grapple.grabbedorprone.title": "Select a Condition upon Critical Failure",
+    "pf2e.mks.dialog.grapple.grabbedorprone.select": "Grabbed or Prone ?",
     "pf2e.mks.dc": "DC"
 }
