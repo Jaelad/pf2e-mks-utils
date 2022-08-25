@@ -9,8 +9,8 @@ export default class ActionAid {
 
 	checkTypeToLabel(checkType) {
 		if (checkType.startsWith("strike"))
-			return MksUtils.i18n("utils.mks.checkType.strike") + " (" + checkType.substring(7, checkType.length - 1) + ")"
-		return MksUtils.i18n("utils.mks.checkType." + checkType)
+			return MksUtils.i18n("pf2e.mks.checkType.strike") + " (" + checkType.substring(7, checkType.length - 1) + ")"
+		return MksUtils.i18n("pf2e.mks.checkType." + checkType)
 	}
 
 	readyAid() {
@@ -24,7 +24,7 @@ export default class ActionAid {
 		const dialogContent = `
 		<form>
 		<div class="form-group">
-			<label>${MksUtils.i18n("actions.aid.ready.dialog.select")}</label>
+			<label>${MksUtils.i18n("pf2e.mks.dialog.aid.ready.select")}</label>
 			<select name="checkType">
 				${checkTypes
 				.map(
@@ -40,16 +40,16 @@ export default class ActionAid {
 		`
 
 		new Dialog({
-			title: MksUtils.i18n("actions.aid.ready.dialog.title"),
+			title: MksUtils.i18n("pf2e.mks.dialog.aid.ready.title"),
 			content: dialogContent,
 			buttons: {
 				no: {
 					icon: '<i class="fas fa-times"></i>',
-					label: MksUtils.i18n("utils.mks.ui.actions.cancel"),
+					label: MksUtils.i18n("pf2e.mks.ui.actions.cancel"),
 				},
 				yes: {
 					icon: '<i class="fas fa-hands-helping"></i>',
-					label: MksUtils.i18n("actions.aid.ready.dialog.yesaction"),
+					label: MksUtils.i18n("pf2e.mks.dialog.aid.ready.yesaction"),
 					callback: ($html) => {
 						const checkType = $html[0].querySelector('[name="checkType"]').value
 						const mksFlagData = {}
@@ -66,7 +66,7 @@ export default class ActionAid {
 		const dialogContent = `
 		<form>
 		<div class="form-group">
-			<label>${MksUtils.i18n("actions.aid.setdc.dialog.dc")}</label>
+			<label>${MksUtils.i18n("pf2e.mks.dc")}</label>
 			<input type="number" name="dc" value="20">
 		</div>
 		</form>
@@ -82,12 +82,12 @@ export default class ActionAid {
 		}
 
 		new Dialog({
-			title: MksUtils.i18n("actions.aid.setdc.dialog.title"),
+			title: MksUtils.i18n("pf2e.mks.dialog.setdc.title"),
 			content: dialogContent,
 			buttons: {
 				yes: {
 					icon: '<i class="fas fa-hands-helping"></i>',
-					label: MksUtils.i18n("utils.mks.ui.actions.ok"),
+					label: MksUtils.i18n("pf2e.mks.ui.actions.ok"),
 					callback: ($html) => {doSetDC(parseInt($html[0].querySelector('[name="dc"]').value, 10) ?? 20)}
 				}
 			},

@@ -83,7 +83,7 @@ export default class MksUtils {
 	_ensureOneSelected() {
 		let tokens = canvas.tokens.controlled
 		if (tokens.length != 1) {
-			const warning = MksUtils.i18n("utils.mks.warning.actor.onemustbeselected")
+			const warning = MksUtils.i18n("pf2e.mks.warning.actor.onemustbeselected")
 			ui.notifications.warn(warning)
 			throw new Error(warning)
 		}
@@ -93,7 +93,7 @@ export default class MksUtils {
 	_ensureAtLeastOneSelected() {
 		let tokens = canvas.tokens.controlled
 		if (tokens.length < 1) {
-			const warning = MksUtils.i18n("utils.mks.warning.actor.atleastonemustbeselected")
+			const warning = MksUtils.i18n("pf2e.mks.warning.actor.atleastonemustbeselected")
 			ui.notifications.warn(warning)
 			throw new Error(warning)
 		}
@@ -107,7 +107,7 @@ export default class MksUtils {
 		else
 			tokens = game.user.targets
 		if (tokens.size != 1) {
-			const warning = MksUtils.i18n("utils.mks.warning.target.onemustbeselected")
+			const warning = MksUtils.i18n("pf2e.mks.warning.target.onemustbeselected")
 			ui.notifications.warn(warning)
 			throw new Error(warning)
 		}
@@ -121,7 +121,7 @@ export default class MksUtils {
 		else
 			tokens = game.user.targets
 		if (tokens.length < 1) {
-			const warning = MksUtils.i18n("utils.mks.warning.target.atleastonemustbeselected")
+			const warning = MksUtils.i18n("pf2e.mks.warning.target.atleastonemustbeselected")
 			ui.notifications.warn(warning)
 			throw new Error(warning)
 		}
@@ -262,8 +262,8 @@ export default class MksUtils {
 			domain = this._getDefaultDomain(checkType)
 
 		if (!messageTemplate)
-			messageTemplate = MksUtils.i18n("utils.mks.check."+ domain +".defaulttitle.firstpart")
-				+ (dc > 0 && dcVisibility === 'all' ? " " + MksUtils.i18n("utils.mks.check.defaulttitle.dcpart") : "")
+			messageTemplate = MksUtils.i18n("pf2e.mks.check."+ domain +".defaulttitle.firstpart")
+				+ (dc > 0 && dcVisibility === 'all' ? " " + MksUtils.i18n("pf2e.mks.check.defaulttitle.dcpart") : "")
 
 		const promises = {}
 		tokens.forEach(token => {
@@ -284,8 +284,8 @@ export default class MksUtils {
     //     if (!actors || actors.length < 1) return
 	//
 	// 	if (!messageTemplate)
-	// 		messageTemplate = this.i18n("utils.mks.skill.roll.check.defaulttitle.firstpart")
-	// 			+ (dc > 0 && dcVisibility == 'all' ? " " + this.i18n("utils.mks.skill.roll.check.defaulttitle.dcpart") : "")
+	// 		messageTemplate = this.i18n("pf2e.mks.skill.roll.check.defaulttitle.firstpart")
+	// 			+ (dc > 0 && dcVisibility == 'all' ? " " + this.i18n("pf2e.mks.skill.roll.check.defaulttitle.dcpart") : "")
 	//
     //     const promises = {}
 	//
