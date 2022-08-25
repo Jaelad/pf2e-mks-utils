@@ -39,5 +39,6 @@
     "pf2e.mks.dialog.aid.ready.select": "Select How To Aid:",
     "pf2e.mks.dialog.aid.ready.yesaction": "Ready",
     "pf2e.mks.dialog.setdc.title": "Set DC",
+    "pf2e.mks.dialog.receiveaid.title": "Select Aids",
     "pf2e.mks.dc": "DC"
 }

@@ -1,5 +1,5 @@
-import MksUtils from "./mks-utils.js";
-import Compendium from "./compendium.js";
+import MksUtils from "../../module/mks-utils.js";
+import Compendium from "../../module/compendium.js";
 
 export default class ActionAid {
 
@@ -19,8 +19,6 @@ export default class ActionAid {
 
 		const checkTypes = this._.getCheckTypes(willAid.actor).filter(ct => ct.indexOf("-lore") == -1)
 
-
-
 		const dialogContent = `
 		<form>
 		<div class="form-group">
@@ -38,7 +36,6 @@ export default class ActionAid {
 		</div>
 		</form>
 		`
-
 		new Dialog({
 			title: MksUtils.i18n("pf2e.mks.dialog.aid.ready.title"),
 			content: dialogContent,
@@ -102,26 +99,71 @@ export default class ActionAid {
 			return
 
 		const aid = effect.data.flags?.mks?.aid
-		for (let helperTokenId in aid) {
-			const config = aid[helperTokenId]
-			const helperToken = game.scenes.active.tokens.get(helperTokenId)
+		const aidTokens = Object.keys(aid)
+		const getTokenById = this._._getTokenById
+
+		if (aidTokens.length == 1) {
+			const config = aid[aidTokens[0]]
+			const helperToken = getTokenById(aidTokens[0])
 			if (helperToken?.actor) {
 				const promises = this._.checkStatic([helperToken], config.checkType, null, config.dc)
-				let bonus = 0
-				for (let tokenId in promises) {
-					const roll = await promises[tokenId]
-					switch (roll.data.degreeOfSuccess) {
-						case 0: bonus -= 1; break
-						case 1: break
-						case 2: bonus += 1; break
-						case 3: bonus += 2; break
+				const roll = await Object.values(promises)[0]
+				let bonus = roll.data.degreeOfSuccess - 1
+				if (bonus !== 0)
+					this._.incrementEffect(token.actor, Compendium.EFFECT_AIDED, null, {"data.rules[0].value": bonus}).then()
+			}
+			this._.removeEffect(token.actor, Compendium.EFFECT_AID_READY).then()
+		}
+		else if (aidTokens.length > 1) {
+			const dialogContent = `
+				<form>
+				${aidTokens.map((tokenId) =>
+						`
+						<div class="form-group">
+							<label>${getTokenById(tokenId).name}</label>
+							<input name="${tokenId}" type="checkbox">
+						</div>
+						`
+					).join('')}
+				</form>
+				`
+			const callback = async ($html) => {
+				const checkedAids = {}
+				for (let aidTokenId in aid) {
+					const checked = $html[0].querySelector('[name="' + aidTokenId + '"]').checked
+					if (checked)
+						checkedAids[aidTokenId] = aid[aidTokenId]
+				}
+				const promisesAll = []
+				let bonus
+				for (let helperTokenId in checkedAids) {
+					const config = aid[helperTokenId]
+					const helperToken = getTokenById(helperTokenId)
+					if (helperToken?.actor) {
+						const promises = this._.checkStatic([helperToken], config.checkType, null, config.dc)
+						promisesAll.push(Object.values(promises)[0])
 					}
 				}
+				for (let i=0; i<promisesAll.length; i++) {
+					const roll = await promisesAll[i]
+					bonus += (roll.data.degreeOfSuccess - 1)
+				}
 
-				this._.incrementEffect(token.actor, Compendium.EFFECT_AIDED, null, {"data.rules[0].value": bonus}).then()
+				if (bonus !== 0)
+					this._.incrementEffect(token.actor, Compendium.EFFECT_AIDED, null, {"data.rules[0].value": bonus}).then()
 			}
+
+			new Dialog({
+				title: MksUtils.i18n("pf2e.mks.dialog.receiveaid.title"),
+				content: dialogContent,
+				buttons: {
+					yes: {
+						icon: '<i class="fas fa-hands-helping"></i>',
+						label: MksUtils.i18n("pf2e.mks.ui.actions.ok"),
+						callback
+					}
+				}
+			}).render(true);
 		}
 	}
-
 }
-

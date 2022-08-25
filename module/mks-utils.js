@@ -15,6 +15,7 @@ export default class MksUtils {
 	}
 	static REGEX_SPELLCASTING_SELECTOR = /spell\[(arcane|primal|divine|occult)\]/
 	static REGEX_SKILL_SELECTOR = /skill\[(\w+)\]/
+	static REGEX_STRIKE_SELECTOR = /strike\[(\w+)\]/
 
 	constructor() {
 		this.initHooks()
@@ -78,6 +79,11 @@ export default class MksUtils {
 
 	initHooks() {
 
+	}
+
+	_getTokenById(tokenId) {
+		//return canvas.tokens.placeables.find(t => t.id === tokenId)
+		return game.scenes.active.tokens.get(tokenId)
 	}
 
 	_ensureOneSelected() {
@@ -211,7 +217,11 @@ export default class MksUtils {
 			let skill = match[1]
 			stat = actor.skills[skill]
 		}
-		else
+		else if (match = MksUtils.REGEX_STRIKE_SELECTOR.exec(type)) {
+			let slug = match[1]
+			stat = actor.data.data.actions.find(strike => strike.slug === slug)
+		}
+		if (!stat)
 			throw new Error("Illegal stat type : " + type)
 		return stat
 	}
@@ -278,47 +288,6 @@ export default class MksUtils {
 		return promises
 	}
 
-	// visibility?: "none" | "gm" | "owner" | "all"
-	// skillCheckAgainstStaticDC(skill, messageTemplate, dc = null, dcVisibility = 'gm') {
-    //     let actors = this._ensureAtLeastOneActor()
-    //     if (!actors || actors.length < 1) return
-	//
-	// 	if (!messageTemplate)
-	// 		messageTemplate = this.i18n("pf2e.mks.skill.roll.check.defaulttitle.firstpart")
-	// 			+ (dc > 0 && dcVisibility == 'all' ? " " + this.i18n("pf2e.mks.skill.roll.check.defaulttitle.dcpart") : "")
-	//
-    //     const promises = {}
-	//
-    //     actors.forEach(actor => {
-    //         let skillStat = actor.skills[skill]
-    //         let message = MksUtils.withTemplate(messageTemplate, {actor, skill: skillStat, dc})
-	//
-    //         const options = actor.getRollOptions(['skill-check']);
-    //         const context = {
-    //             actor: actor,
-    //             type: 'skill-check',
-    //             options,
-    //             notes: skillStat.notes
-    //         }
-    //         if (dc > 0)
-    //             context.dc = {value: dc, visibility: dcVisibility}
-	//
-    //         let promise = game.pf2e.Check.roll(new game.pf2e.CheckModifier(message, skillStat, []), context)
-    //         promises[actor.id] = promise
-    //     })
-	//
-    //     return promises
-    // }
-
-	// dcType examples: "ac" | "perception" | "fortitude" | "reflex" | "will" | "class" | "spell[arcane]" | "skill[athletics]"
-	// dcReduce: "max" | "min" | "avg"
-	// dcVisibility?: "none" | "gm" | "owner" | "all"
-	// skillCheck(skill, dcType, playerWhoTargets, dcReduce = "max", dcVisibility = 'gm', messageTemplate) {
-	// 	let targets = this._ensureAtLeastOneTarget(playerWhoTargets)
-	// 	let dc = this.resolveDC(targets, dcType, dcReduce)
-	// 	return this.skillCheckAgainstStaticDC(skill, messageTemplate, dc, dcVisibility)
-	// }
-
 	// type examples: "ac" | "perception" | "fortitude" | "reflex" | "will" | "class" | "spell[arcane]" | "skill[athletics]"
 	// reduce: "max" | "min" | "avg"
 	resolveDC(actors, type, reduce = "max") {
@@ -342,10 +311,16 @@ export default class MksUtils {
 		return token.inCombat && token.combatant.encounter.started && token.combatant.encounter.current.tokenId === token.id
 	}
 
-	onAttackRoll(tokenId, pf2e) {
-		const token = canvas.tokens.placeables.find(t => t.id === tokenId)
-		if (this.tokensTurnInCombat(token))
+	onCheckRoll(token, checkRoll, pf2e, chatMessage, options) {
+		const traits = pf2e.context?.traits
+		const attackTrait = traits?.find(t => t.name === "attack")
+		if (attackTrait && this.tokensTurnInCombat(token)) {
 			this.incrementEffect(token.actor, Compendium.EFFECT_MULTIPLE_ATTACK).then()
+		}
+
+		const aided = pf2e.modifiers.find(mod => mod.slug === 'aided')
+		if (aided)
+			this.removeEffect(token.actor, Compendium.EFFECT_AIDED).then()
 	}
 
 	async onCreateItem(item, options, userId) {

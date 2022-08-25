@@ -1,5 +1,5 @@
 import MksUtils from "./mks-utils.js"
-import ActionAid from "./aid.js"
+import ActionAid from "../scripts/actions/aid.js"
 
 Hooks.once('devModeReady', ({ registerPackageDebugFlag }) => {
 	registerPackageDebugFlag(MksUtils.MODULEID)
@@ -13,10 +13,9 @@ Hooks.on("init", () => {
 	}
 
 	Hooks.on("preCreateChatMessage", (chatMessage, options) => {
-		const traits = options?.flags?.pf2e?.context?.traits
-		const attackTrait = traits?.find(t => t.name == "attack")
-		if (attackTrait)
-			MKS.onAttackRoll(chatMessage.token.id, options.flags.pf2e)
+		if (chatMessage.isCheckRoll) {
+			MKS.onCheckRoll(chatMessage.token.object, chatMessage.roll, options?.flags?.pf2e, chatMessage, options)
+		}
 	})
 
 	Hooks.on("createItem", (item) => {
