@@ -1,18 +1,16 @@
-import MksUtils, {Action} from "../mks-utils.js";
-import Compendium from "../compendium.js";
+import MksUtils from "../mks-utils.js"
+import Action from "../action.js"
+import Compendium from "../compendium.js"
+import $$arrays from "../../utils/arrays.js"
 
 export default class ActionGrapple extends Action {
 
 	//Below exports.SetGamePF2e = { // Line:50709: actionHelpers: action_macros_1.ActionMacroHelpers,
 
-	onGrappleSuccess(tokenGrabbed, grapplerTokenId, isRestrained) {
-		this._.incrementCondition(tokenGrabbed.actor, isRestrained ? 'restrained' : 'grabbed').then()
-	}
-
 	grapple(options = {}) {
 		const ActionMacroHelpers = game.pf2e.actionHelpers
-		const grappler = this._._ensureOneSelected()
-		const willBeGrabbed = this._._ensureOneTarget()
+		const grappler = this._.ensureOneSelected()
+		const willBeGrabbed = this._.ensureOneTarget()
 
 		const callback = ({actor, message, outcome, roll}) => {
 			switch(roll.data.degreeOfSuccess) {
@@ -25,14 +23,14 @@ export default class ActionGrapple extends Action {
 								icon: '<i class="far fa-hand-receiving"></i>',
 								label: MksUtils.i18n("PF2E.ConditionTypeGrabbed"),
 								callback: () => {
-									this._.incrementCondition(grappler.actor, 'grabbed').then()
+									this.onGrappleSuccess(grappler, willBeGrabbed)
 								}
 							},
 							yes: {
 								icon: '<i class="far fa-hand-point-down"></i>',
 								label: MksUtils.i18n("PF2E.ConditionTypeProne"),
 								callback: () => {
-									this._.incrementCondition(grappler.actor, 'prone').then()
+									this.effectManager.setCondition(grappler.actor, 'prone').then()
 								}
 							},
 						},
@@ -40,20 +38,17 @@ export default class ActionGrapple extends Action {
 					}).render(true)
 				}
 				case 1: {
-					this._.decrementCondition(willBeGrabbed.actor, 'grabbed').then()
-					this._.decrementCondition(willBeGrabbed.actor, 'restrained').then()
+					// TODO Maybe some other actor grappled it
+					this.effectManager.removeCondition(willBeGrabbed.actor, 'grabbed')?.then()
+					this.effectManager.removeCondition(willBeGrabbed.actor, 'restrained')?.then()
 					break
 				}
 				case 2: {
-					this._.incrementCondition(willBeGrabbed.actor, 'grabbed').then(()=>{
-						const mksFlagData = {grabbed: willBeGrabbed.id}
-						this._.incrementEffect(grappler.actor, Compendium.EFFECT_GRABBING, {"mks.grapple": mksFlagData}).then()
-					})
+					this.onGrappleSuccess(willBeGrabbed, grappler)
 					break
 				}
 				case 3: {
-					this.onGrappleSuccess(willBeGrabbed, grappler.id)
-					this.onGrappleSuccess(willBeGrabbed, grappler.id, true)
+					this.onGrappleSuccess(willBeGrabbed, grappler, true)
 					break
 				}
 			}
@@ -84,12 +79,23 @@ export default class ActionGrapple extends Action {
 				ActionMacroHelpers.note(selector, "PF2E.Actions.Grapple", "criticalFailure"),
 			],
 			weaponTrait: "grapple",
-		});
+		}).then()
 	}
 
-	grabbingExpired(grabbedTokenId) {
-		const token = this._._getTokenById(grabbedTokenId)
-		this._.decrementCondition(token.actor, 'grabbed').then()
-		this._.decrementCondition(token.actor, 'restrained').then()
+	onGrappleSuccess(tokenGrabbed, tokenGrappler, isRestrained = false) {
+		MksUtils.info(`Setting Grabbing Success : ${tokenGrappler.name} -> ${tokenGrabbed.name}`)
+		const condition = this.effectManager.getCondition(tokenGrabbed, isRestrained ? 'restrained' : 'grabbed')
+		const grapplers = $$arrays.pushAll(condition?.flags?.mks?.grapple?.grapplers ?? [], tokenGrappler.id, true)
+		this.effectManager.setCondition(tokenGrabbed, isRestrained ? 'restrained' : 'grabbed', {flags: {"mks.grapple": {grapplers}}}).then()
+
+		this.effectManager.setEffect(tokenGrappler, Compendium.EFFECT_GRABBING, {flags: {"mks.grapple": {grabbed: tokenGrabbed.id}}}).then()
+	}
+
+	onGrabbingExpired(grabbedTokenId) {
+		// TODO Maybe some other actor also grappled it
+		MksUtils.info("Grabbing Expired : " + grabbedTokenId)
+		const token = this._.getTokenById(grabbedTokenId)
+		this.effectManager.removeCondition(token, 'grabbed')?.then()
+		this.effectManager.removeCondition(token, 'restrained')?.then()
 	}
 }

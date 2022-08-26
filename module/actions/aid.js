@@ -1,5 +1,6 @@
-import MksUtils, {Action} from "../mks-utils.js";
-import Compendium from "../compendium.js";
+import MksUtils from "../mks-utils.js"
+import Action from "../action.js"
+import Compendium from "../compendium.js"
 
 export default class ActionAid extends Action {
 
@@ -10,8 +11,8 @@ export default class ActionAid extends Action {
 	}
 
 	readyAid() {
-		const willAid = this._._ensureOneSelected()
-		const willBeAided = this._._ensureOneTarget()
+		const willAid = this._.ensureOneSelected()
+		const willBeAided = this._.ensureOneTarget()
 
 		const checkTypes = this._.getCheckTypes(willAid.actor).filter(ct => ct.indexOf("-lore") == -1)
 
@@ -44,12 +45,12 @@ export default class ActionAid extends Action {
 						const checkType = $html[0].querySelector('[name="checkType"]').value
 						const mksFlagData = {}
 						mksFlagData[willAid.id] = {checkType}
-						this._.incrementEffect(willBeAided.actor, Compendium.EFFECT_AID_READY, {"mks.aid": mksFlagData}).then()
+						this.effectManager.setEffect(willBeAided, Compendium.EFFECT_AID_READY, {flags: {"mks.aid": mksFlagData}}).then()
 					},
 				},
 			},
 			default: 'yes',
-		}).render(true);
+		}).render(true)
 	}
 
 	setDC(effect) {
@@ -68,7 +69,7 @@ export default class ActionAid extends Action {
 					break
 				}
 			}
-			this._.updateEffectFlags(effect.actor,effect.sourceId,{"mks.aid": effect.data.flags.mks.aid}).then()
+			this.effectManager.setEffect(effect.actor, effect.sourceId,{flags:{"mks.aid": effect.data.flags.mks.aid}}).then()
 		}
 
 		new Dialog({
@@ -86,26 +87,26 @@ export default class ActionAid extends Action {
 	}
 
 	async receiveAid() {
-		const token = this._._ensureOneSelected()
-		const effect = this._.getEffect(token.actor, Compendium.EFFECT_AID_READY)
+		const token = this._.ensureOneSelected()
+		const effect = this.effectManager.getEffect(token.actor, Compendium.EFFECT_AID_READY)
 		if (!effect)
 			return
 
 		const aid = effect.data.flags?.mks?.aid
 		const aidTokens = Object.keys(aid)
-		const getTokenById = this._._getTokenById
+		const getTokenById = this._.getTokenById
 
-		if (aidTokens.length == 1) {
+		if (aidTokens.length === 1) {
 			const config = aid[aidTokens[0]]
 			const helperToken = getTokenById(aidTokens[0])
 			if (helperToken?.actor) {
-				const promises = this._.checkStatic([helperToken], config.checkType, null, config.dc)
+				const promises = this._.simpleCheckRoll.checkStatic([helperToken], config.checkType, null, config.dc)
 				const roll = await Object.values(promises)[0]
 				let bonus = roll.data.degreeOfSuccess - 1
 				if (bonus !== 0)
-					this._.incrementEffect(token.actor, Compendium.EFFECT_AIDED, null, {"data.rules[0].value": bonus}).then()
+					this.effectManager.setEffect(token, Compendium.EFFECT_AIDED, {changes: {"data.rules[0].value": bonus}}).then()
 			}
-			this._.removeEffect(token.actor, Compendium.EFFECT_AID_READY).then()
+			this.effectManager.removeEffect(token, Compendium.EFFECT_AID_READY).then()
 		}
 		else if (aidTokens.length > 1) {
 			const dialogContent = `
@@ -133,7 +134,7 @@ export default class ActionAid extends Action {
 					const config = aid[helperTokenId]
 					const helperToken = getTokenById(helperTokenId)
 					if (helperToken?.actor) {
-						const promises = this._.checkStatic([helperToken], config.checkType, null, config.dc)
+						const promises = this._.simpleCheckRoll.checkStatic([helperToken], config.checkType, null, config.dc)
 						promisesAll.push(Object.values(promises)[0])
 					}
 				}
@@ -143,7 +144,7 @@ export default class ActionAid extends Action {
 				}
 
 				if (bonus !== 0)
-					this._.incrementEffect(token.actor, Compendium.EFFECT_AIDED, null, {"data.rules[0].value": bonus}).then()
+					this.effectManager.setEffect(token, Compendium.EFFECT_AIDED, {changes:{"data.rules[0].value": bonus}}).then()
 			}
 
 			new Dialog({
@@ -156,7 +157,7 @@ export default class ActionAid extends Action {
 						callback
 					}
 				}
-			}).render(true);
+			}).render(true)
 		}
 	}
 }
