@@ -1,6 +1,7 @@
 import Compendium from "./compendium.js"
 import MksUtils from "./mks-utils.js"
 
+// TODO pf2e/templates/system/effect-panel.html
 export default class EncounterManager {
 	constructor(MKS) {
 		this._ = MKS
@@ -14,6 +15,7 @@ export default class EncounterManager {
 		const traits = pf2e.context?.traits
 		const attackTrait = traits?.find(t => t.name === "attack")
 		if (attackTrait && this.tokensTurnInCombat(token)) {
+			MksUtils.info(`Applying MAP to ${token.name}`)
 			this._.effectManager.setEffect(token, Compendium.EFFECT_MULTIPLE_ATTACK, {badgeMod: {increment:1}}).then()
 		}
 

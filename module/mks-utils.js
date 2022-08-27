@@ -4,6 +4,7 @@ import SimpleCheckRoll from "./simple-checkroll.js"
 import ActionAid from "./actions/aid.js"
 import ActionGrapple from "./actions/grapple.js"
 import EncounterManager from "./encounter-manager.js"
+import TemplateManager from "./measurement/template-manager.js"
 
 export default class MksUtils {
 	static i18n = (toTranslate) => game.i18n.localize(toTranslate)
@@ -29,6 +30,7 @@ export default class MksUtils {
 		this.effectManager = new EffectManager(this)
 		this.encounterManager = new EncounterManager(this)
 		this.simpleCheckRoll = new SimpleCheckRoll(this)
+		this.templateManager = new TemplateManager(this)
 
 		this.actions = {
 			aid: new ActionAid(this),
