@@ -1,6 +1,7 @@
 {
     "PF2E.ActionsCheck.athletics": "Bilek Gücü - Athletics",
     "PF2E.Actions.Grapple.Title": "Cebelleş",
+    "PF2E.Actions.Seek.Title": "Ara/Tara",
     "PF2E.ConditionTypeGrabbed": "Zaptedilmiş",
     "PF2E.ConditionTypeProne": "Yere Düşmüş",
 
@@ -48,5 +49,9 @@
     "pf2e.mks.dialog.receiveaid.title": "Alacağın Yardımları Seç",
     "pf2e.mks.dialog.grapple.grabbedorprone.title": "Fena Çuvalladınız... ",
     "pf2e.mks.dialog.grapple.grabbedorprone.select": "Şimdi Ne Olacak ?",
+    "pf2e.mks.dialog.seek.selecttype.title": "Nasıl araştıracaksın ?",
+    "pf2e.mks.dialog.seek.type.frontcone": "Direkt olarak önünü",
+    "pf2e.mks.dialog.seek.type.frontburst": "Önünde bir yerleri",
+    "pf2e.mks.dialog.seek.type.object": "Etrafında bir objeyi, vb.",
     "pf2e.mks.dc": "DC"
 }

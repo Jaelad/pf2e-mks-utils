@@ -3,6 +3,7 @@ import EffectManager from "./effect-manager.js"
 import SimpleCheckRoll from "./simple-checkroll.js"
 import ActionAid from "./actions/aid.js"
 import ActionGrapple from "./actions/grapple.js"
+import ActionSeek from "./actions/seek.js"
 import EncounterManager from "./encounter-manager.js"
 import TemplateManager from "./measurement/template-manager.js"
 
@@ -34,7 +35,8 @@ export default class MksUtils {
 
 		this.actions = {
 			aid: new ActionAid(this),
-			grapple: new ActionGrapple(this)
+			grapple: new ActionGrapple(this),
+			seek: new ActionSeek(this),
 		}
 	}
 
@@ -95,8 +97,7 @@ export default class MksUtils {
 	}
 
 	getTokenById(tokenId) {
-		//return canvas.tokens.placeables.find(t => t.id === tokenId)
-		return game.scenes.active.tokens.get(tokenId)
+		return canvas.tokens.placeables.find(t => t.id === tokenId)
 	}
 
 	ensureOneSelected() {

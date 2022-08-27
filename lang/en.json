@@ -42,5 +42,9 @@
     "pf2e.mks.dialog.receiveaid.title": "Select Aids",
     "pf2e.mks.dialog.grapple.grabbedorprone.title": "Select a Condition upon Critical Failure",
     "pf2e.mks.dialog.grapple.grabbedorprone.select": "Grabbed or Prone ?",
+    "pf2e.mks.dialog.seek.selecttype.title": "How do you seek ?",
+    "pf2e.mks.dialog.seek.type.frontcone": "Directly within line of sight",
+    "pf2e.mks.dialog.seek.type.frontburst": "Somewhere within line of sight",
+    "pf2e.mks.dialog.seek.type.object": "Search an object around",
     "pf2e.mks.dc": "DC"
 }
