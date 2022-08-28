@@ -12,7 +12,11 @@ const $$objects = (function () {
 
 	my.isObject = function (obj) {
 		return obj !== null && typeof obj === 'object';
-	};
+	}
+
+	my.isFunction = function (functionToCheck) {
+		return functionToCheck && {}.toString.call(functionToCheck) === '[object Function]'
+	}
 
 	my.isEmpty = function (obj) {
 		if (!obj)

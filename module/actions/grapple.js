@@ -2,6 +2,7 @@ import MksUtils from "../mks-utils.js"
 import Action from "../action.js"
 import Compendium from "../compendium.js"
 import $$arrays from "../../utils/arrays.js"
+import Check from "../check.js"
 
 export default class ActionGrapple extends Action {
 
@@ -54,32 +55,48 @@ export default class ActionGrapple extends Action {
 			}
 		}
 
-		const { checkType, property, stat, subtitle } = ActionMacroHelpers.resolveStat("athletics")
-		ActionMacroHelpers.simpleRollActionCheck({
-			actors: grappler.actor,
-			target: () => ({token: willBeGrabbed.document, actor: willBeGrabbed.actor}),
-			statName: property,
-			actionGlyph: options.glyph ?? "A",
-			title: "PF2E.Actions.Grapple.Title",
-			subtitle,
-			content: (title) => ('<b>' + grappler.actor.name + '</b> ' + title),
-			modifiers: options.modifiers,
-			rollOptions: ["all", checkType, stat, "action:grapple"],
-			extraOptions: ["action:grapple"],
-			traits: ["attack"],
-			checkType,
-			event: options.event,
-			callback,
-			difficultyClass: options.difficultyClass,
-			difficultyClassStatistic: (target) => target.saves.fortitude,
-			extraNotes: (selector) => [
-				ActionMacroHelpers.note(selector, "PF2E.Actions.Grapple", "criticalSuccess"),
-				ActionMacroHelpers.note(selector, "PF2E.Actions.Grapple", "success"),
-				ActionMacroHelpers.note(selector, "PF2E.Actions.Grapple", "failure"),
-				ActionMacroHelpers.note(selector, "PF2E.Actions.Grapple", "criticalFailure"),
-			],
-			weaponTrait: "grapple",
-		}).then()
+		if (options.oldImpl) {
+			const {checkType, property, stat, subtitle} = ActionMacroHelpers.resolveStat("athletics")
+			ActionMacroHelpers.simpleRollActionCheck({
+				actors: grappler.actor,
+				target: () => ({token: willBeGrabbed.document, actor: willBeGrabbed.actor}),
+				statName: property,
+				actionGlyph: options.glyph ?? "A",
+				title: "PF2E.Actions.Grapple.Title",
+				subtitle,
+				content: (title) => ('<b>' + grappler.actor.name + '</b> ' + title),
+				modifiers: options.modifiers,
+				rollOptions: ["all", checkType, stat, "action:grapple"],
+				extraOptions: ["action:grapple"],
+				traits: ["attack"],
+				checkType,
+				event: options.event,
+				callback,
+				difficultyClass: options.difficultyClass,
+				difficultyClassStatistic: (target) => target.saves.fortitude,
+				extraNotes: (selector) => [
+					ActionMacroHelpers.note(selector, "PF2E.Actions.Grapple", "criticalSuccess"),
+					ActionMacroHelpers.note(selector, "PF2E.Actions.Grapple", "success"),
+					ActionMacroHelpers.note(selector, "PF2E.Actions.Grapple", "failure"),
+					ActionMacroHelpers.note(selector, "PF2E.Actions.Grapple", "criticalFailure"),
+				],
+				weaponTrait: "grapple",
+			}).then()
+		}
+		else {
+			const check = new Check({
+				actionGlyph: "A",
+				rollOptions: ["action:grapple"],
+				extraOptions: ["action:grapple"],
+				traits: ["attack"],
+				weaponTrait: "grapple",
+				checkType: "skill[athletics]",
+				secret: true,
+				difficultyClassStatistic: (target) => target.saves.fortitude,
+				callback
+			})
+			check.roll(grappler, willBeGrabbed)
+		}
 	}
 
 	onGrappleSuccess(tokenGrabbed, tokenGrappler, isRestrained = false) {
