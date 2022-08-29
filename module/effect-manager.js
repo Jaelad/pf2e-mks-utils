@@ -1,5 +1,5 @@
-import Compendium from "./compendium.js"
-import MksUtils from "./mks-utils.js";
+import {default as LOG} from "../utils/logging.js"
+import $$arrays from "../utils/arrays";
 
 export default class EffectManager {
 	constructor(MKS) {
@@ -24,7 +24,6 @@ export default class EffectManager {
 				}
 				else if (newBadgeValue !== null)
 					updates["data.badge"] = {type: "counter", value: newBadgeValue}
-				//await actor.updateEmbeddedDocuments("Item", [{ _id: existingEffect.id, "data.badge": {type:"counter", value: existingEffect.system.badge.value + 1} }])
 			}
 			for (let flagKey in flags) {
 				updates["flags." + flagKey] = flags[flagKey]
@@ -57,11 +56,23 @@ export default class EffectManager {
 		return actor.itemTypes.condition.find(c => c.slug === conditionSlug)
 	}
 
+	hasCondition(tokenOrActor, conditionSlugs, any = true) {
+		conditionSlugs = Array.isArray(conditionSlugs) ? conditionSlugs : [conditionSlugs]
+		const actor = tokenOrActor?.actor ?? tokenOrActor
+
+		if (any)
+			return !!actor.itemTypes.condition.find(c => conditionSlugs.includes(c.slug))
+		else {
+			const filtered = actor.itemTypes.condition.filter(c => conditionSlugs.includes(c.slug))
+			return filtered.length == conditionSlugs.length
+		}
+	}
+
 	async setCondition(tokenOrActor, conditionSlug, {badgeMod, flags} = {}) {
 		const actor = tokenOrActor?.actor ?? tokenOrActor
 		let condition = this.getCondition(actor, conditionSlug)
 
-		let promise = new Promise(() => condition)
+		//let promise = new Promise(() => condition)
 		if (!condition)
 			condition = await game.pf2e.ConditionManager.addConditionToActor(conditionSlug, actor)
 
@@ -90,7 +101,8 @@ export default class EffectManager {
 		return condition
 	}
 
-	removeCondition(actor, conditionSlug) {
+	removeCondition(tokenOrActor, conditionSlug) {
+		const actor = tokenOrActor?.actor ?? tokenOrActor
 		const condition = this.getCondition(actor, conditionSlug)
 		if (condition)
 			return game.pf2e.ConditionManager.removeConditionFromActor(condition.id, actor)
@@ -100,19 +112,19 @@ export default class EffectManager {
 		const token = this._.ensureOneSelected()
 
 		this.setCondition(token, 'prone').then(condition => {
-			MksUtils.info(condition)
+			LOG.info(condition)
 		})
 
 		this.setCondition(token, 'grabbed', {flags: {"mks.grapple": {test: 1}}}).then((condition) => {
-			MksUtils.info(condition)
+			LOG.info(condition)
 		})
 
 		this.setCondition(token, 'frightened', {badgeMod: {value: 2}, flags: {"mks.grapple": {test: 1}}}).then(condition => {
-			MksUtils.info(condition)
+			LOG.info(condition)
 		})
 
 		this.setCondition(token, 'clumsy', {badgeMod: {value: 3}}).then(condition => {
-			MksUtils.info(condition)
+			LOG.info(condition)
 		})
 	}
 

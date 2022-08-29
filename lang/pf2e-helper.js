@@ -1,18 +1,14 @@
-export default class PF2EI18N {
-	static camelize(str, initialUpper = true) {
-		return str.replace(/(?:^\w|[A-Z]|\b\w)/g, function(word, index) {
-			return !initialUpper && index === 0  ? word.toLowerCase() : word.toUpperCase()
-		}).replace(/\s+/g, '')
-	}
+import $$strings from "../utils/strings.js"
 
+export default class PF2EI18N {
 	static $ = (toTranslate) => game.i18n.localize(toTranslate)
 
 	static action(action) {
-		return PF2EI18N.$(`PF2E.Actions.${PF2EI18N.camelize(action)}.Title`)
+		return PF2EI18N.$(`PF2E.Actions.${$$strings.camelize(action)}.Title`)
 	}
 
 	static condition(condition) {
-		return PF2EI18N.$(`PF2E.ConditionType${PF2EI18N.camelize(action)}`)
+		return PF2EI18N.$(`PF2E.ConditionType${$$strings.camelize(action)}`)
 	}
 
 	static skillCheck(skill) {
@@ -20,15 +16,19 @@ export default class PF2EI18N {
 	}
 
 	static skill(skill) {
-		return PF2EI18N.$(`PF2E.Skill${PF2EI18N.camelize(skill)}`)
+		return PF2EI18N.$(`PF2E.Skill${$$strings.camelize(skill)}`)
 	}
 
 	static save(save) {
-		return PF2EI18N.$(`PF2E.Saves${PF2EI18N.camelize(save)}`)
+		return PF2EI18N.$(`PF2E.Saves${$$strings.camelize(save)}`)
+	}
+
+	static spellAttack(tradition) {
+		return game.i18n.format("PF2E.SpellAttackWithTradition", {tradition})
 	}
 
 	static ability(abilityAbrv) {
-		return PF2EI18N.$(`PF2E.Ability${PF2EI18N.camelize(abilityAbrv)}`)
+		return PF2EI18N.$(`PF2E.Ability${$$strings.camelize(abilityAbrv)}`)
 	}
 
 	static alignment(alignmentShort) {
@@ -36,15 +36,19 @@ export default class PF2EI18N {
 	}
 
 	static attitude(attitude) {
-		return PF2EI18N.$(`PF2E.Attitudes.${PF2EI18N.camelize(attitude)}`)
+		return PF2EI18N.$(`PF2E.Attitudes.${$$strings.camelize(attitude)}`)
 	}
 
 	static language(lang) {
-		return PF2EI18N.$(`PF2E.Language${PF2EI18N.camelize(lang)}`)
+		return PF2EI18N.$(`PF2E.Language${$$strings.camelize(lang)}`)
 	}
 
 	static trait(trait) {
-		return PF2EI18N.$(`PF2E.Trait${PF2EI18N.camelize(trait)}`)
+		return PF2EI18N.$(`PF2E.Trait${$$strings.camelize(trait)}`)
+	}
+
+	static weapon(weaponSlug) {
+		return PF2EI18N.$(`PF2E.Weapon.Base.${weaponSlug}`)
 	}
 
 }

@@ -1,11 +1,11 @@
-import MksUtils from "./mks-utils.js"
+import MksTools from "./mks-tools.js"
 
 Hooks.once('devModeReady', ({ registerPackageDebugFlag }) => {
-	registerPackageDebugFlag(MksUtils.MODULEID)
+	registerPackageDebugFlag(MksTools.MODULEID)
 })
 
 Hooks.on("init", () => {
-	const MKS = new MksUtils()
+	const MKS = new MksTools()
 	game["MKS"] = MKS
 
 	Hooks.on("preCreateChatMessage", (chatMessage, options) => {

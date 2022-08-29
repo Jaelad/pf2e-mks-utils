@@ -1,7 +1,6 @@
 import GhostTemplate from "./ghost-template.js"
 import CentricTemplate from "./centric-template.js"
-import MksUtils from "../mks-utils.js"
-import {TOKEN_MAGIC_FILTERS} from "./tokenmagic/filters.js"
+import {default as LOG} from "../../utils/logging.js"
 import {TemplatePresets} from "./presets.js";
 
 export default class TemplateManager {
@@ -33,7 +32,7 @@ export default class TemplateManager {
 			parent: canvas.scene
 		})
 		const template = options.ttype === 'ghost' ? new GhostTemplate(templateDoc) : new CentricTemplate(templateDoc)
-		template.wheelSnap = wheelSnap ?? 9
+		template.wheelSnap = Math.round((wheelSnap ?? 9)/3.0) * 3
 		template.onTemplateCreated = callback
 		template.drawPreview().then()
 	}
@@ -46,17 +45,17 @@ export default class TemplateManager {
 		canvas.scene.deleteEmbeddedDocuments("MeasuredTemplate", [], {deleteAll: true})
 	}
 
-	getEncompassingTokens(template) {
+	getEncompassingTokens(template, filter) {
 		const positions = canvas.grid.highlightLayers["Template." + template.id]?.positions
 		if (!positions) {
-			MksUtils.warn(`Cannot locate highlight positions for template ${template.id}!`)
+			LOG.warn(`Cannot locate highlight positions for template ${template.id}!`)
 			console.log(canvas.grid.highlightLayers)
 			return
 		}
 
 		const tokens = []
 		Array.from(canvas.scene.tokens.values()).forEach(token => {
-			if (positions.has(token.x + "." + token.y))
+			if (positions.has(token.x + "." + token.y) && (jQuery.isFunction(filter) ? filter(token) : true))
 				tokens.push(token.object)
 		})
 		return tokens

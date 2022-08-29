@@ -6,4 +6,9 @@ export default class Compendium {
 
 	static CONDITION_GRABBED = "Compendium.pf2e.conditionitems.kWc1fhmv9LBiTuei"
 	static CONDITION_RESTRAINED = "Compendium.pf2e.conditionitems.VcDeM8A5oI6VqhbM"
+
+	static CONDITION_UNNOTICED = "Compendium.pf2e.conditionitems.9evPzg9E6muFcoSk"
+	static CONDITION_UNDETECTED = "Compendium.pf2e.conditionitems.VRSef5y1LmL2Hkjf"
+	static CONDITION_HIDDEN = "Compendium.pf2e.conditionitems.iU0fEDdBp3rXpTMC"
+	static CONDITION_OBSERVED = "Compendium.pf2e.conditionitems.1wQY3JYyhMYeeV2G"
 }

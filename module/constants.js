@@ -1,3 +1,9 @@
+export const SELECTORS = {
+	spellcasting: /spell\[(arcane|primal|divine|occult)]/,
+	skill: /skill\[(\w+)]/,
+	strike: /strike\[([\w-]+)]/,
+}
+
 export const MODIFIER_TYPE = {
 	ABILITY: "ability",
 	PROFICIENCY: "proficiency",

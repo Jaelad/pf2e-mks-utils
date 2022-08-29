@@ -1,6 +1,6 @@
-import MksUtils from "./mks-utils.js"
+import {SELECTORS} from "./constants.js"
+import {default as i18n} from "../lang/pf2e-helper.js"
 import {MODIFIER_TYPE, DC_SLUGS, SKILLS, PROFICIENCY_RANK_OPTION} from "./constants.js"
-import { default as i18n } from "../lang/pf2e-helper.js"
 
 // Lines: 42441 42347
 export default class Check {
@@ -18,15 +18,19 @@ export default class Check {
 		difficultyClass,
 		difficultyClassStatistic,
 		createMessage,
-		extraNotes = [],
+		extraNotes,
 		skipDialog = false,
 		rollMode = 'publicroll', //blindroll,gmroll,publicroll,selfroll
 		secret = false,
+		event,
 		callback
 	}) {
 		this.context = arguments[0]
 		this.context.dialogTitle = this.context.dialogTitle ?? Check.defaultDialogTitle
 		this.context.checkLabel = this.context.checkLabel ?? Check.defaultCheckLabel
+		this.context.rollOptions = this.context.rollOptions ?? []
+		this.context.extraOptions = this.context.rollOptions ?? []
+		this.context.traits = this.context.traits ?? []
 
 		const actionOption = extraOptions?.find(opt => opt.startsWith("action:")) ?? rollOptions?.find(opt => opt.startsWith("action:"))
 		if (actionOption)
@@ -56,12 +60,12 @@ export default class Check {
 			statisticModifier = actor.data.data.saves.will, checkSlug = 'saving-throw', statSlug = 'will'
 		else if (type === "spell")
 			statistic = actor.spellcasting.find()?.statistic, checkSlug = 'spell-attack-roll', statSlug = 'spell-attack'
-		else if (match = MksUtils.REGEX_SPELLCASTING_SELECTOR.exec(type)) {
+		else if (match = SELECTORS.spellcasting.exec(type)) {
 			let tradition = match[1]
 			statistic = actor.spellcasting.find(sc => sc.tradition === tradition)?.statistic
 			checkSlug = 'spell-attack-roll', statSlug = tradition + '-spell-attack'
 		}
-		else if (match = MksUtils.REGEX_SKILL_SELECTOR.exec(type)) {
+		else if (match = SELECTORS.skill.exec(type)) {
 			let skill = match[1]
 			statisticModifier = actor.data.data.skills[SKILLS[skill]]
 			checkSlug = 'skill-check', statSlug = skill
@@ -70,7 +74,7 @@ export default class Check {
 		if (!statisticModifier && statistic) {
 			statisticModifier = this.statisticToModifier(statistic)
 		}
-		else if (match = MksUtils.REGEX_STRIKE_SELECTOR.exec(type)) {
+		else if (match = SELECTORS.strike.exec(type)) {
 			let slug = match[1]
 			statisticModifier = actor.data.data.actions.find(strike => strike.slug === slug)
 			checkSlug = 'attack-roll', statSlug = slug
@@ -174,12 +178,12 @@ export default class Check {
 			return selfToken?.object && target ? selfToken.object.distanceTo(target, { reach }) : null
 		})()
 		const targetInfo = target && target.actor && typeof distance === "number"
-				? { token: target, actor: target.actor, distance }
+				? { token: target.document, actor: target.actor, distance }
 				: null
 		const notes = [stat.notes ?? [], this.context.extraNotes?.(stat.name) ?? []].flat()
 		const substitutions = Check.extractRollSubstitutions(actor.synthetics.rollSubstitutions,[stat.name], finalOptions)
 
-		game.pf2e.Check.roll(
+		const rollPromise = game.pf2e.Check.roll(
 			check,
 			{
 				actor: selfActor,
@@ -196,11 +200,16 @@ export default class Check {
 				skipDialog: this.context.skipDialog,
 				rollMode: this.context.rollMode,
 			},
-			null, //event
+			this.context.event, //event
 			(roll, outcome, message) => {
 				this.context.callback?.({ actor, roll, outcome, message })
 			}
 		)
+		return rollPromise.then((roll)=> {
+			return new Promise((resolve, reject) => {
+				resolve({roll, actor, target})
+			})
+		})
 	}
 
 	static note(selector, translationPrefix, outcome, translationKey) {
@@ -261,7 +270,7 @@ export default class Check {
 			.filter((s) => s.predicate?.test(rollOptions) ?? true)
 	}
 
-	static defaultDialogTitle(token, target, action, checkSlug, statSlug, actionGlyph) {
+	static defaultDialogTitle(token, target, action, checkSlug, statSlug) {
 		let subtitle = ""
 
 		if (checkSlug === 'skill-check' || checkSlug === 'perception-check')
@@ -292,5 +301,37 @@ export default class Check {
 			title += `<p class="compact-text">(${i18n.save(statSlug)})</p> `
 
 		return title
+	}
+
+	static getCheckTypes(actor) {
+		const checkTypes = ["perception", "fortitude", "reflex", "will"]
+		Object.keys(actor.skills).forEach(skillName => {
+			checkTypes.push("skill[" + skillName + "]")
+		})
+		actor.spellcasting.forEach(sc => {
+			checkTypes.push("spell[" + sc.tradition + "]")
+		})
+		actor.data.data.actions.forEach(action => {
+			if (action.type === 'strike' && action.ready)
+				checkTypes.push("strike[" + action.slug + "]")
+		})
+		return checkTypes
+	}
+
+	static checkTypeToLabel(checkType) {
+		if (checkType.startsWith("strike")) {
+			const weapon = checkType.substring(7, checkType.length - 1)
+			return i18n.$("PF2E.WeaponStrikeLabel") + " (" + (weapon === 'basic-unarmed' ? i18n.$("PF2E.MartialUnarmed") : i18n.weapon(weapon)) + ")"
+		}
+		else if (checkType.startsWith("skill"))
+			return i18n.skillCheck(checkType.substring(6, checkType.length - 1))
+		else if (checkType === 'perception')
+			return i18n.skillCheck(checkType)
+		else if (["fortitude", "reflex", "will"].includes(checkType))
+			return i18n.save(checkType)
+		else if (checkType.startsWith("spell"))
+			return i18n.spellAttack(checkType.substring(6, checkType.length - 1))
+		else
+			throw new Error("Illegal check type : " + checkType)
 	}
 }

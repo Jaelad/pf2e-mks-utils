@@ -1,4 +1,5 @@
-import MksUtils from "../mks-utils.js"
+import {default as i18n} from "../../lang/pf2e-helper.js"
+import {default as LOG} from "../../utils/logging.js"
 import Action from "../action.js"
 import Compendium from "../compendium.js"
 import $$arrays from "../../utils/arrays.js"
@@ -13,23 +14,23 @@ export default class ActionGrapple extends Action {
 		const grappler = this._.ensureOneSelected()
 		const willBeGrabbed = this._.ensureOneTarget()
 
-		const callback = ({actor, message, outcome, roll}) => {
+		const rollCallback = ({roll, actor}) => {
 			switch(roll.data.degreeOfSuccess) {
 				case 0: {
 					new Dialog({
-						title: MksUtils.i18n("pf2e.mks.dialog.grapple.grabbedorprone.title"),
+						title: i18n.$("pf2e.mks.dialog.grapple.grabbedorprone.title"),
 						content: '',
 						buttons: {
 							no: {
 								icon: '<i class="far fa-hand-receiving"></i>',
-								label: MksUtils.i18n("PF2E.ConditionTypeGrabbed"),
+								label: i18n.$("PF2E.ConditionTypeGrabbed"),
 								callback: () => {
 									this.onGrappleSuccess(grappler, willBeGrabbed)
 								}
 							},
 							yes: {
 								icon: '<i class="far fa-hand-point-down"></i>',
-								label: MksUtils.i18n("PF2E.ConditionTypeProne"),
+								label: i18n.$("PF2E.ConditionTypeProne"),
 								callback: () => {
 									this.effectManager.setCondition(grappler.actor, 'prone').then()
 								}
@@ -91,16 +92,14 @@ export default class ActionGrapple extends Action {
 				traits: ["attack"],
 				weaponTrait: "grapple",
 				checkType: "skill[athletics]",
-				secret: true,
-				difficultyClassStatistic: (target) => target.saves.fortitude,
-				callback
+				difficultyClassStatistic: (target) => target.saves.fortitude
 			})
-			check.roll(grappler, willBeGrabbed)
+			check.roll(grappler, willBeGrabbed).then(rollCallback)
 		}
 	}
 
 	onGrappleSuccess(tokenGrabbed, tokenGrappler, isRestrained = false) {
-		MksUtils.info(`Setting Grabbing Success : ${tokenGrappler.name} -> ${tokenGrabbed.name}`)
+		LOG.info(`Setting Grabbing Success : ${tokenGrappler.name} -> ${tokenGrabbed.name}`)
 		const condition = this.effectManager.getCondition(tokenGrabbed, isRestrained ? 'restrained' : 'grabbed')
 		const grapplers = $$arrays.pushAll(condition?.flags?.mks?.grapple?.grapplers ?? [], tokenGrappler.id, true)
 		this.effectManager.setCondition(tokenGrabbed, isRestrained ? 'restrained' : 'grabbed', {flags: {"mks.grapple": {grapplers}}}).then()
@@ -110,7 +109,7 @@ export default class ActionGrapple extends Action {
 
 	onGrabbingExpired(grabbedTokenId) {
 		// TODO Maybe some other actor also grappled it
-		MksUtils.info("Grabbing Expired : " + grabbedTokenId)
+		LOG.info("Grabbing Expired : " + grabbedTokenId)
 		const token = this._.getTokenById(grabbedTokenId)
 		this.effectManager.removeCondition(token, 'grabbed')?.then()
 		this.effectManager.removeCondition(token, 'restrained')?.then()

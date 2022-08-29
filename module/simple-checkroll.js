@@ -1,8 +1,10 @@
-import MksUtils from "./mks-utils.js"
+import {SELECTORS} from "./constants.js"
+import {default as i18n} from "../lang/pf2e-helper.js"
+import $$strings from "../utils/strings.js";
+
 
 export default class SimpleCheckRoll {
-	constructor(MKS) {
-		this._ = MKS
+	constructor() {
 	}
 
 	getCheckTypes(actor) {
@@ -37,15 +39,15 @@ export default class SimpleCheckRoll {
 			stat = actor.saves.will
 		else if (type === "spell")
 			stat = actor.spellcasting.find()?.statistic
-		else if (match = MksUtils.REGEX_SPELLCASTING_SELECTOR.exec(type)) {
+		else if (match = SELECTORS.spellcasting.exec(type)) {
 			let tradition = match[1]
 			stat = actor.spellcasting.find(sc => sc.tradition === tradition)?.statistic
 		}
-		else if (match = MksUtils.REGEX_SKILL_SELECTOR.exec(type)) {
+		else if (match = SELECTORS.skill.exec(type)) {
 			let skill = match[1]
 			stat = actor.skills[skill]
 		}
-		else if (match = MksUtils.REGEX_STRIKE_SELECTOR.exec(type)) {
+		else if (match = SELECTORS.strike.exec(type)) {
 			let slug = match[1]
 			stat = actor.data.data.actions.find(strike => strike.slug === slug)
 		}
@@ -100,8 +102,8 @@ export default class SimpleCheckRoll {
 			domain = this._getDefaultDomain(checkType)
 
 		if (!messageTemplate)
-			messageTemplate = MksUtils.i18n("pf2e.mks.check."+ domain +".defaulttitle.firstpart")
-				+ (dc > 0 && dcVisibility === 'all' ? " " + MksUtils.i18n("pf2e.mks.check.defaulttitle.dcpart") : "")
+			messageTemplate = i18n.$("pf2e.mks.check."+ domain +".defaulttitle.firstpart")
+				+ (dc > 0 && dcVisibility === 'all' ? " " + i18n.$("pf2e.mks.check.defaulttitle.dcpart") : "")
 
 		const promises = {}
 		tokens.forEach(token => {
@@ -109,7 +111,7 @@ export default class SimpleCheckRoll {
 			const context = this._prepareCheckContext(actor, checkType, domain, dc, dcVisibility)
 			const stat = context.stat
 			delete context.stat
-			let message = MksUtils.withTemplate(messageTemplate, {actor, stat, dc})
+			let message = $$strings.withTemplate(messageTemplate, {actor, stat, dc})
 
 			promises[token.id] = game.pf2e.Check.roll(new game.pf2e.CheckModifier(message, stat, []), context)
 		})

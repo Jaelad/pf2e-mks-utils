@@ -20,15 +20,15 @@ const $$objects = (function () {
 
 	my.isEmpty = function (obj) {
 		if (!obj)
-			return true;
+			return true
 
-		let empty = true;
+		let empty = true
 		for (let prop in obj) {
-			empty = false;
+			empty = false
 			break;
 		}
-		return empty;
-	};
+		return empty
+	}
 
 	my.shallowClone = function(obj) {
 		if (null == obj || "object" != typeof obj)
