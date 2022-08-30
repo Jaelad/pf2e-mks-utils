@@ -1,14 +1,74 @@
 import {default as i18n} from "../../lang/pf2e-helper.js"
 import {default as LOG} from "../../utils/logging.js"
 import Action from "../action.js"
-import Compendium from "../compendium.js"
-import $$arrays from "../../utils/arrays.js"
 import Check from "../check.js"
 
 export default class ActionSeek extends Action {
 
-	static setHidden(target) {
+	initialize() {
+		this._.socketListener.on('SeekRequest', ({seekerId, targetIds, userId}) => {
+			const seeker = this._.getTokenById(seekerId)
+			const targets = targetIds.map((tid => this._.getTokenById(tid)))
+			const user = game.users.get(userId)
+			this.seekTargets(seeker, targets, user)
+		})
+	}
 
+	methods() {
+		const seeker = this._.ensureOneSelected(false)
+		if (!seeker)
+			return []
+
+		return [{
+			method: "seek",
+			label: i18n.action("seek"),
+			icon: "systems/pf2e/icons/features/classes/alertness.webp",
+			action: 'A',
+			tags: ['encounter', 'exploration']
+		}]
+	}
+
+	seekTargets(seeker, targets, user = game.user) {
+		const rollCallback = ({roll, actor, target}) => {
+			const step = roll.data.degreeOfSuccess - 1
+			if (step <= 0)
+				return
+
+			const seekerType = seeker.actor.type, targetType = target.actor.type
+
+			const undetected = this.effectManager.getCondition(target, 'undetected')
+			const hidden = this.effectManager.getCondition(target, 'hidden')
+
+			if (hidden) {
+				this.effectManager.setCondition(target, 'observed').then(() => {
+					this.effectManager.removeCondition(target, 'hidden')
+				})
+			}
+			else if (undetected || target.data.hidden) {
+				this.effectManager.setCondition(target, step > 1 ? 'observed' : 'hidden').then(() => {
+					this.effectManager.removeCondition(target, 'undetected')
+				})
+			}
+
+			if (target.data.hidden)
+				target.document.update({ _id : target.id, hidden : false })
+		}
+
+		const check = new Check({
+			actionGlyph: "A",
+			rollOptions: ["action:seek"],
+			extraOptions: ["action:seek"],
+			traits: ["secret", "concentrate"],
+			checkType: "perception",
+			rollMode: "gmroll",
+			secret: true,
+			skipDialog: true,
+			difficultyClassStatistic: (target) => target.skills.stealth
+		})
+
+		for (let i = 0; i < targets.length; i++) {
+			check.roll(seeker, targets[i]).then(rollCallback)
+		}
 	}
 
 	seek(options = {}) {
@@ -16,54 +76,27 @@ export default class ActionSeek extends Action {
 
 		const templateCallback = (template) => {
 			const tokens = this._.templateManager.getEncompassingTokens(template, (token) => {
-				// if (game.user.isGM) {
-				// 	return ['character', 'familiar'].includes(token.actor.type) &&
-				// }
+				if (game.user.isGM)
+					return ['character', 'familiar'].includes(token.actor.type) && this.effectManager.hasCondition(token, ['undetected', 'hidden'])
+				else
+					return !token.owner && (token.data.hidden || this.effectManager.hasCondition(token, 'hidden'))
 			})
-			// if (template.author.isGM)
-			// 	this._.templateManager.deleteTemplate(template.id)
+			if (template.author.isGM)
+				this._.templateManager.deleteTemplate(template.id)
+			else
+				setTimeout(() => this._.templateManager.deleteTemplate(template.id), 5000)
 
-			const rollCallback = ({roll, actor, target}) => {
-				const step = roll.data.degreeOfSuccess - 1
-				if (step <= 0)
-					return
 
-				const seekerType = seeker.actor.type, targetType = target.actor.type
-
-				const unnoticed = this.effectManager.getCondition(target, Compendium.CONDITION_UNNOTICED)
-				const undetected = this.effectManager.getCondition(target, Compendium.CONDITION_UNDETECTED)
-				const hidden = this.effectManager.getCondition(target, Compendium.CONDITION_HIDDEN)
-
-				if (hidden) {
-					this.effectManager.setCondition(target, Compendium.CONDITION_OBSERVED).then(() => {
-						this.effectManager.removeCondition(target, Compendium.CONDITION_HIDDEN)
-					})
+			if (game.user.isGM)
+				this.seekTargets(seeker, tokens)
+			else {
+				const eventData = {
+					seekerId: seeker.id,
+					targetIds: tokens.map(t => t.id),
+					userId: game.user.id
 				}
-				else if (undetected) {
-					this.effectManager.setCondition(target, step > 1 ? Compendium.CONDITION_OBSERVED : Compendium.CONDITION_HIDDEN).then(() => {
-						this.effectManager.removeCondition(target, Compendium.CONDITION_UNDETECTED)
-					})
-				}
-				else if (unnoticed) {
-					this.effectManager.setCondition(target, step > 1 ? Compendium.CONDITION_HIDDEN : Compendium.CONDITION_UNDETECTED).then(() => {
-						this.effectManager.removeCondition(target, Compendium.CONDITION_UNNOTICED)
-					})
-				}
-			}
-
-			const check = new Check({
-				actionGlyph: "A",
-				rollOptions: ["action:seek"],
-				extraOptions: ["action:seek"],
-				traits: ["secret", "concentrate"],
-				checkType: "perception",
-				rollMode: "blindroll",
-				secret: true,
-				difficultyClassStatistic: (target) => target.skills.stealth
-			})
-
-			for (let i = 0; i < tokens.length; i++) {
-				check.roll(seeker, tokens[i]).then(rollCallback)
+				LOG.info(eventData)
+				this._.socketListener.emit('SeekRequest', eventData)
 			}
 		}
 

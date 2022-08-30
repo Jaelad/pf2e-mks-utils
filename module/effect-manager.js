@@ -1,5 +1,4 @@
 import {default as LOG} from "../utils/logging.js"
-import $$arrays from "../utils/arrays";
 
 export default class EffectManager {
 	constructor(MKS) {
@@ -9,6 +8,18 @@ export default class EffectManager {
 	getEffect(tokenOrActor, sourceId) {
 		const actor = tokenOrActor?.actor ?? tokenOrActor
 		return actor.itemTypes?.effect.find((e) => e.flags.core?.sourceId === sourceId)
+	}
+
+	hasEffect(tokenOrActor, sourceIds, any = true) {
+		sourceIds = Array.isArray(sourceIds) ? sourceIds : [sourceIds]
+		const actor = tokenOrActor?.actor ?? tokenOrActor
+
+		if (any)
+			return !!actor.itemTypes.effect.find(c => sourceIds.includes(c.sourceId))
+		else {
+			const filtered = actor.itemTypes.condition.filter(c => sourceIds.includes(c.sourceId))
+			return filtered.length === sourceIds.length
+		}
 	}
 
 	async setEffect(tokenOrActor, sourceId, {badgeMod, flags, changes} = {}) {
@@ -64,7 +75,7 @@ export default class EffectManager {
 			return !!actor.itemTypes.condition.find(c => conditionSlugs.includes(c.slug))
 		else {
 			const filtered = actor.itemTypes.condition.filter(c => conditionSlugs.includes(c.slug))
-			return filtered.length == conditionSlugs.length
+			return filtered.length === conditionSlugs.length
 		}
 	}
 

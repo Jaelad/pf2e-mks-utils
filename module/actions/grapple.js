@@ -9,6 +9,26 @@ export default class ActionGrapple extends Action {
 
 	//Below exports.SetGamePF2e = { // Line:50709: actionHelpers: action_macros_1.ActionMacroHelpers,
 
+	methods() {
+		const grappler = this._.ensureOneSelected(false)
+		const willBeGrabbed = this._.ensureOneTarget(false)
+		if (!grappler || !willBeGrabbed)
+			return []
+
+		const handsFree = this._.inventoryManager.handsFree(grappler)
+		const sizeDiff = this._.getSizeDifference(grappler.actor, willBeGrabbed.actor)
+		const grabbed = this.effectManager.hasCondition(willBeGrabbed, 'grabbed')
+		const distance = this._.distanceTo(grappler, willBeGrabbed)
+		const reqMet = (handsFree > 0 || grabbed) && sizeDiff < 2 && distance < 10
+		return reqMet ? [{
+			method: "grapple",
+			label: i18n.action("grapple"),
+			icon: "systems/pf2e/icons/spells/athletic-rush.webp",
+			action: 'A',
+			tags: ['combat', 'hostile']
+		}] : []
+	}
+
 	grapple(options = {}) {
 		const ActionMacroHelpers = game.pf2e.actionHelpers
 		const grappler = this._.ensureOneSelected()

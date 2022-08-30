@@ -4,7 +4,11 @@ export default class Action {
 		this.effectManager = MKS.effectManager
 	}
 
-	isPossible() {
-		return true
+	initialize() {
+
+	}
+
+	methods() {
+		return []
 	}
 }

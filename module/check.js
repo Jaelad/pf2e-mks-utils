@@ -286,7 +286,7 @@ export default class Check {
 	}
 
 	static defaultCheckLabel(token, target, action, checkSlug, statSlug, actionGlyph) {
-		let title = `<b>${token.name}</b> `
+		let title = ''
 		if (action)
 			title += `<b>${i18n.action(action)}</b> `
 		if (actionGlyph)

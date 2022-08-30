@@ -1,4 +1,5 @@
 import MksTools from "./mks-tools.js"
+import getSceneControlButtons from "./controls.js"
 
 Hooks.once('devModeReady', ({ registerPackageDebugFlag }) => {
 	registerPackageDebugFlag(MksTools.MODULEID)
@@ -28,3 +29,5 @@ Hooks.on("init", () => {
 		MKS.encounterManager.onEndTurn(combatant).then()
 	})
 })
+
+Hooks.on("getSceneControlButtons", getSceneControlButtons)

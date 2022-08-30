@@ -2,6 +2,7 @@
 	"PF2E.Actions.Grapple.Title": "Cebelleş",
 	"PF2E.Actions.Seek.Title": "Ara/Tara",
 	"PF2E.Actions.Aid.Title": "Yardım",
+	"PF2E.Actions.RaiseAShield.SingleActionTitle": "Kalkan Kaldır",
 
 	"PF2E.ConditionTypeGrabbed": "Zaptedilmiş",
 	"PF2E.ConditionTypeProne": "Yere Düşmüş",
@@ -35,6 +36,7 @@
 	"PF2E.WeaponStrikeLabel": "Vuruş",
 	"PF2E.MartialUnarmed": "Silahsız",
 
+	"pf2e.mks.ui.actionspanel.label": "Aksiyonlar",
 	"pf2e.mks.ui.actions.cancel": "İptal",
 	"pf2e.mks.ui.actions.ok": "Tamam",
 	"pf2e.mks.warning.actor.onemustbeselected": "Bir piyon seçmelisiniz!",

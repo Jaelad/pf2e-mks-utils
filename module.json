@@ -9,6 +9,7 @@
 	"type": "module",
 	"systems": ["pf2e"],
 	"esmodules": ["./module/index.js"],
+	"styles": ["styles/common.css"],
 	"packs": [
 		{
 			"name": "core-effects",
@@ -81,5 +82,5 @@
 	"manifest": "https://raw.githubusercontent.com/Jaelad/pf2e-tools-mks/main/module.json",
 	"protected": false,
 	"coreTranslation": false,
-	"socket": false
+	"socket": true
 }

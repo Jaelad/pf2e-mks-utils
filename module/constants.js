@@ -1,3 +1,10 @@
+export const SYSTEM = {
+	moduleId: 'pf2e-tools-mks',
+	foundryVersion: () => game.version ?? game.data.version,
+	gameSystem: () => game.system?.id ?? game.data.system.id,
+	systemSupported: () => /pf2e/.exec(SYSTEM.gameSystem())
+}
+
 export const SELECTORS = {
 	spellcasting: /spell\[(arcane|primal|divine|occult)]/,
 	skill: /skill\[(\w+)]/,

@@ -51,4 +51,7 @@ export default class PF2EI18N {
 		return PF2EI18N.$(`PF2E.Weapon.Base.${weaponSlug}`)
 	}
 
+	static actionTag(tag) {
+		return PF2EI18N.$(`PF2E.ActionTag.${tag}`)
+	}
 }

@@ -6,6 +6,30 @@ import $$strings from "../../utils/strings.js"
 
 export default class ActionAid extends Action {
 
+	methods() {
+		const willAid = this._.ensureOneSelected(false)
+		const willBeAided = this._.ensureOneTarget(false)
+		if (!willAid || !willBeAided)
+			return []
+
+		return [
+			{
+				method: "readyAid",
+				label: i18n.action("aid"),
+				icon: "systems/pf2e/icons/spells/efficient-apport.webp",
+				action: 'A',
+				tags: ['combat']
+			},
+			{
+				method: "receiveAid",
+				label: i18n.action("receiveAid"),
+				icon: "systems/pf2e/icons/spells/heartbond.webp",
+				action: 'A',
+				tags: ['combat']
+			}
+		]
+	}
+
 	readyAid() {
 		const willAid = this._.ensureOneSelected()
 		const willBeAided = this._.ensureOneTarget()
