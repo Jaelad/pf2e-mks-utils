@@ -15,8 +15,8 @@ export default class ActionsPanel extends FormApplication {
     /** @override */
     static get defaultOptions() {
         return foundry.utils.mergeObject(super.defaultOptions, {
-            title: game.i18n.localize("SEQUENCER.Effects"),
-            template: `modules/sequencer/templates/sequencer-effects-template.html`,
+            title: game.i18n.localize("pf2e.mks.ui.actionspanel.label"),
+            template: `modules/pf2e-tools-mks/templates/actions-panel.hbs`,
             classes: ["dialog"],
             width: "auto",
             height: 640,
@@ -26,53 +26,58 @@ export default class ActionsPanel extends FormApplication {
             tabs: [{
                 navSelector: ".tabs",
                 contentSelector: ".content",
-                initial: "manager"
+                initial: "exploration"
             }]
-        });
+        })
     }
 
-    static show({inFocus = true, tab = "player" }={}){
+    static show({inFocus = true, tab = "exploration" }={}){
         let activeApp;
         for(let app of Object.values(ui.windows)){
             if(app instanceof this){
-                activeApp = app;
+                activeApp = app
                 break;
             }
         }
         if(activeApp){
             if(activeApp._tabs[0].active !== tab){
-                activeApp.render(true, { focus: inFocus });
-                activeApp.reapplySettings();
+                activeApp.render(true, { focus: inFocus })
+                activeApp.reapplySettings()
             }
-        }else{
+        }
+        else{
             activeApp = new this();
-            activeApp.render(true, { focus: inFocus });
+            activeApp.render(true, { focus: inFocus })
         }
 
-        return this
+        return activeApp.setTab(tab)
+    }
+
+    setTab(tab){
+        this._tabs[0].active = tab
+        return this;
     }
 
     static get isVisible() {
-        return this.activeInstance !== undefined;
+        return this.activeInstance !== undefined
     }
 
     static get activeInstance(){
         for (let app of Object.values(ui.windows)) {
-            if (app instanceof this) return app;
+            if (app instanceof this) return app
         }
     }
 
     /** @override */
     activateListeners(html) {
-        super.activateListeners(html);
+        super.activateListeners(html)
     }
 
     /** @override */
     getData() {
         let data = super.getData()
         data.userIsGM = game.user.isGM
-        data.canCreateEffects = true
-        data = {}
+
         return data
     }
 }
