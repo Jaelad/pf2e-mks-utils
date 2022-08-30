@@ -7,7 +7,6 @@ import TemplateManager from "./measurement/template-manager.js"
 import {default as i18n} from "../lang/pf2e-helper.js"
 import SocketListener from "./socket-handler.js"
 import InventoryManager from "./inventory-manager.js"
-import {ActionsPanel} from "./apps/actions-panel.js"
 
 export default class MksTools {
 	constructor() {

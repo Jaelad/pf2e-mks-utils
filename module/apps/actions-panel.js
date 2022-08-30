@@ -1,79 +1,78 @@
-import {BaseAppl} from "./base-appl.js"
-import {default as i18n} from "../../lang/pf2e-helper.js"
-import {default as LOG} from "../../utils/logging.js"
+export default class ActionsPanel extends FormApplication {
 
-export class ActionsPanel extends BaseAppl {
-
-    static get defaultOptions() {
-        return foundry.utils.mergeObject(super.defaultOptions, {
-            classes: ["form", "fxmaster", "weathers", "sidebar-popout"],
-            //classes: ["form"],
-            closeOnSubmit: false,
-            submitOnChange: false,
-            submitOnClose: false,
-            popOut: false,
-            editable: false,
-            width: 300,
-            height: "auto",
-            template: "modules/pf2e-tools-mks/templates/actions-panel.hbs",
-            id: "actions-panel",
-            title: "Test",
-        })
+    constructor(dialogData = {}, options = {}) {
+        super(dialogData, options);
+        this.settingsElements = [];
+        this.presetSelect = undefined;
+        this.deletePresetButton = undefined;
+        this.fileInput = undefined;
+        this.userSelect = undefined;
+        this.lastSearch = undefined;
+        this.lastResults = [];
+        this.effects = [];
     }
 
-    activateListeners(html) {
-        super.activateListeners(html);
-
-        html.find("a[data-action=seek]").click(async (elem) => {
-            const action = elem.target.dataset.action
-            const method = elem.target.dataset.method
+    /** @override */
+    static get defaultOptions() {
+        return foundry.utils.mergeObject(super.defaultOptions, {
+            title: game.i18n.localize("SEQUENCER.Effects"),
+            template: `modules/sequencer/templates/sequencer-effects-template.html`,
+            classes: ["dialog"],
+            width: "auto",
+            height: 640,
+            top: 65,
+            left: 120,
+            resizable: true,
+            tabs: [{
+                navSelector: ".tabs",
+                contentSelector: ".content",
+                initial: "manager"
+            }]
         });
     }
 
-    getData(options) {
-        // const allTags = {}
-        // for (let action in game.MKS.actions) {
-        //     const methods = game.MKS.actions[action].methods()
-        //     methods.forEach( (m) => {
-        //         (m.tags ?? []).forEach(tag => {
-        //             if (!allTags[tag])
-        //                 allTags[tag] = {label: i18n.actionTag(tag), methods: []}
-        //             allTags[tag].methods.push(m)
-        //         })
-        //         m.action = action
-        //     })
-        // }
-        //
-        // console.log(allTags)
-
-
-        return {
-            weatherEffectGroups: {
-                animals: {
-                    effects: {
-                        bats: {
-                            icon: "modules/fxmaster/assets/weatherEffects/icons/bats.png",
-                            label: "Bats"
-                        },
-                        birds: {
-                            icon: "modules/fxmaster/assets/weatherEffects/icons/bats.png",
-                            label: "Birds"
-                        },
-                    },
-                    expanded: false,
-                    label: "pf2e.mks.checkType.perception"
-                },
-                other: {
-                    effects: {
-                        bubbles: {
-                            icon: "modules/fxmaster/assets/weatherEffects/icons/bats.png",
-                            label: "Bubbles"
-                        }
-                    },
-                    expanded: false,
-                    label: "pf2e.mks.checkType.reflex"
-                }
+    static show({inFocus = true, tab = "player" }={}){
+        let activeApp;
+        for(let app of Object.values(ui.windows)){
+            if(app instanceof this){
+                activeApp = app;
+                break;
             }
         }
+        if(activeApp){
+            if(activeApp._tabs[0].active !== tab){
+                activeApp.render(true, { focus: inFocus });
+                activeApp.reapplySettings();
+            }
+        }else{
+            activeApp = new this();
+            activeApp.render(true, { focus: inFocus });
+        }
+
+        return this
+    }
+
+    static get isVisible() {
+        return this.activeInstance !== undefined;
+    }
+
+    static get activeInstance(){
+        for (let app of Object.values(ui.windows)) {
+            if (app instanceof this) return app;
+        }
+    }
+
+    /** @override */
+    activateListeners(html) {
+        super.activateListeners(html);
+    }
+
+    /** @override */
+    getData() {
+        let data = super.getData()
+        data.userIsGM = game.user.isGM
+        data.canCreateEffects = true
+        data = {}
+        return data
     }
 }

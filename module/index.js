@@ -1,9 +1,5 @@
 import MksTools from "./mks-tools.js"
-import getSceneControlButtons from "./controls.js"
-
-Hooks.once('devModeReady', ({ registerPackageDebugFlag }) => {
-	registerPackageDebugFlag(MksTools.MODULEID)
-})
+import ActionsPanel from "./apps/actions-panel.js";
 
 Hooks.on("init", () => {
 	const MKS = new MksTools()
@@ -30,4 +26,21 @@ Hooks.on("init", () => {
 	})
 })
 
-Hooks.on("getSceneControlButtons", getSceneControlButtons)
+Hooks.on("getSceneControlButtons", (controls) => {
+
+	const viewer = {
+		icon: "fas fa-wrench",
+		name: "actionspanel",
+		title: "Actions Panel",
+		button: true,
+		visible: true,
+		onClick: () => {
+			ActionsPanel.show({ inFocus: true, tab: "manager" })
+		}
+	};
+
+	const bar = controls.find(c => c.name === "token");
+	bar.tools.push(viewer);
+})
+
+//Hooks.on("getSceneControlButtons", getSceneControlButtons)
