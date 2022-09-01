@@ -8,26 +8,33 @@ export default class ActionAid extends Action {
 
 	methods() {
 		const willAid = this._.ensureOneSelected(false)
-		const willBeAided = this._.ensureOneTarget(false)
-		if (!willAid || !willBeAided)
+		const willBeAided = this._.ensureOneTarget(null,false)
+		if (!willAid)
 			return []
 
-		return [
-			{
-				method: "readyAid",
-				label: i18n.action("aid"),
-				icon: "systems/pf2e/icons/spells/efficient-apport.webp",
-				action: 'A',
-				tags: ['combat']
-			},
-			{
+		const aidReadied = this.effectManager.hasEffect(willAid.actor, Compendium.EFFECT_AID_READY)
+		const methods = []
+		if (aidReadied) {
+			methods.push({
 				method: "receiveAid",
 				label: i18n.action("receiveAid"),
 				icon: "systems/pf2e/icons/spells/heartbond.webp",
 				action: 'A',
-				tags: ['combat']
-			}
-		]
+				mode: "encounter",
+				tags: ['basic']
+			})
+		}
+		if (willBeAided) {
+			methods.push({
+				method: "readyAid",
+				label: i18n.action("aid"),
+				icon: "systems/pf2e/icons/spells/efficient-apport.webp",
+				action: 'A',
+				mode: "encounter",
+				tags: ['basic']
+			})
+		}
+		return methods
 	}
 
 	readyAid() {

@@ -11,7 +11,7 @@ export default class ActionGrapple extends Action {
 
 	methods() {
 		const grappler = this._.ensureOneSelected(false)
-		const willBeGrabbed = this._.ensureOneTarget(false)
+		const willBeGrabbed = this._.ensureOneTarget(null,false)
 		if (!grappler || !willBeGrabbed)
 			return []
 
@@ -25,7 +25,8 @@ export default class ActionGrapple extends Action {
 			label: i18n.action("grapple"),
 			icon: "systems/pf2e/icons/spells/athletic-rush.webp",
 			action: 'A',
-			tags: ['combat', 'hostile']
+			mode: "encounter",
+			tags: ['hostile', 'combat']
 		}] : []
 	}
 

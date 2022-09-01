@@ -33,11 +33,11 @@ export default class MksTools {
 	ensureOneSelected(warn = true) {
 		let tokens = canvas.tokens.controlled
 		if (tokens.length !== 1) {
-			if (!warn)
-				return
-			const warning = i18n.$("pf2e.mks.warning.actor.onemustbeselected")
-			ui.notifications.warn(warning)
-			throw new Error(warning)
+			if (warn) {
+				const warning = i18n.$("pf2e.mks.warning.actor.onemustbeselected")
+				ui.notifications.warn(warning)
+				throw new Error(warning)
+			}
 		}
 		return tokens[0]
 	}
@@ -45,11 +45,11 @@ export default class MksTools {
 	ensureAtLeastOneSelected(warn = true) {
 		let tokens = canvas.tokens.controlled
 		if (tokens.length < 1) {
-			if (!warn)
-				return
-			const warning = i18n.$("pf2e.mks.warning.actor.atleastonemustbeselected")
-			ui.notifications.warn(warning)
-			throw new Error(warning)
+			if (warn) {
+				const warning = i18n.$("pf2e.mks.warning.actor.atleastonemustbeselected")
+				ui.notifications.warn(warning)
+				throw new Error(warning)
+			}
 		}
 		return tokens
 	}
@@ -61,11 +61,11 @@ export default class MksTools {
 		else
 			tokens = game.user.targets
 		if (tokens.size !== 1) {
-			if (!warn)
-				return
-			const warning = i18n.$("pf2e.mks.warning.target.onemustbeselected")
-			ui.notifications.warn(warning)
-			throw new Error(warning)
+			if (warn) {
+				const warning = i18n.$("pf2e.mks.warning.target.onemustbeselected")
+				ui.notifications.warn(warning)
+				throw new Error(warning)
+			}
 		}
 		return Array.from(tokens)[0]
 	}
@@ -77,11 +77,11 @@ export default class MksTools {
 		else
 			tokens = game.user.targets
 		if (tokens.length < 1) {
-			if (!warn)
-				return
-			const warning = i18n.$("pf2e.mks.warning.target.atleastonemustbeselected")
-			ui.notifications.warn(warning)
-			throw new Error(warning)
+			if (warn) {
+				const warning = i18n.$("pf2e.mks.warning.target.atleastonemustbeselected")
+				ui.notifications.warn(warning)
+				throw new Error(warning)
+			}
 		}
 		return Array.from(tokens)
 	}

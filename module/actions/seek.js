@@ -24,7 +24,8 @@ export default class ActionSeek extends Action {
 			label: i18n.action("seek"),
 			icon: "systems/pf2e/icons/features/classes/alertness.webp",
 			action: 'A',
-			tags: ['encounter', 'exploration']
+			mode: "encounter",
+			tags: ['perception', 'situational']
 		}]
 	}
 

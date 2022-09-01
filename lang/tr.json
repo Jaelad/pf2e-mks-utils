@@ -1,7 +1,8 @@
 {
 	"PF2E.Actions.Grapple.Title": "Cebelleş",
 	"PF2E.Actions.Seek.Title": "Ara/Tara",
-	"PF2E.Actions.Aid.Title": "Yardım",
+	"PF2E.Actions.Aid.Title": "Yardım Et",
+	"PF2E.Actions.ReceiveAid.Title": "Yardım Al",
 	"PF2E.Actions.RaiseAShield.SingleActionTitle": "Kalkan Kaldır",
 
 	"PF2E.ConditionTypeGrabbed": "Zaptedilmiş",
@@ -39,6 +40,11 @@
   	"PF2E.TabActionsEncounterLabel": "Mücadele",
   	"PF2E.TabActionsExplorationLabel": "Keşif",
   	"PF2E.TabActionsDowntimeLabel": "Dinlenme",
+  	"PF2E.ActionTag.perception": "Algı",
+  	"PF2E.ActionTag.situational": "Durumsal",
+  	"PF2E.ActionTag.combat": "Savaş",
+  	"PF2E.ActionTag.hostile": "Düşmanca",
+  	"PF2E.ActionTag.basic": "Basit",
 
 	"pf2e.mks.ui.actionspanel.label": "Aksiyonlar",
 	"pf2e.mks.ui.actions.cancel": "İptal",

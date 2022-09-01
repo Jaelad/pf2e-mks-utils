@@ -1,3 +1,5 @@
+import {default as i18n} from "../../lang/pf2e-helper.js"
+
 export default class ActionsPanel extends FormApplication {
 
     constructor(dialogData = {}, options = {}) {
@@ -72,12 +74,12 @@ export default class ActionsPanel extends FormApplication {
     activateListeners(html) {
         super.activateListeners(html)
 
-        html.find(".fxmaster-groups-list__collapse").click((event) =>
+        html.find(".mks-list__collapse").click((event) =>
             this._onClickCollapse(
                 event,
-                "fxmaster-groups-list__item",
-                "fxmaster-groups-list__collapsible",
-                "fxmaster-groups-list__collapse-icon"
+                "mks-list__item",
+                "mks-list__collapsible",
+                "mks-list__collapse-icon"
             )
         )
     }
@@ -111,25 +113,48 @@ export default class ActionsPanel extends FormApplication {
         let data = super.getData()
         data.userIsGM = game.user.isGM
 
+        const allTags = {}
+        for (let action in game.MKS.actions) {
+            const methods = game.MKS.actions[action].methods()
+            methods.forEach( (m) => {
+                (m.tags ?? []).forEach(tag => {
+                    if (!allTags[tag])
+                        allTags[tag] = {expanded: false, label: i18n.actionTag(tag), methods: []}
+                    allTags[tag].methods.push(m)
+                })
+                m.action = action
+            })
+        }
+
+        const allTagsArr = [], sort = (a,b) => a.label.localeCompare(b.label)
+        for (let tag in allTags) {
+            allTags[tag].tag = tag
+            allTags[tag].methods.sort(sort)
+            allTagsArr.push(allTags[tag])
+        }
+        allTagsArr.sort(sort)
+
+        data.actions = allTagsArr
+
         data.weatherEffectGroups= {
             animals: {
                 effects: {
                     bats: {
-                        icon: "modules/fxmaster/assets/weatherEffects/icons/bats.png",
+                        icon: "systems/pf2e/icons/spells/dread-aura.webp",
                         label: "Bats"
                     },
                     birds: {
-                        icon: "modules/fxmaster/assets/weatherEffects/icons/bats.png",
+                        icon: "systems/pf2e/icons/spells/dread-aura.webp",
                         label: "Birds"
                     },
                 },
-                expanded: false,
+                expanded: true,
                 label: "Animals"
             },
             other: {
                 effects: {
                     bubbles: {
-                        icon: "modules/fxmaster/assets/weatherEffects/icons/bats.png",
+                        icon: "systems/pf2e/icons/spells/dread-aura.webp",
                         label: "Bubbles"
                     }
                 },
@@ -138,6 +163,7 @@ export default class ActionsPanel extends FormApplication {
             }
         }
 
+        console.log(data)
         return data
     }
 }
