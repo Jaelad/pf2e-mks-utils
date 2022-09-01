@@ -71,12 +71,72 @@ export default class ActionsPanel extends FormApplication {
     /** @override */
     activateListeners(html) {
         super.activateListeners(html)
+
+        html.find(".fxmaster-groups-list__collapse").click((event) =>
+            this._onClickCollapse(
+                event,
+                "fxmaster-groups-list__item",
+                "fxmaster-groups-list__collapsible",
+                "fxmaster-groups-list__collapse-icon"
+            )
+        )
+    }
+
+    _onClickCollapse(event, parentClass, collapsibleClass, iconClass) {
+        const parentItem = $(event.currentTarget).parents(`.${parentClass}`)
+        const collapsible = parentItem.children(`.${collapsibleClass}`)
+        const icon = iconClass !== undefined ? parentItem.find(`.${iconClass}`) : undefined
+        this._collapse(collapsible, icon, `${collapsibleClass}--collapsed`)
+    }
+
+    _collapse(collapsible, icon, collapsedClass = "collapsed", speed = 250) {
+        const shouldCollapse = !collapsible.hasClass(collapsedClass);
+
+        if (shouldCollapse) {
+            collapsible.slideUp(speed, () => {
+                collapsible.addClass(collapsedClass);
+                icon?.removeClass("fa-angle-down").addClass("fa-angle-up");
+            })
+        }
+        else {
+            collapsible.slideDown(speed, () => {
+                collapsible.removeClass(collapsedClass);
+                icon?.removeClass("fa-angle-up").addClass("fa-angle-down");
+            })
+        }
     }
 
     /** @override */
     getData() {
         let data = super.getData()
         data.userIsGM = game.user.isGM
+
+        data.weatherEffectGroups= {
+            animals: {
+                effects: {
+                    bats: {
+                        icon: "modules/fxmaster/assets/weatherEffects/icons/bats.png",
+                        label: "Bats"
+                    },
+                    birds: {
+                        icon: "modules/fxmaster/assets/weatherEffects/icons/bats.png",
+                        label: "Birds"
+                    },
+                },
+                expanded: false,
+                label: "Animals"
+            },
+            other: {
+                effects: {
+                    bubbles: {
+                        icon: "modules/fxmaster/assets/weatherEffects/icons/bats.png",
+                        label: "Bubbles"
+                    }
+                },
+                expanded: false,
+                label: "Other"
+            }
+        }
 
         return data
     }
