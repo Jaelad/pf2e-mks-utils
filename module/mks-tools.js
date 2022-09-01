@@ -7,6 +7,8 @@ import TemplateManager from "./measurement/template-manager.js"
 import {default as i18n} from "../lang/pf2e-helper.js"
 import SocketListener from "./socket-handler.js"
 import InventoryManager from "./inventory-manager.js"
+import ActionRaiseAShield from "./actions/raise-a-shield.js"
+import ActionDisarm from "./actions/disarm.js"
 
 export default class MksTools {
 	constructor() {
@@ -21,6 +23,8 @@ export default class MksTools {
 			aid: new ActionAid(this),
 			grapple: new ActionGrapple(this),
 			seek: new ActionSeek(this),
+			raiseAShield: new ActionRaiseAShield(this),
+			disarm: new ActionDisarm(this),
 		}
 
 		Object.values(this.actions).forEach(a => a.initialize())
@@ -111,7 +115,9 @@ export default class MksTools {
 		return skillStats.filter(s => s)
 	}
 
-	getSizeDifference(actor1, actor2) {
+	getSizeDifference(tokenOrActor1, tokenOrActor2) {
+		const actor1 = tokenOrActor1?.actor ?? tokenOrActor1
+		const actor2 = tokenOrActor2?.actor ?? tokenOrActor2
 		return actor1.system.traits.size.difference(actor2.system.traits.size)
 	}
 

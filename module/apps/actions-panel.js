@@ -21,10 +21,10 @@ export default class ActionsPanel extends FormApplication {
             template: `modules/pf2e-tools-mks/templates/actions-panel.hbs`,
             classes: ["dialog"],
             width: "auto",
-            height: 640,
-            top: 65,
-            left: 120,
-            resizable: true,
+            height: 720,
+            top: 150,
+            left: 150,
+            resizable: false,
             tabs: [{
                 navSelector: ".tabs",
                 contentSelector: ".content",
@@ -44,7 +44,6 @@ export default class ActionsPanel extends FormApplication {
         if(activeApp){
             if(activeApp._tabs[0].active !== tab){
                 activeApp.render(true, { focus: inFocus })
-                activeApp.reapplySettings()
             }
         }
         else{
@@ -82,6 +81,12 @@ export default class ActionsPanel extends FormApplication {
                 "mks-list__collapse-icon"
             )
         )
+
+        html.find(".mks-checkbox").click((event) => this._toggleChecked(event))
+    }
+
+    _toggleChecked(event) {
+        console.log(event)
     }
 
     _onClickCollapse(event, parentClass, collapsibleClass, iconClass) {
@@ -135,6 +140,8 @@ export default class ActionsPanel extends FormApplication {
         allTagsArr.sort(sort)
 
         data.actions = allTagsArr
+        data.showApplicable = true
+        data.inCombatTurn = false
 
         data.weatherEffectGroups= {
             animals: {

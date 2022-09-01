@@ -9,31 +9,11 @@ export default class ActionGrapple extends Action {
 
 	//Below exports.SetGamePF2e = { // Line:50709: actionHelpers: action_macros_1.ActionMacroHelpers,
 
-	methods() {
-		const grappler = this._.ensureOneSelected(false)
-		const willBeGrabbed = this._.ensureOneTarget(null,false)
-		if (!grappler || !willBeGrabbed)
-			return []
-
-		const handsFree = this._.inventoryManager.handsFree(grappler)
-		const sizeDiff = this._.getSizeDifference(grappler.actor, willBeGrabbed.actor)
-		const grabbed = this.effectManager.hasCondition(willBeGrabbed, 'grabbed')
-		const distance = this._.distanceTo(grappler, willBeGrabbed)
-		const reqMet = (handsFree > 0 || grabbed) && sizeDiff < 2 && distance < 10
-		return reqMet ? [{
-			method: "grapple",
-			label: i18n.action("grapple"),
-			icon: "systems/pf2e/icons/spells/athletic-rush.webp",
-			action: 'A',
-			mode: "encounter",
-			tags: ['hostile', 'combat']
-		}] : []
-	}
-
 	grapple(options = {}) {
-		const ActionMacroHelpers = game.pf2e.actionHelpers
-		const grappler = this._.ensureOneSelected()
-		const willBeGrabbed = this._.ensureOneTarget()
+		const {applicable, selected, targeted} = this.isApplicable(null,true)
+		if (!applicable)
+			return
+		const grappler = selected, willBeGrabbed = targeted
 
 		const rollCallback = ({roll, actor}) => {
 			switch(roll.data.degreeOfSuccess) {
@@ -77,46 +57,16 @@ export default class ActionGrapple extends Action {
 			}
 		}
 
-		if (options.oldImpl) {
-			const {checkType, property, stat, subtitle} = ActionMacroHelpers.resolveStat("athletics")
-			ActionMacroHelpers.simpleRollActionCheck({
-				actors: grappler.actor,
-				target: () => ({token: willBeGrabbed.document, actor: willBeGrabbed.actor}),
-				statName: property,
-				actionGlyph: options.glyph ?? "A",
-				title: "PF2E.Actions.Grapple.Title",
-				subtitle,
-				content: (title) => ('<b>' + grappler.actor.name + '</b> ' + title),
-				modifiers: options.modifiers,
-				rollOptions: ["all", checkType, stat, "action:grapple"],
-				extraOptions: ["action:grapple"],
-				traits: ["attack"],
-				checkType,
-				event: options.event,
-				callback,
-				difficultyClass: options.difficultyClass,
-				difficultyClassStatistic: (target) => target.saves.fortitude,
-				extraNotes: (selector) => [
-					ActionMacroHelpers.note(selector, "PF2E.Actions.Grapple", "criticalSuccess"),
-					ActionMacroHelpers.note(selector, "PF2E.Actions.Grapple", "success"),
-					ActionMacroHelpers.note(selector, "PF2E.Actions.Grapple", "failure"),
-					ActionMacroHelpers.note(selector, "PF2E.Actions.Grapple", "criticalFailure"),
-				],
-				weaponTrait: "grapple",
-			}).then()
-		}
-		else {
-			const check = new Check({
-				actionGlyph: "A",
-				rollOptions: ["action:grapple"],
-				extraOptions: ["action:grapple"],
-				traits: ["attack"],
-				weaponTrait: "grapple",
-				checkType: "skill[athletics]",
-				difficultyClassStatistic: (target) => target.saves.fortitude
-			})
-			check.roll(grappler, willBeGrabbed).then(rollCallback)
-		}
+		const check = new Check({
+			actionGlyph: "A",
+			rollOptions: ["action:grapple"],
+			extraOptions: ["action:grapple"],
+			traits: ["attack"],
+			weaponTrait: "grapple",
+			checkType: "skill[athletics]",
+			difficultyClassStatistic: (target) => target.saves.fortitude
+		})
+		check.roll(grappler, willBeGrabbed).then(rollCallback)
 	}
 
 	onGrappleSuccess(tokenGrabbed, tokenGrappler, isRestrained = false) {
@@ -134,5 +84,32 @@ export default class ActionGrapple extends Action {
 		const token = this._.getTokenById(grabbedTokenId)
 		this.effectManager.removeCondition(token, 'grabbed')?.then()
 		this.effectManager.removeCondition(token, 'restrained')?.then()
+	}
+
+	methods() {
+		const {applicable} = this.isApplicable()
+		return applicable ? [{
+			method: "grapple",
+			label: i18n.action("grapple"),
+			icon: "systems/pf2e/icons/spells/athletic-rush.webp",
+			action: 'A',
+			mode: "encounter",
+			tags: ['hostile', 'combat']
+		}] : []
+	}
+
+	isApplicable(method=null,warn=false) {
+		const grappler = this._.ensureOneSelected(warn)
+		const willBeGrabbed = this._.ensureOneTarget(null,warn)
+		if (!grappler || !willBeGrabbed)
+			return {applicable: false}
+
+		const handsFree = this._.inventoryManager.handsFree(grappler)
+		const sizeDiff = this._.getSizeDifference(grappler.actor, willBeGrabbed.actor)
+		const grabbed = this.effectManager.hasCondition(willBeGrabbed, 'grabbed')
+		const distance = this._.distanceTo(grappler, willBeGrabbed)
+		const reqMet = (handsFree > 0 || grabbed) && sizeDiff < 2 && distance < 10
+
+		return {applicable: reqMet, selected: grappler, targeted: willBeGrabbed}
 	}
 }

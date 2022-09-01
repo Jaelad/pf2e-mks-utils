@@ -2,6 +2,7 @@ import $$strings from "../utils/strings.js"
 
 export default class PF2EI18N {
 	static $ = (toTranslate) => game.i18n.localize(toTranslate)
+	static $$ = (toTranslate, params) => game.i18n.format(toTranslate, params)
 
 	static action(action) {
 		return PF2EI18N.$(`PF2E.Actions.${$$strings.camelize(action)}.Title`)

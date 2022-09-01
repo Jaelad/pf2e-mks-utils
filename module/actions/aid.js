@@ -6,37 +6,6 @@ import $$strings from "../../utils/strings.js"
 
 export default class ActionAid extends Action {
 
-	methods() {
-		const willAid = this._.ensureOneSelected(false)
-		const willBeAided = this._.ensureOneTarget(null,false)
-		if (!willAid)
-			return []
-
-		const aidReadied = this.effectManager.hasEffect(willAid.actor, Compendium.EFFECT_AID_READY)
-		const methods = []
-		if (aidReadied) {
-			methods.push({
-				method: "receiveAid",
-				label: i18n.action("receiveAid"),
-				icon: "systems/pf2e/icons/spells/heartbond.webp",
-				action: 'A',
-				mode: "encounter",
-				tags: ['basic']
-			})
-		}
-		if (willBeAided) {
-			methods.push({
-				method: "readyAid",
-				label: i18n.action("aid"),
-				icon: "systems/pf2e/icons/spells/efficient-apport.webp",
-				action: 'A',
-				mode: "encounter",
-				tags: ['basic']
-			})
-		}
-		return methods
-	}
-
 	readyAid() {
 		const willAid = this._.ensureOneSelected()
 		const willBeAided = this._.ensureOneTarget()
@@ -114,6 +83,7 @@ export default class ActionAid extends Action {
 	}
 
 	async receiveAid() {
+		this.isApplicable(true, 'receiveAid')
 		const token = this._.ensureOneSelected()
 		const effect = this.effectManager.getEffect(token.actor, Compendium.EFFECT_AID_READY)
 		if (!effect)
@@ -198,6 +168,46 @@ export default class ActionAid extends Action {
 					}
 				}
 			}).render(true)
+		}
+	}
+
+	methods() {
+		const methods = []
+		if (this.isApplicable('receiveAid')) {
+			methods.push({
+				method: "receiveAid",
+				label: i18n.action("receiveAid"),
+				icon: "systems/pf2e/icons/spells/heartbond.webp",
+				action: 'A',
+				mode: "encounter",
+				tags: ['basic']
+			})
+		}
+		if (this.isApplicable( 'readyAid')) {
+			methods.push({
+				method: "readyAid",
+				label: i18n.action("aid"),
+				icon: "systems/pf2e/icons/spells/efficient-apport.webp",
+				action: 'A',
+				mode: "encounter",
+				tags: ['basic']
+			})
+		}
+		return methods
+	}
+
+	isApplicable(method, warn = false) {
+		const selected = this._.ensureOneSelected(warn)
+		const targeted = this._.ensureOneTarget(null,false)
+		const aidReadied = !!selected ? this.effectManager.hasEffect(selected, Compendium.EFFECT_AID_READY) : false
+
+		const methods = []
+		if (method === 'readyAid' && selected && targeted) {
+			return {applicable: !!selected && !!targeted, selected: selected, targeted: targeted}
+		}
+		else if (method === 'receiveAid' && selected && aidReadied) {
+			const aidReadied = this.effectManager.hasEffect(selected, Compendium.EFFECT_AID_READY)
+			return {applicable: !!selected && aidReadied, selected, targeted: null}
 		}
 	}
 }

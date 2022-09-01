@@ -7,7 +7,24 @@ export default class InventoryManager {
 	}
 
 	heldItems(tokenOrActor) {
+		const actor = tokenOrActor?.actor ?? tokenOrActor
 		return Array.from(actor.items.values()).filter((i) => i.isHeld)
+	}
+
+	// {carryType: dropped/worn/held, handsHeld: 0/1/2, invested:null, true, false}
+	async changeItemEquipped(tokenOrActorOrItem, itemId, equipped) {
+		let item = tokenOrActorOrItem.carryType ? tokenOrActorOrItem : null, actor
+		if (!item) {
+			actor = tokenOrActorOrItem.actor ? tokenOrActorOrItem.actor : tokenOrActorOrItem
+			return await actor.updateEmbeddedDocuments("Item", [{"_id": itemId, "data.equipped": equipped}])
+		}
+		else {
+			return await item.update({ "data.equipped": equipped})
+		}
+	}
+
+	async dropItem(tokenOrActorOrItem, itemId) {
+		return await this.changeItemEquipped(tokenOrActorOrItem, itemId, {carryType: 'dropped', handsHeld: 0})
 	}
 
 	handsFree(tokenOrActor) {

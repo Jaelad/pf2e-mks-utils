@@ -14,21 +14,6 @@ export default class ActionSeek extends Action {
 		})
 	}
 
-	methods() {
-		const seeker = this._.ensureOneSelected(false)
-		if (!seeker)
-			return []
-
-		return [{
-			method: "seek",
-			label: i18n.action("seek"),
-			icon: "systems/pf2e/icons/features/classes/alertness.webp",
-			action: 'A',
-			mode: "encounter",
-			tags: ['perception', 'situational']
-		}]
-	}
-
 	seekTargets(seeker, targets, user = game.user) {
 		const rollCallback = ({roll, actor, target}) => {
 			const step = roll.data.degreeOfSuccess - 1
@@ -73,7 +58,7 @@ export default class ActionSeek extends Action {
 	}
 
 	seek(options = {}) {
-		const seeker = this._.ensureOneSelected()
+		const {selected} = this.isApplicable(null,true)
 
 		const templateCallback = (template) => {
 			const tokens = this._.templateManager.getEncompassingTokens(template, (token) => {
@@ -87,12 +72,11 @@ export default class ActionSeek extends Action {
 			else
 				setTimeout(() => this._.templateManager.deleteTemplate(template.id), 5000)
 
-
 			if (game.user.isGM)
-				this.seekTargets(seeker, tokens)
+				this.seekTargets(selected, tokens)
 			else {
 				const eventData = {
-					seekerId: seeker.id,
+					seekerId: selected.id,
 					targetIds: tokens.map(t => t.id),
 					userId: game.user.id
 				}
@@ -128,10 +112,27 @@ export default class ActionSeek extends Action {
 							override = {t: "circle", distance: 15, ttype: "ghost"}
 						else if (seekType === 'object')
 							override = {t: "circle", distance: 10}
-						this._.templateManager.draw(seeker, templateCallback, {preset: 'seek'}, override)
+						this._.templateManager.draw(selected, templateCallback, {preset: 'seek'}, override)
 					}
 				}
 			}
 		}).render(true)
+	}
+
+	methods() {
+		const {applicable} = this.isApplicable()
+		return applicable ? [{
+			method: "seek",
+			label: i18n.action("seek"),
+			icon: "systems/pf2e/icons/features/classes/alertness.webp",
+			action: 'A',
+			mode: "encounter",
+			tags: ['perception', 'situational']
+		}] : []
+	}
+
+	isApplicable(method=null, warn=false) {
+		let selected = this._.ensureOneSelected(warn)
+		return {applicable: !!selected, selected, targeted: null}
 	}
 }

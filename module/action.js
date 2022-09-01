@@ -11,4 +11,9 @@ export default class Action {
 	methods() {
 		return []
 	}
+
+	isApplicable(method = null, warn= false) {
+		// return {applicable, selected, targeted}
+	}
+
 }
