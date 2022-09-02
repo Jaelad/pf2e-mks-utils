@@ -10,6 +10,7 @@
 	"PF2E.ConditionTypeProne": "Yere Düşmüş",
 	"PF2E.ConditionTypeHidden": "Saklanmış",
 	"PF2E.ConditionTypeUndetected": "Konumu Belirsiz",
+	"PF2E.MKS.Modifier.partially-disarmed": "Gevşek Tutuş",
 
 	"PF2E.SavesFortitude": "Direnç - Fortitude",
 	"PF2E.SavesReflex": "Refleks",
@@ -41,7 +42,6 @@
   	"PF2E.TabActionsEncounterLabel": "Mücadele",
   	"PF2E.TabActionsExplorationLabel": "Keşif",
   	"PF2E.TabActionsDowntimeLabel": "Dinlenme",
-  	"PF2E.ActionTag.perception": "Algı",
   	"PF2E.ActionTag.situational": "Durumsal",
   	"PF2E.ActionTag.combat": "Savaş",
   	"PF2E.ActionTag.hostile": "Düşmanca",
@@ -72,5 +72,7 @@
 	"pf2e.mks.dialog.seek.type.frontcone": "Direkt olarak önünü",
 	"pf2e.mks.dialog.seek.type.frontburst": "Önünde bir yerleri",
 	"pf2e.mks.dialog.seek.type.object": "Etrafında bir objeyi, vb.",
+  	"pf2e.mks.dialog.disarm.title": "Elinden Düşür",
+  	"pf2e.mks.dialog.disarm.select": "Silah/Item Seçiniz",
 	"pf2e.mks.dc": "DC"
 }

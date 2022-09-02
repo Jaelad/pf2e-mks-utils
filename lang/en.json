@@ -1,11 +1,21 @@
 {
     "PF2E.Actions.Aid.Title": "Aid",
     "PF2E.Actions.ReceiveAid.Title": "Receive Aid",
+    "PF2E.Actions.RaiseAShield.Title": "Raise a Shield",
+
+    "PF2E.ActionTag.situational": "Situational",
+    "PF2E.ActionTag.combat": "Combat",
+    "PF2E.ActionTag.hostile": "Hostile",
+    "PF2E.ActionTag.basic": "Basic",
+    "PF2E.MKS.ActionsPanel.ShowApplicable": "Show Applicable",
+    "PF2E.MKS.ActionsPanel.InCombatTurn": "In Combat Turn",
 
     "PF2E.MKS.SC.arcane": "Esrar - Arcane Büyü",
     "PF2E.MKS.SC.occult": "Kült - Occult Büyü",
     "PF2E.MKS.SC.primal": "Özsel - Primal Büyü",
     "PF2E.MKS.SC.divine": "Kutsal - Divine Büyü",
+
+    "PF2E.MKS.Modifier.partially-disarmed": "Loose Grip",
 
     "pf2e.mks.ui.actionspanel.label": "Action Panel",
     "pf2e.mks.ui.actions.cancel": "Cancel",
@@ -30,5 +40,7 @@
     "pf2e.mks.dialog.seek.type.frontcone": "Directly within line of sight",
     "pf2e.mks.dialog.seek.type.frontburst": "Somewhere within line of sight",
     "pf2e.mks.dialog.seek.type.object": "Search an object around",
+    "pf2e.mks.dialog.disarm.title": "Disarm",
+    "pf2e.mks.dialog.disarm.select": "Select Weapon or Item",
     "pf2e.mks.dc": "DC"
 }

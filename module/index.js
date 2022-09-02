@@ -43,4 +43,12 @@ Hooks.on("getSceneControlButtons", (controls) => {
 	bar.tools.push(viewer);
 })
 
+Hooks.on("targetToken", (user, token) => {
+	setTimeout(() => ActionsPanel.rerender(), 300)
+})
+
+Hooks.on("controlToken", (user, token) => {
+	setTimeout(() => ActionsPanel.rerender(), 300)
+})
+
 //Hooks.on("getSceneControlButtons", getSceneControlButtons)

@@ -12,13 +12,22 @@ export default class ActionDisarm extends Action {
 
 	disarmItem(selected, targeted, item) {
 		const rollCallback = ({roll, actor}) => {
-			if (roll.data.degreeOfSuccess === 0)
+			if (roll?.data.degreeOfSuccess === 0)
 				this.effectManager.setCondition(selected, 'flat-footed', {flags: {"mks.duration": {type: 'start', turn: 0}}}).then()
-			else if (roll.data.degreeOfSuccess === 2)
+			else if (roll?.data.degreeOfSuccess === 2)
 				this.effectManager.setEffect(targeted, Compendium.EFFECT_DISARM_SUCCESS).then()
-			else if (roll.data.degreeOfSuccess === 3)
+			else if (roll?.data.degreeOfSuccess === 3)
 				this._.inventoryManager.dropItem(item).then()
 		}
+
+		const modifiers = []
+		if (this.effectManager.hasEffect(targeted, Compendium.EFFECT_DISARM_SUCCESS))
+			modifiers.push(new game.pf2e.Modifier({
+				label: "PF2E.MKS.Modifier.partially-disarmed",
+				slug: "partially-disarmed",
+				type: "circumstance",
+				modifier: 2, // Max range penalty before automatic failure
+			}))
 
 		const check = new Check({
 			actionGlyph: "A",
@@ -27,6 +36,7 @@ export default class ActionDisarm extends Action {
 			traits: ["attack"],
 			weaponTrait: "disarm",
 			checkType: "skill[athletics]",
+			modifiers: modifiers,
 			difficultyClassStatistic: (target) => target.saves.reflex
 		})
 		check.roll(selected, targeted).then(rollCallback)
@@ -55,7 +65,7 @@ export default class ActionDisarm extends Action {
 
 		const dialogCallback = ($html) => {
 			const itemId = $html[0].querySelector('[name="item"]').value
-			this.disarmItem(selected, heldItems.find((i)=>i.id === itemId))
+			this.disarmItem(selected, targeted, heldItems.find((i)=>i.id === itemId))
 		}
 
 		new Dialog({
@@ -76,9 +86,9 @@ export default class ActionDisarm extends Action {
 		}).render(true)
 	}
 
-	methods() {
+	methods(onlyApplicable) {
 		const {applicable} = this.isApplicable()
-		return applicable ? [{
+		return !onlyApplicable || applicable ? [{
 			method: "disarm",
 			label: i18n.action("disarm"),
 			icon: "systems/pf2e/icons/spells/delay-consequence.webp",

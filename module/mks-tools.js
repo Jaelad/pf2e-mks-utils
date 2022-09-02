@@ -9,6 +9,7 @@ import SocketListener from "./socket-handler.js"
 import InventoryManager from "./inventory-manager.js"
 import ActionRaiseAShield from "./actions/raise-a-shield.js"
 import ActionDisarm from "./actions/disarm.js"
+import LocalStorage from "../utils/local-storage.js";
 
 export default class MksTools {
 	constructor() {
@@ -35,27 +36,32 @@ export default class MksTools {
 	}
 
 	ensureOneSelected(warn = true) {
-		let tokens = canvas.tokens.controlled
-		if (tokens.length !== 1) {
-			if (warn) {
-				const warning = i18n.$("pf2e.mks.warning.actor.onemustbeselected")
-				ui.notifications.warn(warning)
-				throw new Error(warning)
-			}
+		const inCombatTurn = LocalStorage.load("inCombatTurn")
+		let token
+		if (inCombatTurn && game.combat?.combatant)
+			token = game.combat?.combatant?.token?.object
+		else {
+			let tokens = canvas.tokens.controlled
+			if (tokens.length === 1)
+				token = tokens[0]
 		}
-		return tokens[0]
+
+		if (token)
+			return token
+		else if (warn) {
+			const warning = i18n.$("pf2e.mks.warning.actor.onemustbeselected")
+			ui.notifications.warn(warning)
+		}
 	}
 
 	ensureAtLeastOneSelected(warn = true) {
 		let tokens = canvas.tokens.controlled
-		if (tokens.length < 1) {
-			if (warn) {
-				const warning = i18n.$("pf2e.mks.warning.actor.atleastonemustbeselected")
-				ui.notifications.warn(warning)
-				throw new Error(warning)
-			}
+		if (tokens.length >= 1)
+			return tokens
+		else if (warn) {
+			const warning = i18n.$("pf2e.mks.warning.actor.atleastonemustbeselected")
+			ui.notifications.warn(warning)
 		}
-		return tokens
 	}
 
 	ensureOneTarget(player, warn = true) {
@@ -64,14 +70,12 @@ export default class MksTools {
 			tokens = game.users.players.find(p => p.name === player).targets
 		else
 			tokens = game.user.targets
-		if (tokens.size !== 1) {
-			if (warn) {
-				const warning = i18n.$("pf2e.mks.warning.target.onemustbeselected")
-				ui.notifications.warn(warning)
-				throw new Error(warning)
-			}
+		if (tokens.size === 1)
+			return Array.from(tokens)[0]
+		else if (warn) {
+			const warning = i18n.$("pf2e.mks.warning.target.onemustbeselected")
+			ui.notifications.warn(warning)
 		}
-		return Array.from(tokens)[0]
 	}
 
 	ensureAtLeastOneTarget(player, warn = true) {
@@ -80,32 +84,30 @@ export default class MksTools {
 			tokens = game.users.players.find(p => p.name === player).targets
 		else
 			tokens = game.user.targets
-		if (tokens.length < 1) {
-			if (warn) {
-				const warning = i18n.$("pf2e.mks.warning.target.atleastonemustbeselected")
-				ui.notifications.warn(warning)
-				throw new Error(warning)
-			}
+		if (tokens.size >= 1)
+			return Array.from(tokens)
+		else if (warn) {
+			const warning = i18n.$("pf2e.mks.warning.target.atleastonemustbeselected")
+			ui.notifications.warn(warning)
 		}
-		return Array.from(tokens)
 	}
 
 	getAttackActionStats(ready=null) {
-		let actor = this.ensureOneSelected().actor
+		let actor = this.ensureOneSelected()?.actor
 		if (!actor) return
 
 		return actor.data.data.actions.filter(a => ready === null || a.ready === ready)
 	}
 
     getSkillStat(skill) {
-        let actor = this.ensureOneSelected().actor
+        let actor = this.ensureOneSelected()?.actor
         if (!actor) return
 
         return actor.skills[skill]
     }
 
 	getSkillStats(proficiencyRankThreshold=null) {
-		let actor = this.ensureOneSelected().actor
+		let actor = this.ensureOneSelected()?.actor
 		if (!actor) return
 
 		let skillStats = Object.entries(actor.skills).map(([key, skill]) => {

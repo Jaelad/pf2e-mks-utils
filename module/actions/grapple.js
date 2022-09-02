@@ -86,9 +86,9 @@ export default class ActionGrapple extends Action {
 		this.effectManager.removeCondition(token, 'restrained')?.then()
 	}
 
-	methods() {
+	methods(onlyApplicable) {
 		const {applicable} = this.isApplicable()
-		return applicable ? [{
+		return !onlyApplicable || applicable ? [{
 			method: "grapple",
 			label: i18n.action("grapple"),
 			icon: "systems/pf2e/icons/spells/athletic-rush.webp",

@@ -56,72 +56,6 @@
 			text-indent: 5px;
 		}
 
-		.mks-footer {
-			padding: 5px;
-		}
-
-		.mks-checkbox {
-			background-color: #2196F3;
-		}
-
-		.fxmaster-groups-list,
-		.fxmaster-list {
-			overflow-y: auto;
-			padding: 0;
-			margin: 0;
-		}
-
-		.fxmaster-groups-list__item,
-		.fxmaster-list__item {
-			padding: 4px;
-			list-style: none;
-		}
-
-		.fxmaster-groups-list__item {
-			border-bottom: 2px solid var(--color-border-dark-3, #333);
-		}
-
-		.fxmaster-list__item {
-			border-bottom: 1px solid var(--color-border-dark-3, #333);
-		}
-
-		.fxmaster-groups-list__item:last-of-type,
-		.fxmaster-list__item:last-of-type {
-			border-bottom: none;
-		}
-
-		.fxmaster-groups-list__collapse,
-		.fxmaster-list__collapse {
-			font-size: var(--font-size-16, 16px);
-			cursor: pointer;
-			text-indent: 5px;
-		}
-
-		.fxmaster-groups-list__collapse:hover,
-		.fxmaster-list__collapse:hover {
-			text-shadow: 0 0 4px var(--color-shadow-primary, #ff0000);
-		}
-
-		.fxmaster-groups-list__collapsible,
-		.fxmaster-list__collapsible {
-			overflow: hidden;
-			padding: 0;
-			margin: 0;
-		}
-
-		.fxmaster-groups-list__collapsible--collapsed,
-		.fxmaster-list__collapsible--collapsed {
-			display: none;
-		}
-
-		.fxmaster-list__icon {
-			border: none;
-			flex: 0 0 18px;
-			text-align: center;
-			line-height: var(--line-height-20, 20px);
-			font-size: var(--font-size-16, 16px);
-		}
-
 		.effects-container {
 			height: 100%;
 			width: 100%;
@@ -159,120 +93,33 @@
 			margin-right: 5px;
 		}
 
-		.btn_end {
-			min-width: 1.5rem;
-		}
-
 		.effect > div {
 			flex: 1;
 			line-height: 1.25rem;
-		}
-
-		.hover-highlight:hover > .hover-text {
-			color: #000;
-			text-shadow: 0 0 10px red;
-		}
-
-		.column {
-			display: inline-flex;
-			flex-direction: column;
-		}
-
-		.row {
-			display: inline-flex;
-			flex-direction: row;
-		}
-
-		.flex-grow {
-			flex: 1;
-		}
-
-		.flex-shrink {
-			flex: 0;
-		}
-
-		.settings {
-			display: flex;
-			flex-direction: row;
-			align-content: flex-end;
-			margin-bottom: 0.5rem;
-		}
-
-		.input-column, .label-column {
-			display: inline-flex;
-			flex-direction: column;
-		}
-
-		.input-column {
-			flex: 0 1 25%;
-			align-items: flex-end;
-		}
-
-		.input-row, .label-row {
-			display: inline-flex;
-			flex: 0 1 1.666rem;
-		}
-
-		.label-row {
-			padding-left: 0.2rem;
-			align-items: center;
-		}
-
-		.settings input {
-			max-width: 40px;
-		}
-
-		.user-select option:checked {
-			background: #1e90ff;
-			color: white;
-		}
-
-		.file-settings label, .user-settings label {
-			flex: 0 1 15%;
-			align-self: center;
-		}
-
-		.file-settings input, .user-settings select {
-			flex: 1;
-		}
-
-		.small-button {
-			flex: 0 0 24px;
-			line-height: 24px;
-			margin: -1px 0 -1px 4px;
-			order: 99;
-		}
-
-		.activate-layer {
-			margin: 0;
-		}
-
-		.w-100 {
-			width: 100%;
 		}
 
 		.mb-1 {
 			margin-bottom: 0.25rem;
 		}
 
-		.mb-2 {
-			margin-bottom: 0.5rem;
-		}
-
 		.sheet-tabs {
-			min-width: 230px;
+			min-width: 250px;
 		}
 
-		.tabs .item.active {
+		.mks-active-tab {
 			text-decoration: underline;
 			text-shadow: 0 0 10px var(--color-shadow-primary);
+		}
+
+		.mks-mr10 {
+			margin-right: 10px;
 		}
 
 	</style>
 
 	<nav class="sheet-tabs tabs mb-1" data-group="actions-panel">
-		<a class="item active" data-tab="encounter"><i class="fas fa-fist-raised"></i> {{ localize "PF2E.TabActionsEncounterLabel" }}</a>
-		<a class="item" data-tab="exploration"><i class="fas fa-campground"></i> {{ localize "PF2E.TabActionsExplorationLabel" }}</a>
+		<a class="item active mks-active-tab mks-mr10" data-tab="encounter"><i class="fas fa-fist-raised"></i> {{ localize "PF2E.TabActionsEncounterLabel" }}</a>
+		<a class="item mks-mr10" data-tab="exploration"><i class="fas fa-campground"></i> {{ localize "PF2E.TabActionsExplorationLabel" }}</a>
 		<a class="item" data-tab="downtime"><i class="fas fa-bath"></i> {{ localize "PF2E.TabActionsDowntimeLabel" }}</a>
 	</nav>
 
@@ -283,13 +130,13 @@
 			<div class="form-group">
 				<label><span>{{localize "PF2E.MKS.ActionsPanel.ShowApplicable"}}</span></label>
 				<div class="form-fields">
-					<input type="checkbox" name="{{localize "PF2E.MKS.ActionsPanel.ShowApplicable"}}" id="showApplicable" {{bindAttr checked="showApplicable"}} />
+					<input type="checkbox" class="mks-checkbox" name="{{localize "PF2E.MKS.ActionsPanel.ShowApplicable"}}" id="showApplicable" {{#if showApplicable}}checked{{/if}} />
 				</div>
 			</div>
 			<div class="form-group">
 				<label><span>{{localize "PF2E.MKS.ActionsPanel.InCombatTurn"}}</span></label>
 				<div class="form-fields">
-					<input type="checkbox" name="{{localize "PF2E.MKS.ActionsPanel.InCombatTurn"}}" id="inCombatTurn" {{bindAttr checked="inCombatTurn"}} />
+					<input type="checkbox" class="mks-checkbox" name="{{localize "PF2E.MKS.ActionsPanel.InCombatTurn"}}" id="inCombatTurn" {{#if inCombatTurn}}checked{{/if}} />
 				</div>
 			</div>
 			<ol class="mks-list">
@@ -300,14 +147,14 @@
 								<i class="mks-list__collapse-icon fa fa-angle-{{#if tag.expanded}}down{{else}}up{{/if}}"></i>
 							</label>
 						</header>
-						<ol	class="mks-list__collapsible{{#unless group.expanded}} mks-list__collapsible--collapsed{{/unless}} mks-list">
+						<ol	class="mks-list__collapsible{{#unless tag.expanded}} mks-list__collapsible--collapsed{{/unless}} mks-list" id="{{tag.tag}}">
 							{{#each tag.methods as |method|}}
 								<li class="mks-list__item mks-noborder">
 									<header class="flexrow">
 										{{#if method.icon}}
 											<img class="mks-list__icon" width="24" height="24" src="{{method.icon}}">
 										{{/if}}
-										<a data-action="seek" class="mks-list__link">{{method.label}} <i class="fas fa-caret-right"></i></a>
+										<a data-action="{{method.action}}" data-method="{{method.method}}" class="mks-list__link">{{method.label}} <i class="fas fa-caret-right"></i></a>
 									</header>
 								</li>
 							{{/each}}

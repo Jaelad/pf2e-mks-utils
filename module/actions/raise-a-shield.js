@@ -19,9 +19,9 @@ export default class ActionRaiseAShield extends Action {
 		}
 	}
 
-	methods() {
+	methods(onlyApplicable) {
 		const {applicable} = this.isApplicable()
-		return applicable ? [{
+		return !onlyApplicable || applicable ? [{
 			method: "raiseAShield",
 			label: i18n.action("raiseAShield"),
 			icon: "systems/pf2e/icons/actions/raise-a-shield.webp",

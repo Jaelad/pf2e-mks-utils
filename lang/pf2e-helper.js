@@ -55,4 +55,8 @@ export default class PF2EI18N {
 	static actionTag(tag) {
 		return PF2EI18N.$(`PF2E.ActionTag.${tag}`)
 	}
+
+	static modifier(mod) {
+		return PF2EI18N.$(`PF2E.MKS.Modifier.${mod}`)
+	}
 }

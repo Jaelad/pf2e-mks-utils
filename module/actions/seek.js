@@ -119,15 +119,15 @@ export default class ActionSeek extends Action {
 		}).render(true)
 	}
 
-	methods() {
+	methods(onlyApplicable) {
 		const {applicable} = this.isApplicable()
-		return applicable ? [{
+		return !onlyApplicable || applicable ? [{
 			method: "seek",
 			label: i18n.action("seek"),
 			icon: "systems/pf2e/icons/features/classes/alertness.webp",
 			action: 'A',
 			mode: "encounter",
-			tags: ['perception', 'situational']
+			tags: ['situational']
 		}] : []
 	}
 

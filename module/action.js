@@ -8,7 +8,7 @@ export default class Action {
 
 	}
 
-	methods() {
+	methods(onlyApplicable) {
 		return []
 	}
 

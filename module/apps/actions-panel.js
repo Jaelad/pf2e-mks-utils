@@ -1,4 +1,5 @@
 import {default as i18n} from "../../lang/pf2e-helper.js"
+import LocalStorage from "../../utils/local-storage.js";
 
 export default class ActionsPanel extends FormApplication {
 
@@ -54,6 +55,18 @@ export default class ActionsPanel extends FormApplication {
         return activeApp.setTab(tab)
     }
 
+    static rerender() {
+        let activeApp;
+        for (let app of Object.values(ui.windows)) {
+            if (app instanceof this) {
+                activeApp = app
+                break;
+            }
+        }
+        if (activeApp)
+            activeApp.render()
+    }
+
     setTab(tab){
         this._tabs[0].active = tab
         return this;
@@ -83,10 +96,24 @@ export default class ActionsPanel extends FormApplication {
         )
 
         html.find(".mks-checkbox").click((event) => this._toggleChecked(event))
+        html.find("a[data-action][data-method]").click((event) => this._runActionMethod(event))
+    }
+
+    _runActionMethod(event) {
+        const dataset = event?.target?.dataset
+        if (dataset?.action && dataset?.method)
+            game.MKS.actions[dataset.action][dataset.method]()
     }
 
     _toggleChecked(event) {
-        console.log(event)
+        if (event.target.id === 'inCombatTurn')
+            LocalStorage.save("inCombatTurn", event.target.checked)
+        else {
+            const settings = LocalStorage.load("actions.panel.settings") ?? {expanded: {}}
+            settings[event.target.id] = event.target.checked
+            LocalStorage.save("actions.panel.settings", settings)
+        }
+        ActionsPanel.rerender()
     }
 
     _onClickCollapse(event, parentClass, collapsibleClass, iconClass) {
@@ -101,30 +128,37 @@ export default class ActionsPanel extends FormApplication {
 
         if (shouldCollapse) {
             collapsible.slideUp(speed, () => {
-                collapsible.addClass(collapsedClass);
-                icon?.removeClass("fa-angle-down").addClass("fa-angle-up");
+                collapsible.addClass(collapsedClass)
+                icon?.removeClass("fa-angle-down").addClass("fa-angle-up")
             })
         }
         else {
             collapsible.slideDown(speed, () => {
-                collapsible.removeClass(collapsedClass);
-                icon?.removeClass("fa-angle-up").addClass("fa-angle-down");
+                collapsible.removeClass(collapsedClass)
+                icon?.removeClass("fa-angle-up").addClass("fa-angle-down")
             })
         }
+
+        const settings = LocalStorage.load("actions.panel.settings") ?? {expanded: {}}
+        settings.expanded[collapsible[0].id] = !shouldCollapse
+        LocalStorage.save("actions.panel.settings", settings)
     }
 
     /** @override */
     getData() {
         let data = super.getData()
         data.userIsGM = game.user.isGM
+        const localSettings = LocalStorage.load("actions.panel.settings")
+        data.showApplicable = localSettings?.showApplicable ?? true
+        data.inCombatTurn = LocalStorage.load("inCombatTurn") ?? true
 
         const allTags = {}
         for (let action in game.MKS.actions) {
-            const methods = game.MKS.actions[action].methods()
+            const methods = game.MKS.actions[action].methods(data.showApplicable)
             methods.forEach( (m) => {
                 (m.tags ?? []).forEach(tag => {
                     if (!allTags[tag])
-                        allTags[tag] = {expanded: false, label: i18n.actionTag(tag), methods: []}
+                        allTags[tag] = {expanded: localSettings?.expanded?.[tag] ?? false, label: i18n.actionTag(tag), methods: []}
                     allTags[tag].methods.push(m)
                 })
                 m.action = action
@@ -138,37 +172,7 @@ export default class ActionsPanel extends FormApplication {
             allTagsArr.push(allTags[tag])
         }
         allTagsArr.sort(sort)
-
         data.actions = allTagsArr
-        data.showApplicable = true
-        data.inCombatTurn = false
-
-        data.weatherEffectGroups= {
-            animals: {
-                effects: {
-                    bats: {
-                        icon: "systems/pf2e/icons/spells/dread-aura.webp",
-                        label: "Bats"
-                    },
-                    birds: {
-                        icon: "systems/pf2e/icons/spells/dread-aura.webp",
-                        label: "Birds"
-                    },
-                },
-                expanded: true,
-                label: "Animals"
-            },
-            other: {
-                effects: {
-                    bubbles: {
-                        icon: "systems/pf2e/icons/spells/dread-aura.webp",
-                        label: "Bubbles"
-                    }
-                },
-                expanded: false,
-                label: "Other"
-            }
-        }
 
         console.log(data)
         return data

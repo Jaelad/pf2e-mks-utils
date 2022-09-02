@@ -9,6 +9,7 @@ export default class ActionAid extends Action {
 	readyAid() {
 		const willAid = this._.ensureOneSelected()
 		const willBeAided = this._.ensureOneTarget()
+		if (!willAid || !willBeAided) return
 
 		const checkTypes = Check.getCheckTypes(willAid.actor).filter(ct => ct.indexOf("-lore") === -1)
 
@@ -85,7 +86,8 @@ export default class ActionAid extends Action {
 	async receiveAid() {
 		this.isApplicable(true, 'receiveAid')
 		const token = this._.ensureOneSelected()
-		const effect = this.effectManager.getEffect(token.actor, Compendium.EFFECT_AID_READY)
+		if (!token) return
+		const effect = this.effectManager.getEffect(token, Compendium.EFFECT_AID_READY)
 		if (!effect)
 			return
 
@@ -171,9 +173,9 @@ export default class ActionAid extends Action {
 		}
 	}
 
-	methods() {
+	methods(onlyApplicable) {
 		const methods = []
-		if (this.isApplicable('receiveAid')) {
+		if (!onlyApplicable || this.isApplicable('receiveAid')) {
 			methods.push({
 				method: "receiveAid",
 				label: i18n.action("receiveAid"),
@@ -183,7 +185,7 @@ export default class ActionAid extends Action {
 				tags: ['basic']
 			})
 		}
-		if (this.isApplicable( 'readyAid')) {
+		if (!onlyApplicable || this.isApplicable( 'readyAid')) {
 			methods.push({
 				method: "readyAid",
 				label: i18n.action("aid"),
@@ -202,7 +204,7 @@ export default class ActionAid extends Action {
 		const aidReadied = !!selected ? this.effectManager.hasEffect(selected, Compendium.EFFECT_AID_READY) : false
 
 		const methods = []
-		if (method === 'readyAid' && selected && targeted) {
+		if (method === 'readyAid' && selected && targeted && selected.actor.alliance === targeted.actor.alliance) {
 			return {applicable: !!selected && !!targeted, selected: selected, targeted: targeted}
 		}
 		else if (method === 'receiveAid' && selected && aidReadied) {
