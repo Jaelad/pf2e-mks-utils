@@ -1,15 +1,17 @@
+import {default as i18n} from "../lang/pf2e-helper.js"
 import EffectManager from "./effect-manager.js"
+import EncounterManager from "./encounter-manager.js"
+import TemplateManager from "./measurement/template-manager.js"
+import InventoryManager from "./inventory-manager.js"
+import SettingsManager from "./settings-manager.js";
+import SocketListener from "./socket-handler.js"
 import ActionAid from "./actions/aid.js"
 import ActionGrapple from "./actions/grapple.js"
 import ActionSeek from "./actions/seek.js"
-import EncounterManager from "./encounter-manager.js"
-import TemplateManager from "./measurement/template-manager.js"
-import {default as i18n} from "../lang/pf2e-helper.js"
-import SocketListener from "./socket-handler.js"
-import InventoryManager from "./inventory-manager.js"
 import ActionRaiseAShield from "./actions/raise-a-shield.js"
 import ActionDisarm from "./actions/disarm.js"
-import LocalStorage from "../utils/local-storage.js";
+import ActionShove from "./actions/shove.js";
+import ActionTrip from "./actions/trip.js";
 
 export default class MksTools {
 	constructor() {
@@ -17,6 +19,7 @@ export default class MksTools {
 		this.effectManager = new EffectManager(this)
 		this.encounterManager = new EncounterManager(this)
 		this.templateManager = new TemplateManager(this)
+		this.settingsManager = new SettingsManager(this)
 
 		this.socketListener = new SocketListener(this)
 
@@ -26,6 +29,8 @@ export default class MksTools {
 			seek: new ActionSeek(this),
 			raiseAShield: new ActionRaiseAShield(this),
 			disarm: new ActionDisarm(this),
+			shove: new ActionShove(this),
+			trip: new ActionTrip(this),
 		}
 
 		Object.values(this.actions).forEach(a => a.initialize())
@@ -36,7 +41,8 @@ export default class MksTools {
 	}
 
 	ensureOneSelected(warn = true) {
-		const inCombatTurn = LocalStorage.load("inCombatTurn")
+		// const inCombatTurn = LocalStorage.load("inCombatTurn")
+		const inCombatTurn = this.settingsManager.get("selectCombatantFirst")
 		let token
 		if (inCombatTurn && game.combat?.combatant)
 			token = game.combat?.combatant?.token?.object
@@ -128,5 +134,22 @@ export default class MksTools {
 
 		const reach =weapon ? ["character", "npc", "familiar"].includes(self.type) ? self.getReach({action: "attack", weapon}) ?? null : null : null
 		return token1.distanceTo(token2, {reach})
+	}
+
+	compendiumToChat(tokenOrActor, source, rollMode = 'publicroll') {
+		fromUuid(source).then((s => {
+			this.sheetToChat(tokenOrActor, s.sheet, rollMode)
+		}))
+	}
+
+	sheetToChat(tokenOrActor, sheet, rollMode = 'publicroll') {
+		let actor = tokenOrActor?.actor ?? tokenOrActor
+		if (sheet?.document?.actor)
+			sheet.document.toChat().then()
+		else {
+			actor = actor ?? new Actor({ name: game.user.name, type: "character" })
+			new sheet.document.constructor(sheet.document.toJSON(), { parent: actor }).toMessage(null, {rollMode, create: true}).then()
+			//new sheet.document.constructor(sheet.document.toJSON(), { parent: actor }).toChat().then()
+		}
 	}
 }

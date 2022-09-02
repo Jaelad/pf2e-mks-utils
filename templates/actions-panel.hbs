@@ -3,7 +3,8 @@
 	<style>
 
 		.mks-list {
-			overflow-y: auto;
+			overflow-y: hidden;
+			overflow-x: hidden;
 			padding: 0;
 			margin: 0;
 		}
@@ -56,19 +57,10 @@
 			text-indent: 5px;
 		}
 
-		.effects-container {
+		.panel-container {
 			height: 100%;
 			width: 100%;
 			display: flex;
-		}
-
-		.howto-container {
-			max-width: 300px;
-		}
-
-		.howto-container li {
-			list-style: none;
-			margin-bottom: 0.5rem;
 		}
 
 		.effects {
@@ -108,7 +100,7 @@
 
 		.mks-active-tab {
 			text-decoration: underline;
-			text-shadow: 0 0 10px var(--color-shadow-primary);
+			/*text-shadow: 0 0 10px var(--color-shadow-primary);*/
 		}
 
 		.mks-mr10 {
@@ -126,7 +118,7 @@
 	<hr>
 
 	<section id="actions-panel-tabs" class="content">
-		<div class="tab effects-container" data-tab="encounter" data-group="actions-panel">
+		<div class="tab panel-container" data-tab="encounter" data-group="actions-panel">
 			<div class="form-group">
 				<label><span>{{localize "PF2E.MKS.ActionsPanel.ShowApplicable"}}</span></label>
 				<div class="form-fields">
@@ -162,13 +154,6 @@
 					</li>
 				{{/each}}
 			</ol>
-<!--			<footer class="mks-footer">-->
-<!--				<hr/>-->
-<!--				<label for="showApplicable">{{localize "PF2E.MKS.ActionsPanel.ShowApplicable"}}</label>-->
-<!--				<input class="mks-checkbox" type="checkbox" name="{{localize "PF2E.MKS.ActionsPanel.ShowApplicable"}}" id="showApplicable" {{bindAttr checked="showApplicable"}} />-->
-<!--				<label for="inCombatTurn">{{localize "PF2E.MKS.ActionsPanel.InCombatTurn"}}</label>-->
-<!--				<input class="mks-checkbox" type="checkbox" name="{{localize "PF2E.MKS.ActionsPanel.InCombatTurn"}}" id="inCombatTurn" {{bindAttr checked="inCombatTurn"}} />-->
-<!--			</footer>-->
 		</div>
 		<div class="tab effects-container" data-tab="exploration" data-group="actions-panel">
 			Exploration

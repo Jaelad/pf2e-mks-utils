@@ -51,4 +51,15 @@ Hooks.on("controlToken", (user, token) => {
 	setTimeout(() => ActionsPanel.rerender(), 300)
 })
 
+Hooks.on('getItemSheetPF2eHeaderButtons', (sheet, buttons) => {
+	buttons.unshift({
+		label: "To Chat",
+		class: "to-chat",
+		icon: "fas fa-comment-alt",
+		onclick: async () => {
+			game.MKS.sheetToChat(null, sheet)
+		},
+	});
+})
+
 //Hooks.on("getSceneControlButtons", getSceneControlButtons)

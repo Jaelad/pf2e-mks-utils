@@ -17,7 +17,7 @@ export default class EffectManager {
 		if (any)
 			return !!actor.itemTypes.effect.find(c => sourceIds.includes(c.sourceId))
 		else {
-			const filtered = actor.itemTypes.condition.filter(c => sourceIds.includes(c.sourceId))
+			const filtered = actor.itemTypes.effect.filter(c => sourceIds.includes(c.sourceId))
 			return filtered.length === sourceIds.length
 		}
 	}

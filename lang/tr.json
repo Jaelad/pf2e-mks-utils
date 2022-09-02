@@ -1,5 +1,8 @@
 {
 	"PF2E.Actions.Grapple.Title": "Cebelleş",
+	"PF2E.Actions.Disarm.Title": "Elinden Düşür",
+	"PF2E.Actions.Shove.Title": "İtekle",
+	"PF2E.Actions.Trip.Title": "Çelme At",
 	"PF2E.Actions.Seek.Title": "Ara/Tara",
 	"PF2E.Actions.Aid.Title": "Yardım Et",
 	"PF2E.Actions.ReceiveAid.Title": "Yardım Al",
@@ -48,7 +51,7 @@
   	"PF2E.ActionTag.basic": "Basit",
 
 	"PF2E.MKS.ActionsPanel.ShowApplicable": "Sadece Uygunlar",
-	"PF2E.MKS.ActionsPanel.InCombatTurn": "Sırasında",
+	"PF2E.MKS.ActionsPanel.InCombatTurn": "Savaşta Sıradaki",
 	"pf2e.mks.ui.actionspanel.label": "Aksiyonlar",
 	"pf2e.mks.ui.actions.cancel": "İptal",
 	"pf2e.mks.ui.actions.ok": "Tamam",

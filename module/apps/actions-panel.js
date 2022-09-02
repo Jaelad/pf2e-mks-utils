@@ -1,5 +1,6 @@
 import {default as i18n} from "../../lang/pf2e-helper.js"
 import LocalStorage from "../../utils/local-storage.js";
+import {SYSTEM} from "../constants.js";
 
 export default class ActionsPanel extends FormApplication {
 
@@ -107,7 +108,7 @@ export default class ActionsPanel extends FormApplication {
 
     _toggleChecked(event) {
         if (event.target.id === 'inCombatTurn')
-            LocalStorage.save("inCombatTurn", event.target.checked)
+            game.settings.set(SYSTEM.moduleId, "selectCombatantFirst", event.target.checked).then()
         else {
             const settings = LocalStorage.load("actions.panel.settings") ?? {expanded: {}}
             settings[event.target.id] = event.target.checked
@@ -150,7 +151,7 @@ export default class ActionsPanel extends FormApplication {
         data.userIsGM = game.user.isGM
         const localSettings = LocalStorage.load("actions.panel.settings")
         data.showApplicable = localSettings?.showApplicable ?? true
-        data.inCombatTurn = LocalStorage.load("inCombatTurn") ?? true
+        data.inCombatTurn = game.settings.get(SYSTEM.moduleId, "selectCombatantFirst")
 
         const allTags = {}
         for (let action in game.MKS.actions) {

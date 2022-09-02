@@ -39,6 +39,13 @@ export const SKILLS = {
 	thievery: "thi"
 }
 
+export const ROLL_MODE = {
+	PUBLIC: 'publicroll',
+	GM: 'gmroll',
+	BLIND: 'blindroll',
+	SELF: 'selfroll'
+}
+
 export const SKILL_LONG_FORMS = Object.keys(SKILLS)
 export const SAVE_TYPES = ["fortitude", "reflex", "will"]
 export const DC_SLUGS = new Set(["ac", "perception", ...SAVE_TYPES, ...SKILL_LONG_FORMS])

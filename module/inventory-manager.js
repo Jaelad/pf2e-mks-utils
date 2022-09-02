@@ -35,4 +35,23 @@ export default class InventoryManager {
 		return Math.max(0, handsFree - (grabbing ? 1 : 0))
 	}
 
+	wieldsWeaponWithTraits(tokenOrActor, traits, all = true) {
+		const actor = tokenOrActor?.actor ?? tokenOrActor
+		return actor.itemTypes.weapon.find((w => {
+			const wTraits = w.data.data.traits.value
+			if (all) {
+				for (let i = 0; i < traits.length; i++) {
+					if (!wTraits.includes(traits[i]))
+						return false
+				}
+			}
+			else {
+				for (let i = 0; i < traits.length; i++) {
+					if (wTraits.includes(traits[i]))
+						return true
+				}
+			}
+		}))
+	}
+
 }
