@@ -26,7 +26,7 @@ export default class EncounterManager {
 
 	async onCreateEffect(effect, options, userId) {
 		if (effect.sourceId === Compendium.EFFECT_AID_READY && game.user.isGM) {
-			this._.actions.aid.setDC(effect)
+			this._.actions.aid.setAidDC(effect)
 		}
 	}
 

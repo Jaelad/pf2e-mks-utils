@@ -23,7 +23,7 @@ export default class ActionsPanel extends FormApplication {
             template: `modules/pf2e-tools-mks/templates/actions-panel.hbs`,
             classes: ["dialog"],
             width: "auto",
-            height: 720,
+            height: 640,
             top: 150,
             left: 150,
             resizable: false,
@@ -175,7 +175,6 @@ export default class ActionsPanel extends FormApplication {
         allTagsArr.sort(sort)
         data.actions = allTagsArr
 
-        console.log(data)
         return data
     }
 }

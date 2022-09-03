@@ -4,6 +4,7 @@
 	"PF2E.Actions.Shove.Title": "İtekle",
 	"PF2E.Actions.Trip.Title": "Çelme At",
 	"PF2E.Actions.Seek.Title": "Ara/Tara",
+	"PF2E.Actions.Escape.Title": "Kurtul",
 	"PF2E.Actions.Aid.Title": "Yardım Et",
 	"PF2E.Actions.ReceiveAid.Title": "Yardım Al",
 	"PF2E.Actions.RaiseAShield.Title": "Kalkan Kaldır",
@@ -50,8 +51,11 @@
   	"PF2E.ActionTag.hostile": "Düşmanca",
   	"PF2E.ActionTag.basic": "Basit",
 
-	"PF2E.MKS.ActionsPanel.ShowApplicable": "Sadece Uygunlar",
-	"PF2E.MKS.ActionsPanel.InCombatTurn": "Savaşta Sıradaki",
+	"PF2E.MKS.ActionsPanel.ShowApplicable": "Uygun Olanlar",
+	"PF2E.MKS.ActionsPanel.InCombatTurn":   "Savaşta Sıradaki",
+
+  	"pf2e.mks.dialog.selectone.title": "Seçiniz",
+  	"pf2e.mks.dialog.selectone.yes": "Tamam",
 	"pf2e.mks.ui.actionspanel.label": "Aksiyonlar",
 	"pf2e.mks.ui.actions.cancel": "İptal",
 	"pf2e.mks.ui.actions.ok": "Tamam",
@@ -77,5 +81,7 @@
 	"pf2e.mks.dialog.seek.type.object": "Etrafında bir objeyi, vb.",
   	"pf2e.mks.dialog.disarm.title": "Elinden Düşür",
   	"pf2e.mks.dialog.disarm.select": "Silah/Item Seçiniz",
+  	"pf2e.mks.dialog.escape.selectcondition": "Kaçmak istediğiniz hali seçiniz",
+  	"pf2e.mks.dialog.escape.selectskill": "Nasıl kaçacaksınız ?",
 	"pf2e.mks.dc": "DC"
 }

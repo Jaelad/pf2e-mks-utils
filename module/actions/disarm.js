@@ -91,7 +91,7 @@ export default class ActionDisarm extends Action {
 		return !onlyApplicable || applicable ? [{
 			method: "disarm",
 			label: i18n.action("disarm"),
-			icon: "systems/pf2e/icons/spells/delay-consequence.webp",
+			icon: "systems/pf2e/icons/spells/hand-of-the-apprentice.webp",
 			action: 'A',
 			mode: "encounter",
 			tags: ['combat']

@@ -50,15 +50,7 @@ export default class ActionAid extends Action {
 		}).render(true)
 	}
 
-	setDC(effect) {
-		const dialogContent = `
-		<form>
-		<div class="form-group">
-			<label>${i18n.$("pf2e.mks.dc")}</label>
-			<input type="number" name="dc" value="20">
-		</div>
-		</form>
-		`
+	setAidDC(effect) {
 		const doSetDC = (dc) => {
 			for (let tokenId in effect.data.flags.mks?.aid) {
 				if (!effect.data.flags.mks.aid[tokenId].dc) {
@@ -69,18 +61,7 @@ export default class ActionAid extends Action {
 			this.effectManager.setEffect(effect.actor, effect.sourceId,{flags:{"mks.aid": effect.data.flags.mks.aid}}).then()
 		}
 
-		new Dialog({
-			title: i18n.$("pf2e.mks.dialog.setdc.title"),
-			content: dialogContent,
-			buttons: {
-				yes: {
-					icon: '<i class="fas fa-hands-helping"></i>',
-					label: i18n.$("pf2e.mks.ui.actions.ok"),
-					callback: ($html) => {doSetDC(parseInt($html[0].querySelector('[name="dc"]').value, 10) ?? 20)}
-				}
-			},
-			close: ($html) => {doSetDC(20)}
-		}).render(true);
+		this.setDC(doSetDC, 20)
 	}
 
 	async receiveAid() {

@@ -49,7 +49,6 @@ export default class TemplateManager {
 		const positions = canvas.grid.highlightLayers["Template." + template.id]?.positions
 		if (!positions) {
 			LOG.warn(`Cannot locate highlight positions for template ${template.id}!`)
-			console.log(canvas.grid.highlightLayers)
 			return
 		}
 

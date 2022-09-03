@@ -1,5 +1,6 @@
 import MksTools from "./mks-tools.js"
-import ActionsPanel from "./apps/actions-panel.js";
+import ActionsPanel from "./apps/actions-panel.js"
+import Action from "./action.js"
 
 Hooks.on("init", () => {
 	const MKS = new MksTools()
@@ -24,6 +25,10 @@ Hooks.on("init", () => {
 	Hooks.on("pf2e.endTurn", (combatant) => {
 		MKS.encounterManager.onEndTurn(combatant).then()
 	})
+})
+
+Hooks.on("ready", () => {
+	MksTools.registerSocketListeners()
 })
 
 Hooks.on("getSceneControlButtons", (controls) => {

@@ -1,7 +1,6 @@
 export default class GhostTemplate extends MeasuredTemplate {
 	constructor() {
 		super(...arguments)
-		console.log(arguments)
 		this.onTemplateCreated = null
 		this.moveTime = 0
 

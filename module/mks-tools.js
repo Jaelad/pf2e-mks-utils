@@ -4,7 +4,7 @@ import EncounterManager from "./encounter-manager.js"
 import TemplateManager from "./measurement/template-manager.js"
 import InventoryManager from "./inventory-manager.js"
 import SettingsManager from "./settings-manager.js";
-import SocketListener from "./socket-handler.js"
+import SocketHandler from "./socket-handler.js"
 import ActionAid from "./actions/aid.js"
 import ActionGrapple from "./actions/grapple.js"
 import ActionSeek from "./actions/seek.js"
@@ -12,8 +12,18 @@ import ActionRaiseAShield from "./actions/raise-a-shield.js"
 import ActionDisarm from "./actions/disarm.js"
 import ActionShove from "./actions/shove.js";
 import ActionTrip from "./actions/trip.js";
+import ActionEscape from "./actions/escape.js";
 
 export default class MksTools {
+
+	static registerSocketListeners() {
+		game.MKS.socketHandler.on('SetDC', ({action, defaultDC, title}) => {
+			game.MKS.actions[action].setDC((dc) => {
+				game.MKS.socketHandler.emit('SetDCResponse', {action, dc})
+			}, defaultDC, title)
+		}, true)
+	}
+
 	constructor() {
 		this.inventoryManager = new InventoryManager(this)
 		this.effectManager = new EffectManager(this)
@@ -21,7 +31,7 @@ export default class MksTools {
 		this.templateManager = new TemplateManager(this)
 		this.settingsManager = new SettingsManager(this)
 
-		this.socketListener = new SocketListener(this)
+		this.socketHandler = new SocketHandler(this)
 
 		this.actions = {
 			aid: new ActionAid(this),
@@ -31,6 +41,7 @@ export default class MksTools {
 			disarm: new ActionDisarm(this),
 			shove: new ActionShove(this),
 			trip: new ActionTrip(this),
+			escape: new ActionEscape(this),
 		}
 
 		Object.values(this.actions).forEach(a => a.initialize())

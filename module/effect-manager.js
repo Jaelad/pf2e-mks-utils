@@ -67,6 +67,11 @@ export default class EffectManager {
 		return actor.itemTypes.condition.find(c => c.slug === conditionSlug)
 	}
 
+	getConditions(tokenOrActor, conditionSlugs = []) {
+		const actor = tokenOrActor?.actor ?? tokenOrActor
+		return actor.itemTypes.condition.filter(c => conditionSlugs.includes(c.slug))
+	}
+
 	hasCondition(tokenOrActor, conditionSlugs, any = true) {
 		conditionSlugs = Array.isArray(conditionSlugs) ? conditionSlugs : [conditionSlugs]
 		const actor = tokenOrActor?.actor ?? tokenOrActor

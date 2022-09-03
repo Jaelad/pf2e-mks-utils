@@ -6,7 +6,7 @@ import Check from "../check.js"
 export default class ActionSeek extends Action {
 
 	initialize() {
-		this._.socketListener.on('SeekRequest', ({seekerId, targetIds, userId}) => {
+		this._.socketHandler.on('SeekRequest', ({seekerId, targetIds, userId}) => {
 			const seeker = this._.getTokenById(seekerId)
 			const targets = targetIds.map((tid => this._.getTokenById(tid)))
 			const user = game.users.get(userId)
@@ -81,7 +81,7 @@ export default class ActionSeek extends Action {
 					userId: game.user.id
 				}
 				LOG.info(eventData)
-				this._.socketListener.emit('SeekRequest', eventData)
+				this._.socketHandler.emit('SeekRequest', eventData, true)
 			}
 		}
 

@@ -1,6 +1,7 @@
 export default class Compendium {
 	static ACTION_SHOVE = "Compendium.pf2e.actionspf2e.7blmbDrQFNfdT731"
 	static ACTION_TRIP = "Compendium.pf2e.actionspf2e.ge56Lu1xXVFYUnLP"
+	static ACTION_ESCAPE = "Compendium.pf2e.actionspf2e.SkZAQRkLLkmBQNB9"
 
 	static EFFECT_MULTIPLE_ATTACK = "Compendium.pf2e-tools-mks.core-effects.DPVfUT43aCQMvauJ"
 	static EFFECT_AID_READY = "Compendium.pf2e-tools-mks.core-effects.p9PSILLD0f0NkBc5"
