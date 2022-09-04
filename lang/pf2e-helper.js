@@ -5,7 +5,7 @@ export default class PF2EI18N {
 	static $$ = (toTranslate, params) => game.i18n.format(toTranslate, params)
 
 	static action(action) {
-		return PF2EI18N.$(`PF2E.Actions.${$$strings.camelize(action)}.Title`)
+		return PF2EI18N.$(`PF2E.Actions.${$$strings.camelize(action).replace('-', '')}.Title`)
 	}
 
 	static condition(condition) {
@@ -25,7 +25,7 @@ export default class PF2EI18N {
 	}
 
 	static spellAttack(tradition) {
-		return game.i18n.format("PF2E.SpellAttackWithTradition", {tradition})
+		return PF2EI18N.$$("PF2E.SpellAttackWithTradition", {tradition: $$strings.camelize(tradition)})
 	}
 
 	static ability(abilityAbrv) {
@@ -58,5 +58,13 @@ export default class PF2EI18N {
 
 	static modifier(mod) {
 		return PF2EI18N.$(`PF2E.MKS.Modifier.${mod}`)
+	}
+
+	static modifierType(mt) {
+		return PF2EI18N.$(`PF2E.BonusLabel.${mt}`)
+	}
+
+	static uiAction(action) {
+		return PF2EI18N.$(`PF2E.MKS.UI.Actions.${action}`)
 	}
 }

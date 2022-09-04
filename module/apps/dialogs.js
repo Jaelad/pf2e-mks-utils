@@ -5,7 +5,49 @@ import Compendium from "../compendium.js";
 
 export default class Dialogs  {
 
-	static selectOne(elems, labelFunc, valueFunc, selectLabel, title = 'pf2e.mks.dialog.selectone.title') {
+	static addModifier(title = 'PF2E.MKS.Dialog.AddModifier.Title') {
+		const dialogContent = `
+		<form>
+		<div class="add-modifier-panel">
+            <input type="text" name="label" class="add-modifier-name" placeholder="${i18n.$('PF2E.MKS.Dialog.AddModifier.Label')}">
+            <select class="add-modifier-type" name="type">
+                <option value="untyped" selected>${i18n.modifierType('untyped')}</option>
+				<option value="circumstance">${i18n.modifierType('circumstance')}</option>
+				<option value="status">${i18n.modifierType('status')}</option>
+            </select>
+            <input type="text" name="bonus" class="add-modifier-value" placeholder="+1">
+        </div>
+		</form>
+		`
+		return new Promise((resolve) => {
+			new Dialog({
+				title: i18n.$(title),
+				content: dialogContent,
+				buttons: {
+					yes: {
+						icon: '<i class="fas fa-plus"></i>',
+						label: i18n.uiAction("add"),
+						callback: ($html) => {
+							const label = $html[0].querySelector('[name="label"]').value
+							const type = $html[0].querySelector('[name="type"]').value
+							const bonus = parseInt($html[0].querySelector('[name="bonus"]').value, 10)
+							resolve(new game.pf2e.Modifier({
+								label,
+								type,
+								modifier: bonus
+							}))
+						},
+					},
+				},
+				default: 'yes',
+				close: (e) => {
+					console.log(e)
+				}
+			}).render(true)
+		})
+	}
+
+	static selectOne(elems, labelFunc, valueFunc, selectLabel, title = 'PF2E.MKS.Dialog.SelectOne.Title') {
 		const uuid = $$strings.generateUUID()
 		let selectedItem = true
 		const dialogContent = `
@@ -27,11 +69,11 @@ export default class Dialogs  {
 				buttons: {
 					// no: {
 					// 	icon: '<i class="fas fa-times"></i>',
-					// 	label: i18n.$("pf2e.mks.ui.actions.cancel"),
+					// 	label: i18n.$("PF2E.MKS.UI.Actions.cancel"),
 					// },
 					yes: {
 						icon: '<i class="fas fa-check-circle"></i>',
-						label: i18n.$("pf2e.mks.dialog.selectone.yes"),
+						label: i18n.action('ok'),
 						callback: ($html) => {
 							const selectedValue = $html[0].querySelector('[name="' + uuid + '"]').value
 							resolve(selectedValue)

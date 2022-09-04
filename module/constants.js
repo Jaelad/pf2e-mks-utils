@@ -28,6 +28,7 @@ export const SKILLS = {
 	crafting: "cra",
 	deception: "dec",
 	diplomacy: "dip",
+	intimidation: "itm",
 	medicine: "med",
 	nature: "nat",
 	occultism: "occ",

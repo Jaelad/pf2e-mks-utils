@@ -1,6 +1,8 @@
 import {SELECTORS} from "./constants.js"
 import {default as i18n} from "../lang/pf2e-helper.js"
 import {MODIFIER_TYPE, DC_SLUGS, SKILLS, PROFICIENCY_RANK_OPTION} from "./constants.js"
+import Action from "./action.js";
+import DCHelper from "./helpers/dc-helper.js";
 
 // Lines: 42441 42347
 export default class Check {
@@ -17,6 +19,7 @@ export default class Check {
 		weaponTraitWithPenalty,
 		difficultyClass,
 		difficultyClassStatistic,
+		askGmForDC,
 		createMessage,
 		extraNotes,
 		skipDialog = false,
@@ -85,7 +88,7 @@ export default class Check {
 		return {checkSlug, statSlug, stat: statisticModifier}
 	}
 
-	roll(tokenOrActor, target) {
+	async roll(tokenOrActor, target) {
 		const actor = tokenOrActor?.actor ?? tokenOrActor
 		if (!actor)
 			throw new Error("No actor found to roll check!")
@@ -144,26 +147,29 @@ export default class Check {
 		}
 
 		Check.ensureProficiencyOption(finalOptions, stat.rank ?? -1)
-		const dc = (() => {
-			if (this.context.difficultyClass) {
-				return this.context.difficultyClass;
-			}
-			else if (["character", "npc", "familiar"].includes(target.actor.type)) {
-				const dcStat = this.context.difficultyClassStatistic?.(target.actor)
-				if (dcStat) {
-					const extraRollOptions = finalOptions.concat(targetOptions)
-					const { dc } = dcStat.withRollOptions({ extraRollOptions })
-					const dcData = {
-						value: dc.value,
-						adjustments: stat.adjustments ?? [],
-					}
-					if (DC_SLUGS.has(dcStat.slug)) dcData.slug = dcStat.slug;
 
-					return dcData;
+		let difficultyClass
+		if (this.context.difficultyClass) {
+			difficultyClass = this.context.difficultyClass;
+		}
+		else if (this.context.askGmForDC?.defaultDC) {
+			const dcObject = await DCHelper.requestGmSetDC(this.context.askGmForDC)
+			difficultyClass = dcObject?.dc
+		}
+		else if (["character", "npc", "familiar"].includes(target.actor.type)) {
+			const dcStat = this.context.difficultyClassStatistic?.(target.actor)
+			if (dcStat) {
+				const extraRollOptions = finalOptions.concat(targetOptions)
+				const { dc } = dcStat.withRollOptions({ extraRollOptions })
+				const dcData = {
+					value: dc.value,
+					adjustments: stat.adjustments ?? [],
 				}
+				if (DC_SLUGS.has(dcStat.slug)) dcData.slug = dcStat.slug;
+
+				difficultyClass = dcData
 			}
-			return null;
-		})()
+		}
 
 		const actionTraits = CONFIG.PF2E.actionTraits
 		const traitDescriptions = CONFIG.PF2E.traitsDescriptions
@@ -190,7 +196,7 @@ export default class Check {
 				token: selfToken,
 				createMessage: this.context.createMessage,
 				target: targetInfo,
-				dc,
+				dc: difficultyClass,
 				type: checkSlug,
 				options: finalOptions,
 				notes,

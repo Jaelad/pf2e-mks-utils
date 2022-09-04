@@ -41,10 +41,11 @@ export default class SocketHandler {
 		}
 	}
 
-	async waitFor(event, timeout = 5000) {
+	waitFor(event, timeout = 5000) {
 		let start = new Date().getTime(), returnedData
 		const waiter = function(data) {
 			returnedData = data
+			LOG.info(`Data waited : ${JSON.stringify(data)}`)
 		}
 		this.on(event, waiter)
 
@@ -58,7 +59,7 @@ export default class SocketHandler {
 				setTimeout(waitForResponse.bind(this, resolve, reject), 500)
 			LOG.debug('Still running : ' + timeElapsed)
 		}
-		return await new Promise(waitForResponse)
+		return new Promise(waitForResponse)
 			.finally(() => {
 				this.off(event, waiter)
 			})

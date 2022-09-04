@@ -36,7 +36,7 @@ Hooks.on("getSceneControlButtons", (controls) => {
 	const viewer = {
 		icon: "fas fa-dice",
 		name: "actionspanel",
-		title: game.i18n.localize("pf2e.mks.ui.actionspanel.label"),
+		title: game.i18n.localize("PF2E.MKS.UI.ActionsPanel.Label"),
 		button: true,
 		visible: true,
 		onClick: () => {

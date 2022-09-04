@@ -10,17 +10,24 @@ import ActionGrapple from "./actions/grapple.js"
 import ActionSeek from "./actions/seek.js"
 import ActionRaiseAShield from "./actions/raise-a-shield.js"
 import ActionDisarm from "./actions/disarm.js"
-import ActionShove from "./actions/shove.js";
-import ActionTrip from "./actions/trip.js";
-import ActionEscape from "./actions/escape.js";
+import ActionShove from "./actions/shove.js"
+import ActionTrip from "./actions/trip.js"
+import ActionEscape from "./actions/escape.js"
+import ActionSenseMotive from "./actions/sense-motive.js"
+import DCHelper from "./helpers/dc-helper.js"
+import Finders from "./helpers/finders.js";
 
 export default class MksTools {
 
 	static registerSocketListeners() {
 		game.MKS.socketHandler.on('SetDC', ({action, defaultDC, title}) => {
-			game.MKS.actions[action].setDC((dc) => {
-				game.MKS.socketHandler.emit('SetDCResponse', {action, dc})
-			}, defaultDC, title)
+			DCHelper.setDC(defaultDC, title).then((dc) => {
+				game.MKS.socketHandler.emit('SetDCResponse', dc)
+			})
+		}, true)
+		game.MKS.socketHandler.on('CompendiumToChat', ({actorId, source, rollMode}) => {
+			const actor = Finders.getActorById(actorId)
+			game.MKS.compendiumToChat(actor, source, rollMode)
 		}, true)
 	}
 
@@ -32,6 +39,7 @@ export default class MksTools {
 		this.settingsManager = new SettingsManager(this)
 
 		this.socketHandler = new SocketHandler(this)
+		this.dcHelper = DCHelper
 
 		this.actions = {
 			aid: new ActionAid(this),
@@ -42,17 +50,13 @@ export default class MksTools {
 			shove: new ActionShove(this),
 			trip: new ActionTrip(this),
 			escape: new ActionEscape(this),
+			senseMotive: new ActionSenseMotive(this),
 		}
 
 		Object.values(this.actions).forEach(a => a.initialize())
 	}
 
-	getTokenById(tokenId) {
-		return canvas.tokens.placeables.find(t => t.id === tokenId)
-	}
-
 	ensureOneSelected(warn = true) {
-		// const inCombatTurn = LocalStorage.load("inCombatTurn")
 		const inCombatTurn = this.settingsManager.get("selectCombatantFirst")
 		let token
 		if (inCombatTurn && game.combat?.combatant)
@@ -66,7 +70,7 @@ export default class MksTools {
 		if (token)
 			return token
 		else if (warn) {
-			const warning = i18n.$("pf2e.mks.warning.actor.onemustbeselected")
+			const warning = i18n.$("PF2E.MKS.Warning.Actor.OneMustBeSelected")
 			ui.notifications.warn(warning)
 		}
 	}
@@ -76,7 +80,7 @@ export default class MksTools {
 		if (tokens.length >= 1)
 			return tokens
 		else if (warn) {
-			const warning = i18n.$("pf2e.mks.warning.actor.atleastonemustbeselected")
+			const warning = i18n.$("PF2E.MKS.Warning.Actor.AtLeastOneMustBeSelected")
 			ui.notifications.warn(warning)
 		}
 	}
@@ -90,7 +94,7 @@ export default class MksTools {
 		if (tokens.size === 1)
 			return Array.from(tokens)[0]
 		else if (warn) {
-			const warning = i18n.$("pf2e.mks.warning.target.onemustbeselected")
+			const warning = i18n.$("PF2E.MKS.Warning.Target.OneMustBeSelected")
 			ui.notifications.warn(warning)
 		}
 	}
@@ -104,7 +108,7 @@ export default class MksTools {
 		if (tokens.size >= 1)
 			return Array.from(tokens)
 		else if (warn) {
-			const warning = i18n.$("pf2e.mks.warning.target.atleastonemustbeselected")
+			const warning = i18n.$("PF2E.MKS.Warning.Target.AtLeastOneMustBeSelected")
 			ui.notifications.warn(warning)
 		}
 	}
@@ -147,7 +151,13 @@ export default class MksTools {
 		return token1.distanceTo(token2, {reach})
 	}
 
-	compendiumToChat(tokenOrActor, source, rollMode = 'publicroll') {
+	compendiumToChat(tokenOrActor, source, rollMode = 'publicroll', byGM = false) {
+		if (byGM) {
+			const actor = tokenOrActor?.actor ?? tokenOrActor
+			const data = {rollMode, source, actorId: actor.id}
+			this.socketHandler.emit("CompendiumToChat", data, true)
+			return
+		}
 		fromUuid(source).then((s => {
 			this.sheetToChat(tokenOrActor, s.sheet, rollMode)
 		}))

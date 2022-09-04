@@ -5,6 +5,7 @@ import Compendium from "../compendium.js"
 import Check from "../check.js"
 import {ROLL_MODE} from "../constants.js";
 import Dialogs from "../apps/dialogs.js";
+import DCHelper from "../helpers/dc-helper.js";
 
 export default class ActionEscape extends Action {
 	static CONDITIONS = ['immobilized', 'grabbed', 'restrained']
@@ -20,7 +21,7 @@ export default class ActionEscape extends Action {
 		if (conditions.length === 1)
 			conditionSlug = conditions[0].slug
 		else
-			await Dialogs.selectOne(conditions, null, (c) => c.slug, "pf2e.mks.dialog.escape.selectcondition")
+			await Dialogs.selectOne(conditions, null, (c) => c.slug, "PF2E.MKS.Dialog.Escape.SelectCondition")
 				.then((c) => conditionSlug = c)
 
 		if (!conditionSlug)
@@ -32,28 +33,30 @@ export default class ActionEscape extends Action {
 			{name: i18n.$("PF2E.ActionsCheck.athletics"), value: 'skill[athletics]'},
 			{name: i18n.$("PF2E.ActionsCheck.acrobatics"), value: 'skill[acrobatics]'},
 		]
-		await Dialogs.selectOne(checkOptions, null, null, "pf2e.mks.dialog.escape.selectskill")
+		await Dialogs.selectOne(checkOptions, null, null, "PF2E.MKS.Dialog.Escape.SelectSkill")
 			.then((co) => checkType = co)
 
+		const rollCallback = ({roll, actor}) => {
+			if (roll?.data.degreeOfSuccess > 1)
+				this._.effectManager.removeCondition(selected, conditionSlug)
+			if (roll?.data?.degreeOfSuccess >= 0)
+				this._.compendiumToChat(selected, Compendium.ACTION_ESCAPE, ROLL_MODE.BLIND, true)
+		}
 
-		this.requestGmSetDC({action: 'escape'}, (dc) => {
-			const rollCallback = ({roll, actor}) => {
-				if (roll?.data.degreeOfSuccess > 1)
-					this._.effectManager.removeCondition(selected, conditionSlug)
-				this._.compendiumToChat(selected, Compendium.ACTION_ESCAPE, ROLL_MODE.BLIND)
+		const check = new Check({
+			actionGlyph: "A",
+			rollOptions: ["action:escape"],
+			extraOptions: ["action:escape"],
+			traits: ["attack"],
+			weaponTrait: "escape",
+			checkType,
+			askGmForDC: {
+				action: this?.constructor?.name,
+				title: i18n.action('Escape'),
+				defaultDC: 15
 			}
-
-			const check = new Check({
-				actionGlyph: "A",
-				rollOptions: ["action:escape"],
-				extraOptions: ["action:escape"],
-				traits: ["attack"],
-				weaponTrait: "escape",
-				checkType,
-				difficultyClass: dc
-			})
-			check.roll(selected).then(rollCallback)
 		})
+		check.roll(selected).then(rollCallback)
 	}
 
 	methods(onlyApplicable) {

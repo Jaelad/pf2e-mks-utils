@@ -1,8 +1,6 @@
 import {default as i18n} from "../../lang/pf2e-helper.js"
-import {default as LOG} from "../../utils/logging.js"
 import Action from "../action.js"
 import Compendium from "../compendium.js"
-import $$arrays from "../../utils/arrays.js"
 import Check from "../check.js"
 import $$strings from "../../utils/strings.js";
 
@@ -11,7 +9,7 @@ export default class ActionDisarm extends Action {
 	//Below exports.SetGamePF2e = { // Line:50709: actionHelpers: action_macros_1.ActionMacroHelpers,
 
 	disarmItem(selected, targeted, item) {
-		const rollCallback = ({roll, actor}) => {
+		const rollCallback = ({roll}) => {
 			if (roll?.data.degreeOfSuccess === 0)
 				this.effectManager.setCondition(selected, 'flat-footed', {flags: {"mks.duration": {type: 'start', turn: 0}}}).then()
 			else if (roll?.data.degreeOfSuccess === 2)
@@ -42,7 +40,7 @@ export default class ActionDisarm extends Action {
 		check.roll(selected, targeted).then(rollCallback)
 	}
 
-	disarm(options = {}) {
+	disarm() {
 		const {applicable, selected, targeted} = this.isApplicable(null,true)
 		if (!applicable)
 			return
@@ -53,7 +51,7 @@ export default class ActionDisarm extends Action {
 		const dialogContent = `
 		<form>
 		<div class="form-group">
-			<label>${i18n.$("pf2e.mks.dialog.disarm.select")}</label>
+			<label>${i18n.$("PF2E.MKS.Dialog.disarm.select")}</label>
 			<select name="item">
 				${heldItems.map((heldItem) =>
 					`<option value="${heldItem.id}" ${selectedItem ? 'selected' : ''} ${selectedItem = false}>${$$strings.escapeHtml(heldItem.name)}</option>`
@@ -69,12 +67,12 @@ export default class ActionDisarm extends Action {
 		}
 
 		new Dialog({
-			title: i18n.$("pf2e.mks.dialog.disarm.title"),
+			title: i18n.$("PF2E.MKS.Dialog.disarm.title"),
 			content: dialogContent,
 			buttons: {
 				no: {
 					icon: '<i class="fas fa-times"></i>',
-					label: i18n.$("pf2e.mks.ui.actions.cancel"),
+					label: i18n.$("PF2E.MKS.UI.Actions.cancel"),
 				},
 				yes: {
 					icon: '<i class="fas fa-hands-helping"></i>',

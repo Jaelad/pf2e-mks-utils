@@ -3,6 +3,7 @@ import Action from "../action.js"
 import Compendium from "../compendium.js"
 import Check from "../check.js"
 import $$strings from "../../utils/strings.js"
+import Finders from "../helpers/finders.js"
 
 export default class ActionAid extends Action {
 
@@ -16,7 +17,7 @@ export default class ActionAid extends Action {
 		const dialogContent = `
 		<form>
 		<div class="form-group">
-			<label>${i18n.$("pf2e.mks.dialog.aid.ready.select")}</label>
+			<label>${i18n.$("PF2E.MKS.Dialog.aid.ready.select")}</label>
 			<select name="checkType">
 				${checkTypes.map((c) =>
 					`<option value="${c}" ${
@@ -28,16 +29,16 @@ export default class ActionAid extends Action {
 		</form>
 		`
 		new Dialog({
-			title: i18n.$("pf2e.mks.dialog.aid.ready.title"),
+			title: i18n.$("PF2E.MKS.Dialog.aid.ready.title"),
 			content: dialogContent,
 			buttons: {
 				no: {
 					icon: '<i class="fas fa-times"></i>',
-					label: i18n.$("pf2e.mks.ui.actions.cancel"),
+					label: i18n.$("PF2E.MKS.UI.Actions.cancel"),
 				},
 				yes: {
 					icon: '<i class="fas fa-hands-helping"></i>',
-					label: i18n.$("pf2e.mks.dialog.aid.ready.yesaction"),
+					label: i18n.$("PF2E.MKS.Dialog.aid.ready.yesaction"),
 					callback: ($html) => {
 						const checkType = $html[0].querySelector('[name="checkType"]').value
 						const mksFlagData = {}
@@ -48,20 +49,6 @@ export default class ActionAid extends Action {
 			},
 			default: 'yes',
 		}).render(true)
-	}
-
-	setAidDC(effect) {
-		const doSetDC = (dc) => {
-			for (let tokenId in effect.data.flags.mks?.aid) {
-				if (!effect.data.flags.mks.aid[tokenId].dc) {
-					effect.data.flags.mks.aid[tokenId].dc = dc
-					break
-				}
-			}
-			this.effectManager.setEffect(effect.actor, effect.sourceId,{flags:{"mks.aid": effect.data.flags.mks.aid}}).then()
-		}
-
-		this.setDC(doSetDC, 20)
 	}
 
 	async receiveAid() {
@@ -77,18 +64,20 @@ export default class ActionAid extends Action {
 			rollOptions: ["action:aid"],
 			extraOptions: ["action:aid"],
 			checkType: null,
-			difficultyClass: null
+			askGmForDC: {
+				action: this?.constructor?.name,
+				title: i18n.action('ReceiveAid'),
+				defaultDC: 20
+			}
 		}
 
 		const aid = effect.data.flags?.mks?.aid
 		const aidTokens = Object.keys(aid)
-		const getTokenById = this._.getTokenById
 
 		if (aidTokens.length === 1) {
 			const config = aid[aidTokens[0]]
-			const helperToken = getTokenById(aidTokens[0])
+			const helperToken = Finders.getTokenById(aidTokens[0])
 			if (helperToken?.actor) {
-				checkContext.difficultyClass = config.dc
 				checkContext.checkType = config.checkType
 				const check = new Check(checkContext)
 				const {roll} = await check.roll(helperToken)
@@ -104,7 +93,7 @@ export default class ActionAid extends Action {
 				${aidTokens.map((tokenId) =>
 						`
 						<div class="form-group">
-							<label>${getTokenById(tokenId).name}</label>
+							<label>${Finders.getTokenById(tokenId).name}</label>
 							<input name="${tokenId}" type="checkbox">
 						</div>
 						`
@@ -122,9 +111,8 @@ export default class ActionAid extends Action {
 				let bonus = 0
 				for (let helperTokenId in checkedAids) {
 					const config = aid[helperTokenId]
-					const helperToken = getTokenById(helperTokenId)
+					const helperToken = Finders.getTokenById(helperTokenId)
 					if (helperToken?.actor) {
-						checkContext.difficultyClass = config.dc
 						checkContext.checkType = config.checkType
 						const check = new Check(checkContext)
 						const {roll} = await check.roll(helperToken)
@@ -141,12 +129,12 @@ export default class ActionAid extends Action {
 			}
 
 			new Dialog({
-				title: i18n.$("pf2e.mks.dialog.receiveaid.title"),
+				title: i18n.$("PF2E.MKS.Dialog.receiveaid.title"),
 				content: dialogContent,
 				buttons: {
 					yes: {
 						icon: '<i class="fas fa-hands-helping"></i>',
-						label: i18n.$("pf2e.mks.ui.actions.ok"),
+						label: i18n.$("PF2E.MKS.UI.Actions.ok"),
 						callback
 					}
 				}

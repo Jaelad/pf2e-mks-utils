@@ -2,13 +2,14 @@ import {default as i18n} from "../../lang/pf2e-helper.js"
 import {default as LOG} from "../../utils/logging.js"
 import Action from "../action.js"
 import Check from "../check.js"
+import Finders from "../helpers/finders.js"
 
 export default class ActionSeek extends Action {
 
 	initialize() {
 		this._.socketHandler.on('SeekRequest', ({seekerId, targetIds, userId}) => {
-			const seeker = this._.getTokenById(seekerId)
-			const targets = targetIds.map((tid => this._.getTokenById(tid)))
+			const seeker = Finders.getTokenById(seekerId)
+			const targets = targetIds.map((tid => Finders.getTokenById(tid)))
 			const user = game.users.get(userId)
 			this.seekTargets(seeker, targets, user)
 		})
@@ -89,16 +90,16 @@ export default class ActionSeek extends Action {
 		<form>
 		<div class="form-group">
 			<select name="seekType">
-				<option value="front_cone" selected>${i18n.$("pf2e.mks.dialog.seek.type.frontcone")}</option>
-				<option value="front_burst" >${i18n.$("pf2e.mks.dialog.seek.type.frontburst")}</option>
-				<option value="object" >${i18n.$("pf2e.mks.dialog.seek.type.object")}</option>
+				<option value="front_cone" selected>${i18n.$("PF2E.MKS.Dialog.seek.type.frontcone")}</option>
+				<option value="front_burst" >${i18n.$("PF2E.MKS.Dialog.seek.type.frontburst")}</option>
+				<option value="object" >${i18n.$("PF2E.MKS.Dialog.seek.type.object")}</option>
 			</select>
 		</div>
 		</form>
 		`
 
 		new Dialog({
-			title: i18n.$("pf2e.mks.dialog.seek.selecttype.title"),
+			title: i18n.$("PF2E.MKS.Dialog.seek.selecttype.title"),
 			content: dialogContent,
 			buttons: {
 				yes: {

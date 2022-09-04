@@ -19,7 +19,7 @@ export default class ActionsPanel extends FormApplication {
     /** @override */
     static get defaultOptions() {
         return foundry.utils.mergeObject(super.defaultOptions, {
-            title: game.i18n.localize("pf2e.mks.ui.actionspanel.label"),
+            title: game.i18n.localize("PF2E.MKS.UI.ActionsPanel.Label"),
             template: `modules/pf2e-tools-mks/templates/actions-panel.hbs`,
             classes: ["dialog"],
             width: "auto",

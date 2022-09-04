@@ -4,6 +4,7 @@ import Action from "../action.js"
 import Compendium from "../compendium.js"
 import $$arrays from "../../utils/arrays.js"
 import Check from "../check.js"
+import Finders from "../helpers/finders.js"
 
 export default class ActionGrapple extends Action {
 
@@ -19,7 +20,7 @@ export default class ActionGrapple extends Action {
 			switch(roll.data.degreeOfSuccess) {
 				case 0: {
 					new Dialog({
-						title: i18n.$("pf2e.mks.dialog.grapple.grabbedorprone.title"),
+						title: i18n.$("PF2E.MKS.Dialog.grapple.grabbedorprone.title"),
 						content: '',
 						buttons: {
 							no: {
@@ -81,7 +82,7 @@ export default class ActionGrapple extends Action {
 	onGrabbingExpired(grabbedTokenId) {
 		// TODO Maybe some other actor also grappled it
 		LOG.info("Grabbing Expired : " + grabbedTokenId)
-		const token = this._.getTokenById(grabbedTokenId)
+		const token = Finders.getTokenById(grabbedTokenId)
 		this.effectManager.removeCondition(token, 'grabbed')?.then()
 		this.effectManager.removeCondition(token, 'restrained')?.then()
 	}
