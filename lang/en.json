@@ -1,6 +1,8 @@
 {
     "PF2E.Actions.Escape.Title": "Escape",
     "PF2E.Actions.Aid.Title": "Aid",
+    "PF2E.Actions.TakeCover.Title": "Take Cover",
+    "PF2E.Actions.GiveCover.Title": "Give Cover",
     "PF2E.Actions.ReceiveAid.Title": "Receive Aid",
     "PF2E.Actions.RaiseAShield.Title": "Raise a Shield",
 
@@ -9,6 +11,7 @@
     "PF2E.ActionTag.hostile": "Hostile",
     "PF2E.ActionTag.basic": "Basic",
     "PF2E.ActionTag.social": "Social",
+    "PF2E.ActionTag.stealth": "Stealth",
     "PF2E.MKS.ActionsPanel.ShowApplicable": "Show Applicable",
     "PF2E.MKS.ActionsPanel.InCombatTurn": "In Combat Turn",
 

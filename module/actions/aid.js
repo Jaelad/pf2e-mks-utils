@@ -144,7 +144,7 @@ export default class ActionAid extends Action {
 
 	methods(onlyApplicable) {
 		const methods = []
-		if (!onlyApplicable || this.isApplicable('receiveAid')) {
+		if (!onlyApplicable || this.isApplicable('receiveAid').applicable) {
 			methods.push({
 				method: "receiveAid",
 				label: i18n.action("receiveAid"),
@@ -154,7 +154,7 @@ export default class ActionAid extends Action {
 				tags: ['basic']
 			})
 		}
-		if (!onlyApplicable || this.isApplicable( 'readyAid')) {
+		if (!onlyApplicable || this.isApplicable( 'readyAid').applicable) {
 			methods.push({
 				method: "readyAid",
 				label: i18n.action("aid"),
@@ -169,16 +169,12 @@ export default class ActionAid extends Action {
 
 	isApplicable(method, warn = false) {
 		const selected = this._.ensureOneSelected(warn)
-		const targeted = this._.ensureOneTarget(null,false)
+		const targeted = this._.ensureOneTarget(null, warn)
 		const aidReadied = !!selected ? this.effectManager.hasEffect(selected, Compendium.EFFECT_AID_READY) : false
 
-		const methods = []
-		if (method === 'readyAid' && selected && targeted && selected.actor.alliance === targeted.actor.alliance) {
-			return {applicable: !!selected && !!targeted, selected: selected, targeted: targeted}
-		}
-		else if (method === 'receiveAid' && selected && aidReadied) {
-			const aidReadied = this.effectManager.hasEffect(selected, Compendium.EFFECT_AID_READY)
-			return {applicable: !!selected && aidReadied, selected, targeted: null}
-		}
+		if (method === 'readyAid')
+			return {applicable: !!selected && !!targeted && selected.actor.alliance === targeted.actor.alliance, selected, targeted}
+		else if (method === 'receiveAid')
+			return {applicable: !!selected && aidReadied, selected}
 	}
 }

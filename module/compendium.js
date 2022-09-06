@@ -7,6 +7,7 @@ export default class Compendium {
 	static EFFECT_AID_READY = "Compendium.pf2e-tools-mks.core-effects.p9PSILLD0f0NkBc5"
 	static EFFECT_AIDED = "Compendium.pf2e-tools-mks.core-effects.lgOBZWFDOE9xIXzS"
 	static EFFECT_GRABBING = "Compendium.pf2e-tools-mks.core-effects.gAMtcNpDb57hxSrC"
+	static EFFECT_COVER = "Compendium.pf2e-tools-mks.core-effects.SSVgCBCgk98E2VpI"
 	static EFFECT_RAISE_A_SHIELD = "Compendium.pf2e.equipment-effects.2YgXoHvJfrDHucMr"
 	static EFFECT_DISARM_SUCCESS = "Compendium.pf2e.equipment-effects.z3ATL8DcRVrT0Uzt"
 

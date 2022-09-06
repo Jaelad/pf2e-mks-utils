@@ -29,10 +29,16 @@ export default class EffectManager {
 			const updates = {_id: existingEffect.id}
 			const badge = existingEffect.system?.badge
 			if (badgeMod && badge && badge.type === 'counter' && badge.value > 0) {
-				const newBadgeValue = badgeMod?.value ? value : (badgeMod?.increment ? badgeMod.increment + badge.value : null)
-				if (newBadgeValue < 1 && badgeMod?.removeIfZero) {
+				let newBadgeValue
+				if (badgeMod.value)
+					newBadgeValue = badgeMod.value
+				else if (badgeMod.increment)
+					newBadgeValue = badgeMod.increment + badge.value
+				else if (badgeMod.multiply)
+					newBadgeValue = badge.value * badgeMod.multiply
+
+				if (newBadgeValue < 1 && badgeMod.removeIfZero)
 					return await existingEffect.delete()
-				}
 				else if (newBadgeValue !== null)
 					updates["data.badge"] = {type: "counter", value: newBadgeValue}
 			}

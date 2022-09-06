@@ -14,8 +14,9 @@ import ActionShove from "./actions/shove.js"
 import ActionTrip from "./actions/trip.js"
 import ActionEscape from "./actions/escape.js"
 import ActionSenseMotive from "./actions/sense-motive.js"
+import ActionCover from "./actions/cover.js"
 import DCHelper from "./helpers/dc-helper.js"
-import Finders from "./helpers/finders.js";
+import Finders from "./helpers/finders.js"
 
 export default class MksTools {
 
@@ -51,6 +52,7 @@ export default class MksTools {
 			trip: new ActionTrip(this),
 			escape: new ActionEscape(this),
 			senseMotive: new ActionSenseMotive(this),
+			cover: new ActionCover(this),
 		}
 
 		Object.values(this.actions).forEach(a => a.initialize())
