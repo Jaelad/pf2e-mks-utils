@@ -13,10 +13,7 @@ export default class ActionSenseMotive extends Action {
 			return
 
 		const rollCallback = ({roll, actor}) => {
-			if (roll?.data.degreeOfSuccess === 0)
-				;//this.effectManager.setCondition(selected, 'prone').then()
-			else if (roll?.data.degreeOfSuccess > 1)
-				;//this._.compendiumToChat(selected, Compendium.ACTION_SHOVE, ROLL_MODE.BLIND)
+			this.resultToChat(selected,'senseMotive', roll?.data.degreeOfSuccess)
 		}
 
 		const check = new Check({

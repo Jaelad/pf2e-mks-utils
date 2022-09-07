@@ -21,6 +21,17 @@ export const MODIFIER_TYPE = {
 	UNTYPED: "untyped",
 }
 
+export const ACTION_GLYPH = {
+	A: {img: "systems/pf2e/icons/actions/OneAction.webp"},
+	D: {img: "systems/pf2e/icons/actions/TwoActions.webp"},
+	T: {img: "systems/pf2e/icons/actions/ThreeActions.webp"},
+	F: {img: "systems/pf2e/icons/actions/FreeAction.webp"},
+	R: {img: "systems/pf2e/icons/actions/Reaction.webp"},
+	'': {img: "systems/pf2e/icons/actions/Empty.webp"}
+}
+
+export const DEGREE_OF_SUCCESS_STRINGS = ["criticalFailure", "failure", "success", "criticalSuccess"]
+
 export const SKILLS = {
 	acrobatics: "acr",
 	arcana: "arc",

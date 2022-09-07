@@ -3,8 +3,10 @@ import EffectManager from "./effect-manager.js"
 import EncounterManager from "./encounter-manager.js"
 import TemplateManager from "./measurement/template-manager.js"
 import InventoryManager from "./inventory-manager.js"
-import SettingsManager from "./settings-manager.js";
+import SettingsManager from "./settings-manager.js"
 import SocketHandler from "./socket-handler.js"
+import DCHelper from "./helpers/dc-helper.js"
+import Finders from "./helpers/finders.js"
 import ActionAid from "./actions/aid.js"
 import ActionGrapple from "./actions/grapple.js"
 import ActionSeek from "./actions/seek.js"
@@ -15,8 +17,8 @@ import ActionTrip from "./actions/trip.js"
 import ActionEscape from "./actions/escape.js"
 import ActionSenseMotive from "./actions/sense-motive.js"
 import ActionCover from "./actions/cover.js"
-import DCHelper from "./helpers/dc-helper.js"
-import Finders from "./helpers/finders.js"
+import ActionProne from "./actions/prone.js"
+import {ROLL_MODE} from "./constants.js"
 
 export default class MksTools {
 
@@ -29,6 +31,10 @@ export default class MksTools {
 		game.MKS.socketHandler.on('CompendiumToChat', ({actorId, source, rollMode}) => {
 			const actor = Finders.getActorById(actorId)
 			game.MKS.compendiumToChat(actor, source, rollMode)
+		}, true)
+		game.MKS.socketHandler.on('ChatMessage', (chatData) => {
+			chatData.whisper = [game.user.id]
+			ChatMessage.create(chatData, {rollMode: ROLL_MODE.BLIND})
 		}, true)
 	}
 
@@ -53,6 +59,7 @@ export default class MksTools {
 			escape: new ActionEscape(this),
 			senseMotive: new ActionSenseMotive(this),
 			cover: new ActionCover(this),
+			prone: new ActionProne(this),
 		}
 
 		Object.values(this.actions).forEach(a => a.initialize())
@@ -158,11 +165,11 @@ export default class MksTools {
 			const actor = tokenOrActor?.actor ?? tokenOrActor
 			const data = {rollMode, source, actorId: actor.id}
 			this.socketHandler.emit("CompendiumToChat", data, true)
-			return
 		}
-		fromUuid(source).then((s => {
-			this.sheetToChat(tokenOrActor, s.sheet, rollMode)
-		}))
+		else
+			fromUuid(source).then((s => {
+				this.sheetToChat(tokenOrActor, s.sheet, rollMode)
+			}))
 	}
 
 	sheetToChat(tokenOrActor, sheet, rollMode = 'publicroll') {
@@ -174,5 +181,17 @@ export default class MksTools {
 			new sheet.document.constructor(sheet.document.toJSON(), { parent: actor }).toMessage(null, {rollMode, create: true}).then()
 			//new sheet.document.constructor(sheet.document.toJSON(), { parent: actor }).toChat().then()
 		}
+	}
+
+	remindGM(token, message, rollMode = 'publicroll') {
+		const gm = game.users.find(u=>u.isGM)
+		const chatData = {
+			user: gm,
+			author: gm,
+			content: message,
+			blind: true,
+			whisper: [gm.id]
+		}
+		ChatMessage.create(chatData, {rollMode: ROLL_MODE.BLIND})
 	}
 }

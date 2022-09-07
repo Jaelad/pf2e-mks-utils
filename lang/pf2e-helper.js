@@ -1,4 +1,5 @@
 import $$strings from "../utils/strings.js"
+import {DEGREE_OF_SUCCESS_STRINGS} from "../module/constants.js"
 
 export default class PF2EI18N {
 	static $ = (toTranslate) => game.i18n.localize(toTranslate)
@@ -66,5 +67,9 @@ export default class PF2EI18N {
 
 	static uiAction(action) {
 		return PF2EI18N.$(`PF2E.MKS.UI.Actions.${action}`)
+	}
+
+	static actionNote(action, degreeOfSuccess) {
+		return PF2EI18N.$(`PF2E.Actions.${$$strings.camelize(action)}.Notes.${DEGREE_OF_SUCCESS_STRINGS[degreeOfSuccess]}`)
 	}
 }

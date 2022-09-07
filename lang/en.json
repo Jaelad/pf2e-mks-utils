@@ -5,6 +5,7 @@
     "PF2E.Actions.GiveCover.Title": "Give Cover",
     "PF2E.Actions.ReceiveAid.Title": "Receive Aid",
     "PF2E.Actions.RaiseAShield.Title": "Raise a Shield",
+    "PF2E.Actions.Prone.Title": "Drop Prone/Stand",
 
     "PF2E.ActionTag.situational": "Situational",
     "PF2E.ActionTag.combat": "Combat",

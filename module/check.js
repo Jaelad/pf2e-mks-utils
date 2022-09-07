@@ -150,7 +150,7 @@ export default class Check {
 
 		let difficultyClass
 		if (this.context.difficultyClass) {
-			difficultyClass = this.context.difficultyClass;
+			difficultyClass = this.context.difficultyClass
 		}
 		else if (this.context.askGmForDC?.defaultDC) {
 			const dcObject = await DCHelper.requestGmSetDC(this.context.askGmForDC)
