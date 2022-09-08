@@ -1,4 +1,5 @@
 import {default as i18n} from "../lang/pf2e-helper.js"
+import {ROLL_MODE} from "./constants.js"
 import EffectManager from "./effect-manager.js"
 import EncounterManager from "./encounter-manager.js"
 import TemplateManager from "./measurement/template-manager.js"
@@ -18,7 +19,10 @@ import ActionEscape from "./actions/escape.js"
 import ActionSenseMotive from "./actions/sense-motive.js"
 import ActionCover from "./actions/cover.js"
 import ActionProne from "./actions/prone.js"
-import {ROLL_MODE} from "./constants.js"
+import ActionGrabAnEdge from "./actions/grab-an-edge.js"
+import ActionBalance from "./actions/balance.js"
+import ActionTumbleThrough from "./actions/tumble-through.js"
+
 
 export default class MksTools {
 
@@ -60,6 +64,9 @@ export default class MksTools {
 			senseMotive: new ActionSenseMotive(this),
 			cover: new ActionCover(this),
 			prone: new ActionProne(this),
+			grabAnEdge: new ActionGrabAnEdge(this),
+			balance: new ActionBalance(this),
+			tumbleThrough: new ActionTumbleThrough(this),
 		}
 
 		Object.values(this.actions).forEach(a => a.initialize())
