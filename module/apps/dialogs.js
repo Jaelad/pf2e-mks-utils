@@ -47,7 +47,7 @@ export default class Dialogs  {
 		})
 	}
 
-	static selectOne(elems, labelFunc, valueFunc, selectLabel, title = 'PF2E.MKS.Dialog.SelectOne.Title') {
+	static selectOne(elems, selectLabel, labelFunc, valueFunc, title = 'PF2E.MKS.Dialog.SelectOne.Title') {
 		const uuid = $$strings.generateUUID()
 		let selectedItem = true
 		const dialogContent = `
@@ -73,7 +73,7 @@ export default class Dialogs  {
 					// },
 					yes: {
 						icon: '<i class="fas fa-check-circle"></i>',
-						label: i18n.action('ok'),
+						label: i18n.uiAction('ok'),
 						callback: ($html) => {
 							const selectedValue = $html[0].querySelector('[name="' + uuid + '"]').value
 							resolve(selectedValue)

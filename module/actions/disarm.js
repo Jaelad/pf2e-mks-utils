@@ -107,7 +107,7 @@ export default class ActionDisarm extends Action {
 		const grabbed = this.effectManager.hasCondition(selected, 'grabbed')
 		const distance = this._.distanceTo(selected, targeted)
 		const heldItems = this._.inventoryManager.heldItems(targeted)
-		const reqMet = (handsFree > 0 || grabbed) && sizeDiff < 2 && heldItems.length > 0
+		const reqMet = (handsFree > 0 || grabbed) && sizeDiff < 2 && heldItems.length > 0 && selected.actor.alliance !== targeted.actor.alliance
 			&& distance < (this._.inventoryManager.wieldsWeaponWithTraits(selected, ['reach', 'disarm']) ? 15 : 10)
 
 		return {applicable: reqMet, selected, targeted}

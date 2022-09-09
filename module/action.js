@@ -22,6 +22,8 @@ export default class Action {
 	resultToChat(token, action, degreeOfSuccess, glyph = 'A') {
 		const actionName = i18n.action(action)
 		const noteText = i18n.actionNote(action, degreeOfSuccess)
+		if (!noteText)
+			return
 
 		const chatMessage =	`
 		<div class="pf2e chat-card action-card">

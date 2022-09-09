@@ -52,7 +52,7 @@ export default class ActionShove extends Action {
 		const handsFree = this._.inventoryManager.handsFree(selected)
 		const sizeDiff = this._.getSizeDifference(selected, targeted)
 		const distance = this._.distanceTo(selected, targeted)
-		const reqMet = handsFree > 0 && sizeDiff < 2
+		const reqMet = handsFree > 0 && sizeDiff < 2 && selected.actor.alliance !== targeted.actor.alliance
 			&& distance < (this._.inventoryManager.wieldsWeaponWithTraits(selected, ['reach', 'shove']) ? 15 : 10)
 
 		return {applicable: reqMet, selected, targeted}

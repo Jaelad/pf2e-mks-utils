@@ -3,6 +3,7 @@ import {default as LOG} from "../../utils/logging.js"
 import Action from "../action.js"
 import Check from "../check.js"
 import Finders from "../helpers/finders.js"
+import {ROLL_MODE} from "../constants.js"
 
 export default class ActionSeek extends Action {
 
@@ -47,7 +48,7 @@ export default class ActionSeek extends Action {
 			extraOptions: ["action:seek"],
 			traits: ["secret", "concentrate"],
 			checkType: "perception",
-			rollMode: "gmroll",
+			rollMode: ROLL_MODE.BLIND,
 			secret: true,
 			skipDialog: true,
 			difficultyClassStatistic: (target) => target.skills.stealth

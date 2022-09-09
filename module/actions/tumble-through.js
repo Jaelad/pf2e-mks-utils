@@ -39,7 +39,7 @@ export default class ActionTumbleThrough extends Action {
 			icon: "systems/pf2e/icons/spells/mislead.webp",
 			action: 'A',
 			mode: "encounter",
-			tags: ['basic']
+			tags: ['situational']
 		}] : []
 	}
 
@@ -49,6 +49,6 @@ export default class ActionTumbleThrough extends Action {
 		if (!selected || !targeted)
 			return {applicable: false}
 
-		return {applicable: true, selected, targeted}
+		return {applicable: !!selected && !!targeted && selected.actor.alliance !== targeted.actor.alliance, selected, targeted}
 	}
 }

@@ -70,7 +70,7 @@ export default class Check {
 		}
 		else if (match = SELECTORS.skill.exec(type)) {
 			let skill = match[1]
-			statisticModifier = actor.data.data.skills[SKILLS[skill]]
+			statisticModifier = actor.data.data.skills[SKILLS[skill] ?? skill]
 			checkSlug = 'skill-check', statSlug = skill
 		}
 
@@ -298,7 +298,7 @@ export default class Check {
 		if (actionGlyph)
 			title += `<span class="pf2-icon">${actionGlyph}</span> `
 		if (checkSlug === 'skill-check' || checkSlug === 'perception-check')
-			title += `<p class="compact-text">(${i18n.skillCheck(statSlug)})</p> `
+			title += `<p class="compact-text">(${i18n.skillCheck(statSlug) ?? token.actor.skills[statSlug].label})</p> `
 		else if (checkSlug === 'attak-roll')
 			title += `<p class="compact-text">(${i18n.$("PF2E.AttackLabel")})</p> `
 		else if (checkSlug === 'spell-attak-roll')
@@ -324,13 +324,15 @@ export default class Check {
 		return checkTypes
 	}
 
-	static checkTypeToLabel(checkType) {
+	static checkTypeToLabel(checkType, actor) {
 		if (checkType.startsWith("strike")) {
 			const weapon = checkType.substring(7, checkType.length - 1)
 			return i18n.$("PF2E.WeaponStrikeLabel") + " (" + (weapon === 'basic-unarmed' ? i18n.$("PF2E.MartialUnarmed") : i18n.weapon(weapon)) + ")"
 		}
-		else if (checkType.startsWith("skill"))
-			return i18n.skillCheck(checkType.substring(6, checkType.length - 1))
+		else if (checkType.startsWith("skill")) {
+			const skill = checkType.substring(6, checkType.length - 1)
+			return i18n.skillCheck(skill) ?? actor.skills[skill].label
+		}
 		else if (checkType === 'perception')
 			return i18n.skillCheck(checkType)
 		else if (["fortitude", "reflex", "will"].includes(checkType))

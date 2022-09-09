@@ -46,9 +46,7 @@ export default class ActionSenseMotive extends Action {
 	isApplicable(method=null, warn=false) {
 		const selected = this._.ensureOneSelected(warn)
 		const targeted = this._.ensureOneTarget(null,warn)
-		if (!selected || !targeted)
-			return {applicable: false}
 
-		return {applicable: true, selected, targeted}
+		return {applicable: !!selected && !!targeted && selected.actor.alliance !== targeted.actor.alliance, selected, targeted}
 	}
 }

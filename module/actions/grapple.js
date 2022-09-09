@@ -109,7 +109,7 @@ export default class ActionGrapple extends Action {
 		const sizeDiff = this._.getSizeDifference(grappler.actor, willBeGrabbed.actor)
 		const grabbed = this.effectManager.hasCondition(willBeGrabbed, 'grabbed')
 		const distance = this._.distanceTo(grappler, willBeGrabbed)
-		const reqMet = (handsFree > 0 || grabbed) && sizeDiff < 2
+		const reqMet = (handsFree > 0 || grabbed) && sizeDiff < 2 && grappler.actor.alliance !== willBeGrabbed.actor.alliance
 			&& distance < (this._.inventoryManager.wieldsWeaponWithTraits(grappler, ['reach', 'grapple']) ? 15 : 10)
 
 		return {applicable: reqMet, selected: grappler, targeted: willBeGrabbed}

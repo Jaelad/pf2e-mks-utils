@@ -22,6 +22,7 @@ import ActionProne from "./actions/prone.js"
 import ActionGrabAnEdge from "./actions/grab-an-edge.js"
 import ActionBalance from "./actions/balance.js"
 import ActionTumbleThrough from "./actions/tumble-through.js"
+import ActionRecallKnowledge from "./actions/recall-knowledge.js"
 
 
 export default class MksTools {
@@ -67,6 +68,7 @@ export default class MksTools {
 			grabAnEdge: new ActionGrabAnEdge(this),
 			balance: new ActionBalance(this),
 			tumbleThrough: new ActionTumbleThrough(this),
+			recallKnowledge: new ActionRecallKnowledge(this),
 		}
 
 		Object.values(this.actions).forEach(a => a.initialize())
@@ -184,6 +186,8 @@ export default class MksTools {
 		if (sheet?.document?.actor)
 			sheet.document.toChat().then()
 		else {
+			if (game.user.isGM)
+				rollMode = ROLL_MODE.BLIND
 			actor = actor ?? new Actor({ name: game.user.name, type: "character" })
 			new sheet.document.constructor(sheet.document.toJSON(), { parent: actor }).toMessage(null, {rollMode, create: true}).then()
 			//new sheet.document.constructor(sheet.document.toJSON(), { parent: actor }).toChat().then()

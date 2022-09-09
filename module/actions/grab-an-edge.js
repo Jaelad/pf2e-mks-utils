@@ -39,7 +39,7 @@ export default class ActionGrabAnEdge extends Action {
 			icon: "systems/pf2e/icons/spells/object-reading.webp",
 			action: 'R',
 			mode: "encounter",
-			tags: ['basic']
+			tags: ['situational']
 		}] : []
 	}
 

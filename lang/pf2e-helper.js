@@ -4,6 +4,7 @@ import {DEGREE_OF_SUCCESS_STRINGS} from "../module/constants.js"
 export default class PF2EI18N {
 	static $ = (toTranslate) => game.i18n.localize(toTranslate)
 	static $$ = (toTranslate, params) => game.i18n.format(toTranslate, params)
+	static has = (toTranslate) => game.i18n.has(toTranslate)
 
 	static action(action) {
 		return PF2EI18N.$(`PF2E.Actions.${$$strings.camelize(action).replace('-', '')}.Title`)
@@ -14,11 +15,13 @@ export default class PF2EI18N {
 	}
 
 	static skillCheck(skill) {
-		return PF2EI18N.$(`PF2E.ActionsCheck.${skill}`)
+		const toTranslate = `PF2E.ActionsCheck.${skill}`
+		return PF2EI18N.has(toTranslate) ? PF2EI18N.$(toTranslate) : undefined
 	}
 
 	static skill(skill) {
-		return PF2EI18N.$(`PF2E.Skill${$$strings.camelize(skill)}`)
+		let toTranslate = `PF2E.Skill${$$strings.camelize(skill)}`
+		return PF2EI18N.has(toTranslate) ? PF2EI18N.$(toTranslate) : undefined
 	}
 
 	static save(save) {
@@ -70,6 +73,7 @@ export default class PF2EI18N {
 	}
 
 	static actionNote(action, degreeOfSuccess) {
-		return PF2EI18N.$(`PF2E.Actions.${$$strings.camelize(action)}.Notes.${DEGREE_OF_SUCCESS_STRINGS[degreeOfSuccess]}`)
+		const toTranslete = `PF2E.Actions.${$$strings.camelize(action)}.Notes.${DEGREE_OF_SUCCESS_STRINGS[degreeOfSuccess]}`
+		return PF2EI18N.has(toTranslete) ? PF2EI18N.$(toTranslete) : undefined
 	}
 }

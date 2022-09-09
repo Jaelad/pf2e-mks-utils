@@ -21,7 +21,7 @@ export default class ActionEscape extends Action {
 		if (conditions.length === 1)
 			conditionSlug = conditions[0].slug
 		else
-			await Dialogs.selectOne(conditions, null, (c) => c.slug, "PF2E.MKS.Dialog.Escape.SelectCondition")
+			await Dialogs.selectOne(conditions, "PF2E.MKS.Dialog.Escape.SelectCondition", null, (c) => c.slug)
 				.then((c) => conditionSlug = c)
 
 		if (!conditionSlug)
@@ -33,7 +33,7 @@ export default class ActionEscape extends Action {
 			{name: i18n.$("PF2E.ActionsCheck.athletics"), value: 'skill[athletics]'},
 			{name: i18n.$("PF2E.ActionsCheck.acrobatics"), value: 'skill[acrobatics]'},
 		]
-		await Dialogs.selectOne(checkOptions, null, null, "PF2E.MKS.Dialog.Escape.SelectSkill")
+		await Dialogs.selectOne(checkOptions, "PF2E.MKS.Dialog.Escape.SelectSkill", null, null)
 			.then((co) => checkType = co)
 
 		const rollCallback = ({roll, actor}) => {

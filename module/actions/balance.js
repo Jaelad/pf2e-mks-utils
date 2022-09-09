@@ -39,7 +39,7 @@ export default class ActionBalance extends Action {
 			icon: "systems/pf2e/icons/spells/tempest-form.webp",
 			action: 'A',
 			mode: "encounter",
-			tags: ['basic']
+			tags: ['situational']
 		}] : []
 	}
 

@@ -3,11 +3,14 @@ import {default as LOG} from "../../utils/logging.js"
 import Action from "../action.js"
 import Compendium from "../compendium.js"
 import Check from "../check.js"
-import {ROLL_MODE} from "../constants.js"
+import {ACTOR_IDENTIFICATION, ROLL_MODE} from "../constants.js"
+import DCHelper from "../helpers/dc-helper.js"
+import Dialogs from "../apps/dialogs.js"
+import $$arrays from "../../utils/arrays.js"
 
 export default class ActionRecallKnowledge extends Action {
 
-	recallKnowledge(options = {}) {
+	async recallKnowledge(options = {}) {
 		const {applicable, selected, targeted} = this.isApplicable(null,true)
 		if (!applicable)
 			return
@@ -16,18 +19,30 @@ export default class ActionRecallKnowledge extends Action {
 			this.resultToChat(selected,'recallKnowledge', roll?.data.degreeOfSuccess)
 		}
 
+		let dc = 15, possibleSkills = []
+		Object.keys(selected.actor.skills).filter(s => s.indexOf('lore') > -1).forEach(l => possibleSkills.push('skill[' + l + ']'))
+		dc = DCHelper.determineDcByLevel(targeted)
+		const traits = Array.from(targeted.actor.traits)
+		traits.forEach(t => {
+			ACTOR_IDENTIFICATION[t]?.forEach(s => possibleSkills.push('skill[' + s + ']'))
+		})
 
+		possibleSkills = $$arrays.unique(possibleSkills)
+		const selectSkillDialogData = possibleSkills.map(s => {return {value: s, name: Check.checkTypeToLabel(s, selected.actor)}})
+		const checkType = await Dialogs.selectOne(selectSkillDialogData, "PF2E.MKS.Dialog.RecallKnowledge.SelectSkill")
 
 		const check = new Check({
 			actionGlyph: "A",
 			rollOptions: ["action:recall-knowledge"],
 			extraOptions: ["action:recall-knowledge"],
 			traits: ["secret", "concentrate"],
-			checkType: "skill[acrobatics]",
+			checkType,
+			rollMode: ROLL_MODE.GM,
+			secret: true,
 			askGmForDC: {
 				action: this?.constructor?.name,
 				title: i18n.action('recallKnowledge'),
-				defaultDC: targeted.actor.saves.reflex.dc.value
+				defaultDC: dc
 			}
 		})
 		check.roll(selected, targeted).then(rollCallback)
@@ -49,6 +64,6 @@ export default class ActionRecallKnowledge extends Action {
 		const selected = this._.ensureOneSelected(warn)
 		const targeted = this._.ensureOneTarget(null,warn)
 
-		return {applicable: !!selected, selected, targeted}
+		return {applicable: !!selected && !!targeted && ['npc', 'hazard', 'character'].includes(targeted.type) && selected.actor.alliance !== targeted.actor.alliance, selected, targeted}
 	}
 }

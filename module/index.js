@@ -1,6 +1,7 @@
 import MksTools from "./mks-tools.js"
 import ActionsPanel from "./apps/actions-panel.js"
 import Action from "./action.js"
+import {ROLL_MODE} from "./constants.js"
 
 Hooks.on("init", () => {
 	const MKS = new MksTools()

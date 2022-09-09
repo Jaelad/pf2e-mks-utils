@@ -86,7 +86,7 @@ const $$arrays = (function () {
 		return null;
 	};
 
-	my.arrayUnique = function (array) {
+	my.unique = function (array) {
 		let a = array.concat();
 		for (let i = 0; i < a.length; ++i)
 			for (let j = i + 1; j < a.length; ++j)

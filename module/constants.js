@@ -7,7 +7,7 @@ export const SYSTEM = {
 
 export const SELECTORS = {
 	spellcasting: /spell\[(arcane|primal|divine|occult)]/,
-	skill: /skill\[(\w+)]/,
+	skill: /skill\[([\w-]+)]/,
 	strike: /strike\[([\w-]+)]/,
 }
 
@@ -49,6 +49,30 @@ export const SKILLS = {
 	stealth: "ste",
 	survival: "sur",
 	thievery: "thi"
+}
+
+export const ACTOR_IDENTIFICATION = {
+	'aberration': ['occultism'],
+	'animal': ['nature'],
+	'astral': ['occultism'],
+	'beast': ['arcana', 'nature'],
+	'celestial': ['religion'],
+	'construct': ['crafting', 'arcana'],
+	'dragon': ['arcana'],
+	'elemental': ['arcana', 'nature'],
+	'ethereal': ['occultism'],
+	'fey': ['nature'],
+	'fiend': ['religion'],
+	'fungus': ['nature'],
+	'humanoid': ['society'],
+	'monitor': ['religion'],
+	'ooze': ['occultism'],
+	'plant':  ['nature'],
+	'spirit': ['occultism'],
+	'undead': ['religion'],
+	'trap': ['survival'],
+	'environmental': ['nature', 'survival'],
+	'haunt': ['occultism', 'religion']
 }
 
 export const ROLL_MODE = {

@@ -20,6 +20,13 @@
 	"PF2E.Actions.ReceiveAid.Title": "Yardım Al",
 	"PF2E.Actions.RaiseAShield.Title": "Kalkan Kaldır",
 	"PF2E.Actions.RaiseAShield.SingleActionTitle": "Kalkan Kaldır",
+	"PF2E.Actions.RecallKnowledge.Title": "Anımsa",
+	"PF2E.Actions.RecallKnowledge.Notes.criticalSuccess": "<strong>Critical Success</strong> You recall the knowledge accurately and gain additional information or context.",
+	"PF2E.Actions.RecallKnowledge.Notes.success": "<strong>Success</strong> You recall the knowledge accurately or gain a useful clue about your current situation.",
+	"PF2E.Actions.RecallKnowledge.Notes.criticalFailure": "<strong>Critical Failure</strong> You recall incorrect information or gain an erroneous or misleading clue.",
+	"PF2E.Actions.TumbleThrough.Title": "Havalı Geçiş",
+	"PF2E.Actions.GrabAnEdge.Title": "Kenara Tutun",
+	"PF2E.Actions.Balance.Title": "Dengeni Sağla",
 
 	"PF2E.ConditionTypeGrabbed": "Zaptedilmiş",
 	"PF2E.ConditionTypeProne": "Yere Düşmüş",
@@ -98,5 +105,6 @@
   	"PF2E.MKS.Dialog.Escape.SelectSkill": "Nasıl kaçacaksınız ?",
 	"PF2E.MKS.Dialog.AddModifier.Title": "Add Modifier",
 	"PF2E.MKS.Dialog.AddModifier.Label": "",
+	"PF2E.MKS.Dialog.RecallKnowledge.SelectSkill": "Nasıl aklınıza getireceksiniz ?",
 	"PF2E.MKS.DC": "DC"
 }
