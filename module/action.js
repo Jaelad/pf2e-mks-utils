@@ -1,5 +1,6 @@
 import {default as i18n} from "../lang/pf2e-helper.js"
 import {ACTION_GLYPH} from "./constants.js"
+import Compendium from "./compendium.js"
 
 export default class Action {
 
@@ -46,4 +47,19 @@ export default class Action {
 		}
 		this._.socketHandler.emit('ChatMessage', chatData, true)
 	}
+}
+
+export const RUDIMENTARY_ACTIONS = {
+	step: {icon: 'systems/pf2e/icons/spells/synchronise-steps.webp', compendium: Compendium.ACTION_STEP},
+	stride: {icon: 'systems/pf2e/icons/spells/fleet-step.webp', compendium: Compendium.ACTION_STRIDE},
+	interact: {icon: 'systems/pf2e/icons/spells/mage-hand.webp', compendium: Compendium.ACTION_INTERACT},
+	mount: {icon: 'systems/pf2e/icons/spells/phantom-steed.webp', compendium: Compendium.ACTION_MOUNT},
+	ready: {icon: 'systems/pf2e/icons/features/feats/cavaliers-banner.webp', compendium: Compendium.ACTION_READY},
+	release: {icon: 'systems/pf2e/icons/spells/', compendium: Compendium.ACTION_RELEASE},
+	sustainASpell: {icon: 'systems/pf2e/icons/spells/', compendium: Compendium.ACTION_SUSTAIN_A_SPELL},
+	sustainAnActivation: {icon: 'systems/pf2e/icons/spells/', compendium: Compendium.ACTION_SUSTAIN_AN_ACTIVATION},
+	crawl: {icon: 'systems/pf2e/icons/spells/', compendium: Compendium.ACTION_CRAWL},
+	leap: {icon: 'systems/pf2e/icons/spells/wind-jump.webp', compendium: Compendium.ACTION_LEAP},
+	pointOut: {icon: 'systems/pf2e/icons/spells/', compendium: Compendium.ACTION_POINT_OUT},
+	avertGaze: {icon: 'systems/pf2e/icons/spells/veil-of-dreams.webp', compendium: Compendium.ACTION_AVERT_GAZE},
 }

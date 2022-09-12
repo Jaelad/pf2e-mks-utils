@@ -28,6 +28,14 @@
 	"PF2E.Actions.GrabAnEdge.Title": "Kenara Tutun",
 	"PF2E.Actions.Balance.Title": "Dengeni Sağla",
 
+	"PF2E.Actions.Step.Title": "Adımla",
+	"PF2E.Actions.Stride.Title": "Koş",
+	"PF2E.Actions.SustainASpell.Title": "Büyüyü Sürdür",
+	"PF2E.Actions.SustainAnActivation.Title": "Aktivasyonu Sürdür",
+	"PF2E.Actions.Leap.Title": "Sıçra",
+	"PF2E.Actions.PointOut.Title": "İşaret Et",
+	"PF2E.Actions.AvertGaze.Title": "Gözünü Kaçır",
+
 	"PF2E.ConditionTypeGrabbed": "Zaptedilmiş",
 	"PF2E.ConditionTypeProne": "Yere Düşmüş",
 	"PF2E.ConditionTypeHidden": "Saklanmış",
@@ -70,6 +78,7 @@
   	"PF2E.ActionTag.basic": "Basit",
   	"PF2E.ActionTag.social": "Sosyal",
   	"PF2E.ActionTag.stealth": "Gizlilik",
+  	"PF2E.ActionTag.rudimentary": "Temel",
 
 	"PF2E.MKS.ActionsPanel.ShowApplicable": "Uygun Olanlar",
 	"PF2E.MKS.ActionsPanel.InCombatTurn":   "Savaşta Sıradaki",

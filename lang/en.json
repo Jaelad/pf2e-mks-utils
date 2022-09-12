@@ -11,12 +11,21 @@
     "PF2E.Actions.RecallKnowledge.Notes.success": "<strong>Success</strong> You recall the knowledge accurately or gain a useful clue about your current situation.",
     "PF2E.Actions.RecallKnowledge.Notes.criticalFailure": "<strong>Critical Failure</strong> You recall incorrect information or gain an erroneous or misleading clue.",
 
+    "PF2E.Actions.Step.Title": "Step",
+    "PF2E.Actions.Stride.Title": "Stride",
+    "PF2E.Actions.SustainASpell.Title": "Sustain a Spell",
+    "PF2E.Actions.SustainAnActivation.Title": "Sustain an Activation",
+    "PF2E.Actions.Leap.Title": "Leap",
+    "PF2E.Actions.PointOut.Title": "Point Out",
+    "PF2E.Actions.AvertGaze.Title": "Avert Gaze",
+
     "PF2E.ActionTag.situational": "Situational",
     "PF2E.ActionTag.combat": "Combat",
     "PF2E.ActionTag.hostile": "Hostile",
     "PF2E.ActionTag.basic": "Basic",
     "PF2E.ActionTag.social": "Social",
     "PF2E.ActionTag.stealth": "Stealth",
+    "PF2E.ActionTag.rudimentary": "Rudimentary",
     "PF2E.MKS.ActionsPanel.ShowApplicable": "Show Applicable",
     "PF2E.MKS.ActionsPanel.InCombatTurn": "In Combat Turn",
 

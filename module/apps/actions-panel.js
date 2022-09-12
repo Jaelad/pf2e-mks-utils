@@ -102,8 +102,12 @@ export default class ActionsPanel extends FormApplication {
 
     _runActionMethod(event) {
         const dataset = event?.target?.dataset
-        if (dataset?.action && dataset?.method)
-            game.MKS.actions[dataset.action][dataset.method]()
+        if (dataset?.action && dataset?.method) {
+            if (dataset.action === 'rudimentary')
+                game.MKS.compendiumToChat(null, game.MKS.rudimentaryActions[dataset.method].compendium)
+            else
+                game.MKS.actions[dataset.action][dataset.method]()
+        }
     }
 
     _toggleChecked(event) {
@@ -165,6 +169,13 @@ export default class ActionsPanel extends FormApplication {
                 m.action = action
             })
         }
+        allTags.rudimentary = {expanded: localSettings?.expanded?.['rudimentary'] ?? false, label: i18n.actionTag('rudimentary'), methods: []}
+        for (let rudimentaryAction in game.MKS.rudimentaryActions) {
+            const definition = game.MKS.rudimentaryActions[rudimentaryAction]
+            allTags.rudimentary.methods.push({method: rudimentaryAction, label: i18n.action(rudimentaryAction), icon: definition.icon, action: 'rudimentary'})
+        }
+
+        console.log(allTags)
 
         const allTagsArr = [], sort = (a,b) => a.label.localeCompare(b.label)
         for (let tag in allTags) {

@@ -7,7 +7,7 @@ export default class PF2EI18N {
 	static has = (toTranslate) => game.i18n.has(toTranslate)
 
 	static action(action) {
-		return PF2EI18N.$(`PF2E.Actions.${$$strings.camelize(action).replace('-', '')}.Title`)
+		return PF2EI18N.$(`PF2E.Actions.${$$strings.camelize(action)?.replace('-', '')}.Title`)
 	}
 
 	static condition(condition) {
