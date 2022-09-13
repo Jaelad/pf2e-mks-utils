@@ -14,6 +14,8 @@ export default class Compendium {
 	static ACTION_LEAP = "Compendium.pf2e.actionspf2e.d5I6018Mci2SWokk"
 	static ACTION_POINT_OUT = "Compendium.pf2e.actionspf2e.sn2hIy1iIJX9Vpgj"
 	static ACTION_AVERT_GAZE = "Compendium.pf2e.actionspf2e.UWdRX1VelipCzrCg"
+	static ACTION_SWIM = "Compendium.pf2e.actionspf2e.c8TGiZ48ygoSPofx"
+	static ACTION_CLIMB = "Compendium.pf2e.actionspf2e.pprgrYQ1QnIDGZiy"
 
 	static EFFECT_MULTIPLE_ATTACK = "Compendium.pf2e-tools-mks.core-effects.DPVfUT43aCQMvauJ"
 	static EFFECT_AID_READY = "Compendium.pf2e-tools-mks.core-effects.p9PSILLD0f0NkBc5"
@@ -30,6 +32,4 @@ export default class Compendium {
 	static CONDITION_UNDETECTED = "Compendium.pf2e.conditionitems.VRSef5y1LmL2Hkjf"
 	static CONDITION_HIDDEN = "Compendium.pf2e.conditionitems.iU0fEDdBp3rXpTMC"
 	static CONDITION_OBSERVED = "Compendium.pf2e.conditionitems.1wQY3JYyhMYeeV2G"
-
-
 }

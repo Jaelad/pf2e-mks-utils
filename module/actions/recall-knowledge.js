@@ -40,8 +40,7 @@ export default class ActionRecallKnowledge extends Action {
 			rollMode: ROLL_MODE.GM,
 			secret: true,
 			askGmForDC: {
-				action: this?.constructor?.name,
-				title: i18n.action('recallKnowledge'),
+				action: 'recallKnowledge',
 				defaultDC: dc
 			}
 		})

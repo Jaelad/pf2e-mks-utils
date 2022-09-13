@@ -18,6 +18,9 @@
     "PF2E.Actions.Leap.Title": "Leap",
     "PF2E.Actions.PointOut.Title": "Point Out",
     "PF2E.Actions.AvertGaze.Title": "Avert Gaze",
+    "PF2E.Actions.Crawl.Title": "Crawl",
+    "PF2E.Actions.Mount.Title": "Mount",
+    "PF2E.Actions.Ready.Title": "Ready",
 
     "PF2E.ActionTag.situational": "Situational",
     "PF2E.ActionTag.combat": "Combat",

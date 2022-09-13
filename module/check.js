@@ -7,6 +7,7 @@ import DCHelper from "./helpers/dc-helper.js";
 // Lines: 42441 42347
 export default class Check {
 	constructor({
+		action,
 		dialogTitle,
 		checkLabel,
 		actionGlyph = "",
@@ -35,9 +36,11 @@ export default class Check {
 		this.context.extraOptions = this.context.rollOptions ?? []
 		this.context.traits = this.context.traits ?? []
 
-		const actionOption = extraOptions?.find(opt => opt.startsWith("action:")) ?? rollOptions?.find(opt => opt.startsWith("action:"))
-		if (actionOption)
-			this.context.action = actionOption.substring(7)
+		if (!this.context.action) {
+			const actionOption = extraOptions?.find(opt => opt.startsWith("action:")) ?? rollOptions?.find(opt => opt.startsWith("action:"))
+			if (actionOption)
+				this.context.action = actionOption.substring(7)
+		}
 	}
 
 	statisticToModifier(statistic) {
@@ -56,11 +59,11 @@ export default class Check {
 		else if (type === "class")
 			statisticModifier = actor.attributes.classDC, checkSlug = 'class-dc-check', statSlug = 'class-dc'
 		else if (type === "fortitude")
-			statisticModifier = actor.data.data.saves.fortitude, checkSlug = 'saving-throw', statSlug = 'fortitude'
+			statistic = actor.saves.fortitude, checkSlug = 'saving-throw', statSlug = 'fortitude'
 		else if (type === "reflex")
-			statisticModifier = actor.data.data.saves.reflex, checkSlug = 'saving-throw', statSlug = 'reflex'
+			statistic = actor.saves.reflex, checkSlug = 'saving-throw', statSlug = 'reflex'
 		else if (type === "will")
-			statisticModifier = actor.data.data.saves.will, checkSlug = 'saving-throw', statSlug = 'will'
+			statistic = actor.saves.will, checkSlug = 'saving-throw', statSlug = 'will'
 		else if (type === "spell")
 			statistic = actor.spellcasting.find()?.statistic, checkSlug = 'spell-attack-roll', statSlug = 'spell-attack'
 		else if (match = SELECTORS.spellcasting.exec(type)) {
@@ -165,7 +168,7 @@ export default class Check {
 					value: dc.value,
 					adjustments: stat.adjustments ?? [],
 				}
-				if (DC_SLUGS.has(dcStat.slug)) dcData.slug = dcStat.slug;
+				if (DC_SLUGS.has(dcStat.slug)) dcData.slug = dcStat.slug
 
 				difficultyClass = dcData
 			}

@@ -51,8 +51,7 @@ export default class ActionEscape extends Action {
 			weaponTrait: "escape",
 			checkType,
 			askGmForDC: {
-				action: this?.constructor?.name,
-				title: i18n.action('Escape'),
+				action: 'escape',
 				defaultDC: 15
 			}
 		})

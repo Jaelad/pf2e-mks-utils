@@ -169,13 +169,23 @@ export default class ActionsPanel extends FormApplication {
                 m.action = action
             })
         }
-        allTags.rudimentary = {expanded: localSettings?.expanded?.['rudimentary'] ?? false, label: i18n.actionTag('rudimentary'), methods: []}
-        for (let rudimentaryAction in game.MKS.rudimentaryActions) {
-            const definition = game.MKS.rudimentaryActions[rudimentaryAction]
-            allTags.rudimentary.methods.push({method: rudimentaryAction, label: i18n.action(rudimentaryAction), icon: definition.icon, action: 'rudimentary'})
-        }
 
-        console.log(allTags)
+        if (game.MKS.ensureAtLeastOneSelected(false)) {
+            allTags.rudimentary = {
+                expanded: localSettings?.expanded?.['rudimentary'] ?? false,
+                label: i18n.actionTag('rudimentary'),
+                methods: []
+            }
+            for (let rudimentaryAction in game.MKS.rudimentaryActions) {
+                const definition = game.MKS.rudimentaryActions[rudimentaryAction]
+                allTags.rudimentary.methods.push({
+                    method: rudimentaryAction,
+                    label: i18n.action(rudimentaryAction),
+                    icon: definition.icon,
+                    action: 'rudimentary'
+                })
+            }
+        }
 
         const allTagsArr = [], sort = (a,b) => a.label.localeCompare(b.label)
         for (let tag in allTags) {

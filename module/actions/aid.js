@@ -65,7 +65,7 @@ export default class ActionAid extends Action {
 			extraOptions: ["action:aid"],
 			checkType: null,
 			askGmForDC: {
-				action: this?.constructor?.name,
+				action: 'receiveAid',
 				title: i18n.action('ReceiveAid'),
 				defaultDC: 20
 			}

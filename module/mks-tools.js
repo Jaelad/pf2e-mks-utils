@@ -16,21 +16,24 @@ import ActionDisarm from "./actions/disarm.js"
 import ActionShove from "./actions/shove.js"
 import ActionTrip from "./actions/trip.js"
 import ActionEscape from "./actions/escape.js"
-import ActionSenseMotive from "./actions/sense-motive.js"
 import ActionCover from "./actions/cover.js"
 import ActionProne from "./actions/prone.js"
-import ActionGrabAnEdge from "./actions/grab-an-edge.js"
-import ActionBalance from "./actions/balance.js"
-import ActionTumbleThrough from "./actions/tumble-through.js"
 import ActionRecallKnowledge from "./actions/recall-knowledge.js"
 import {RUDIMENTARY_ACTIONS} from "./action.js"
+import {
+	ActionBalance,
+	ActionClimb, ActionForceOpen,
+	ActionGrabAnEdge, ActionHighJump, ActionLongJump,
+	ActionSenseMotive, ActionSwim,
+	ActionTumbleThrough
+} from "./actions/simple-actions.js"
 
 
 export default class MksTools {
 
 	static registerSocketListeners() {
 		game.MKS.socketHandler.on('SetDC', ({action, defaultDC, title}) => {
-			DCHelper.setDC(defaultDC, title).then((dc) => {
+			DCHelper.setDC(action, defaultDC, title).then((dc) => {
 				game.MKS.socketHandler.emit('SetDCResponse', dc)
 			})
 		}, true)
@@ -38,7 +41,7 @@ export default class MksTools {
 			const actor = Finders.getActorById(actorId)
 			game.MKS.compendiumToChat(actor, source, rollMode)
 		}, true)
-		game.MKS.socketHandler.on('ChatMessage', (chatData) => {
+		game.MKS.socketHandler.on('GmChatMessage', (chatData) => {
 			chatData.whisper = [game.user.id]
 			ChatMessage.create(chatData, {rollMode: ROLL_MODE.BLIND})
 		}, true)
@@ -69,6 +72,11 @@ export default class MksTools {
 			grabAnEdge: new ActionGrabAnEdge(this),
 			balance: new ActionBalance(this),
 			tumbleThrough: new ActionTumbleThrough(this),
+			climb: new ActionClimb(this),
+			forceOpen: new ActionForceOpen(this),
+			highJump: new ActionHighJump(this),
+			longJump: new ActionLongJump(this),
+			swim: new ActionSwim(this),
 			recallKnowledge: new ActionRecallKnowledge(this),
 		}
 		this.rudimentaryActions = RUDIMENTARY_ACTIONS

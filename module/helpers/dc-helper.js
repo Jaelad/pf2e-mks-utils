@@ -1,4 +1,6 @@
 import {default as i18n} from "../../lang/pf2e-helper.js"
+import Compendium from "../compendium.js"
+import $$strings from "../../utils/strings.js"
 
 export default class DCHelper {
 	static determineDcByLevel(tokenOrActor) {
@@ -31,13 +33,20 @@ export default class DCHelper {
 			return dcByLevel
 	}
 
-	static setDC(defaultDC = 11, title = i18n.$('PF2E.MKS.Dialog.SetDC.Title')) { //"PF2E.MKS.Dialog.SetDC.Title"
+	static setDC(action, defaultDC = 20, title) { //"PF2E.MKS.Dialog.SetDC.Title"
+		const compendium = Compendium['ACTION_' + $$strings.underscored(action)]
+		const actionTitle = i18n.action(action)
+		title = title ?? actionTitle
 		return new Promise(resolve => {
+			const compendiumOnClick = compendium ? `game.MKS.compendiumToChat(null, '${compendium}', 'blindroll')` : ''
 			const dialogContent = `
 			<form>
 			<div class="form-group">
-				<label>${i18n.$("PF2E.MKS.DC")}</label>
-				<input type="number" name="dc" value="${defaultDC}">
+				<button type="button" onclick="${compendiumOnClick}" style="margin-left: 30px; margin-right: 5px">
+					<label>${i18n.$("PF2E.MKS.DC") + ': ' + actionTitle + ' '}</label>
+					<i class="fas fa-head-side-cough"></i>
+				</button>
+				<input type="number" name="dc" value="${defaultDC}" maxlength="2" size="2" style="margin-left: 5px; margin-right: 30px">
 			</div>
 			</form>
 			`
@@ -59,9 +68,9 @@ export default class DCHelper {
 		})
 	}
 
-	static requestGmSetDC({action = this?.constructor?.name, title, defaultDC= 11}) {
+	static requestGmSetDC({action, title, defaultDC= 20}) {
 		if (game.user.isGM)
-			return DCHelper.setDC(defaultDC, title)
+			return DCHelper.setDC(action, defaultDC, title)
 		else {
 			game.MKS.socketHandler.emit('SetDC', {action, title, defaultDC}, true)
 			return game.MKS.socketHandler.waitFor('SetDCResponse', 20000)

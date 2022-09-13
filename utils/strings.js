@@ -22,6 +22,11 @@ export default class $$strings {
 		}).replace(/\s+/g, '')
 	}
 
+	static underscored(str, uppercase = true) {
+		const result = str.replace(/\.?([A-Z])/g, function (x,y){return "_" + y.toLowerCase()}).replace(/^_/, "")
+		return uppercase ? result.toUpperCase() : result
+	}
+
 	static generateUUID() { // Public Domain/MIT
 		let d = new Date().getTime();//Timestamp
 		let d2 = ((typeof performance !== 'undefined') && performance.now && (performance.now()*1000)) || 0 //Time in microseconds since page-load or 0 if unsupported
