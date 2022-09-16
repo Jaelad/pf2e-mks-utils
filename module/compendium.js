@@ -24,6 +24,8 @@ export default class Compendium {
 	static EFFECT_COVER = "Compendium.pf2e-tools-mks.core-effects.SSVgCBCgk98E2VpI"
 	static EFFECT_RAISE_A_SHIELD = "Compendium.pf2e.equipment-effects.2YgXoHvJfrDHucMr"
 	static EFFECT_DISARM_SUCCESS = "Compendium.pf2e.equipment-effects.z3ATL8DcRVrT0Uzt"
+	static EFFECT_RESIST_A_DIVERSION = "Compendium.pf2e-tools-mks.core-effects.GK9OckuuNDJFdFDe"
+	static EFFECT_IMMUNE_TO_DEMORALIZE = "Compendium.pf2e-tools-mks.core-effects.0mPMeOFZfos07cut"
 
 	static CONDITION_GRABBED = "Compendium.pf2e.conditionitems.kWc1fhmv9LBiTuei"
 	static CONDITION_RESTRAINED = "Compendium.pf2e.conditionitems.VcDeM8A5oI6VqhbM"

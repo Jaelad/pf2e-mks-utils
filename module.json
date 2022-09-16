@@ -8,6 +8,9 @@
 	"minimumCoreVersion": "0.8.9",
 	"type": "module",
 	"systems": ["pf2e"],
+	"dependencies": [
+		{ "name": "pf2e-persistent-damage", "type": "module" }
+	],
 	"esmodules": ["./module/index.js"],
 	"styles": ["styles/common.css"],
 	"packs": [

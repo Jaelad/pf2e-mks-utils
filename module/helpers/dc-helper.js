@@ -33,6 +33,15 @@ export default class DCHelper {
 			return dcByLevel
 	}
 
+	static getMaxDC(tokens, dcFunc) {
+		if (!dcFunc || !tokens) return
+		tokens = Array.isArray(tokens) ? tokens : [tokens]
+		return tokens.reduce((p,v)=> {
+			const dc = dcFunc(v)
+			return p > dc ? p : dc
+		})
+	}
+
 	static setDC(action, defaultDC = 20, title) { //"PF2E.MKS.Dialog.SetDC.Title"
 		const compendium = Compendium['ACTION_' + $$strings.underscored(action)]
 		const actionTitle = i18n.action(action)

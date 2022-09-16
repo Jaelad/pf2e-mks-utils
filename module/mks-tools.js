@@ -21,12 +21,14 @@ import ActionProne from "./actions/prone.js"
 import ActionRecallKnowledge from "./actions/recall-knowledge.js"
 import {RUDIMENTARY_ACTIONS} from "./action.js"
 import {
-	ActionBalance,
-	ActionClimb, ActionForceOpen,
-	ActionGrabAnEdge, ActionHighJump, ActionLongJump,
-	ActionSenseMotive, ActionSwim,
-	ActionTumbleThrough
+	ActionBalance, ActionClimb, ActionFeint, ActionForceOpen,
+	ActionGrabAnEdge, ActionHighJump, ActionLongJump, ActionRequest,
+	ActionSenseMotive, ActionSwim, ActionTumbleThrough
 } from "./actions/simple-actions.js"
+import ActionCreateADiversion from "./actions/create-a-diversion.js"
+import {ActionDemoralize} from "./actions/demoralize.js"
+import {ActionAdministerFirstAid} from "./actions/administer-first-aid.js"
+import ActorManager from "./actor-manager.js"
 
 
 export default class MksTools {
@@ -48,6 +50,7 @@ export default class MksTools {
 	}
 
 	constructor() {
+		this.actorManager = new ActorManager(this)
 		this.inventoryManager = new InventoryManager(this)
 		this.effectManager = new EffectManager(this)
 		this.encounterManager = new EncounterManager(this)
@@ -78,6 +81,11 @@ export default class MksTools {
 			longJump: new ActionLongJump(this),
 			swim: new ActionSwim(this),
 			recallKnowledge: new ActionRecallKnowledge(this),
+			createADiversion: new ActionCreateADiversion(this),
+			feint: new ActionFeint(this),
+			request: new ActionRequest(this),
+			demoralize: new ActionDemoralize(this),
+			administerFirstAid: new ActionAdministerFirstAid(this),
 		}
 		this.rudimentaryActions = RUDIMENTARY_ACTIONS
 

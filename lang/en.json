@@ -10,6 +10,8 @@
     "PF2E.Actions.RecallKnowledge.Notes.criticalSuccess": "<strong>Critical Success</strong> You recall the knowledge accurately and gain additional information or context.",
     "PF2E.Actions.RecallKnowledge.Notes.success": "<strong>Success</strong> You recall the knowledge accurately or gain a useful clue about your current situation.",
     "PF2E.Actions.RecallKnowledge.Notes.criticalFailure": "<strong>Critical Failure</strong> You recall incorrect information or gain an erroneous or misleading clue.",
+    "PF2E.Actions.AdministerFirstAid.Bleeding": "Bleeding",
+    "PF2E.Actions.AdministerFirstAid.Dying": "Dying",
 
     "PF2E.Actions.Step.Title": "Step",
     "PF2E.Actions.Stride.Title": "Stride",
@@ -39,11 +41,13 @@
 
     "PF2E.MKS.Modifier.partially-disarmed": "Loose Grip",
 
+    "PF2E.MKS.DC": "DC",
     "PF2E.MKS.UI.ActionsPanel.Label": "Action Panel",
     "PF2E.MKS.UI.Actions.cancel": "Cancel",
     "PF2E.MKS.UI.Actions.ok": "OK",
     "PF2E.MKS.UI.Actions.add": "Add",
     "PF2E.MKS.Dialog.SelectOne.Title": "Select One",
+    "PF2E.MKS.Dialog.MultipleButtons.Title": "Press One",
     "PF2E.MKS.Warning.Actor.OneMustBeSelected": "You must select exactly one actor!",
     "PF2E.MKS.Warning.Actor.AtLeastOneMustBeSelected": "You must select at least one actor!",
     "PF2E.MKS.Warning.Target.OneMustBeSelected": "You must target exactly one token!",
@@ -69,5 +73,9 @@
     "PF2E.MKS.Dialog.Escape.SelectCondition": "Select condition",
     "PF2E.MKS.Dialog.Escape.SelectSkill": "Select how you escape",
     "PF2E.MKS.Dialog.RecallKnowledge.SelectSkill": "Select how you recall",
-    "PF2E.MKS.DC": "DC"
+    "PF2E.MKS.Dialog.CreateADiversion.SelectType": "Select Diversion",
+    "PF2E.MKS.Dialog.AdministerFirstAid.SelectType": "Select Dying or Bleeding Condition",
+    "PF2E.MKS.Dialog.AddModifier.Title": "Add Modifier",
+    "PF2E.MKS.Dialog.AddModifier.Label": ""
+
 }

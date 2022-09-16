@@ -1,4 +1,6 @@
 export default class $$strings {
+	static GENERATE_CHARS = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789'
+
 	static withTemplate = (template, vars = {}) => {
 		const handler = new Function('vars', [
 			'const tagged = ( ' + Object.keys(vars).join(', ') + ' ) =>',
@@ -25,6 +27,14 @@ export default class $$strings {
 	static underscored(str, uppercase = true) {
 		const result = str.replace(/\.?([A-Z])/g, function (x,y){return "_" + y.toLowerCase()}).replace(/^_/, "")
 		return uppercase ? result.toUpperCase() : result
+	}
+
+	static generate(length) {
+		let result = ''
+		for (let i = 0; i < length; i++ )
+			result += $$strings.GENERATE_CHARS.charAt(Math.floor(Math.random() * $$strings.GENERATE_CHARS.length))
+
+		return result
 	}
 
 	static generateUUID() { // Public Domain/MIT

@@ -3,6 +3,7 @@ import {ACTION_GLYPH, ROLL_MODE} from "./constants.js"
 import Compendium from "./compendium.js"
 import Check from "./check.js"
 import $$strings from "../utils/strings.js"
+import DCHelper from "./helpers/dc-helper.js"
 
 export default class Action {
 
@@ -55,26 +56,27 @@ export default class Action {
 }
 
 export class SimpleAction extends Action {
-	constructor(MKS, {action, traits, checkType, defaultDC, icon, tags, mode='encounter', actionGlyph = 'A', hasTarget = false}) {
+	constructor(MKS, {action, traits, checkType, dc, icon, tags, mode='encounter', actionGlyph = 'A', targetCount = 0}) {
 		super(MKS)
 		this.actionGlyph = actionGlyph
 		this.action = action
 		this.traits = traits
 		this.checkType = checkType
-		this.defaultDC = defaultDC
+		this.dc = dc
 		this.icon = icon
 		this.mode = mode
 		this.tags = tags
-		this.hasTarget = hasTarget
+		this.targetCount = targetCount
 	}
 
-	act(options = {}) {
-		const {applicable, selected, targeted} = this.isApplicable(null,true)
+	act({overrideDC}) {
+		const options = arguments[0]
+		const {applicable, selected, targets} = this.isApplicable(null,true)
 		if (!applicable)
 			return
 
 		const rollCallback = ({roll, actor}) => {
-			this.resultToChat(selected, this.action, roll?.data.degreeOfSuccess, this.actionGlyph)
+			this.resultHandler(roll, selected, targets, options)
 		}
 
 		const check = new Check({
@@ -84,12 +86,17 @@ export class SimpleAction extends Action {
 			extraOptions: ["action:" + game.pf2e.system.sluggify(this.action)],
 			traits: this.traits,
 			checkType: this.checkType,
+			difficultyClass: overrideDC ?? this.targetCount > 1 ? DCHelper.getMaxDC(targets, this.dc) : this.dc?.(targets),
 			askGmForDC: {
 				action: this.action,
-				defaultDC: this.defaultDC?.(selected, targeted) ?? 20
+				defaultDC: 20
 			}
 		})
-		check.roll(selected, targeted).then(rollCallback)
+		check.roll(selected).then(rollCallback)
+	}
+
+	resultHandler(roll, selected, targets) {
+		this.resultToChat(selected, this.action, roll?.data.degreeOfSuccess, this.actionGlyph)
 	}
 
 	methods(onlyApplicable) {
@@ -106,13 +113,17 @@ export class SimpleAction extends Action {
 
 	isApplicable(method=null, warn=false) {
 		const selected = this._.ensureOneSelected(warn)
-		const targeted = this.hasTarget ? this._.ensureOneTarget(null, warn) : null
+		let targets
+		if (this.targetCount === 1)
+			targets = this._.ensureOneTarget(null, warn)
+		else if (this.targetCount > 1)
+			targets = this._.ensureAtLeastOneTarget(null, warn)
 
-		return {applicable: this.applies(selected, targeted), selected, targeted}
+		return {applicable: this.applies(selected, targets), selected, targets}
 	}
 
-	applies(selected, targeted) {
-		return !!selected && (!this.hasTarget || !!targeted)
+	applies(selected, targets) {
+		return !!selected && (this.targetCount === 0 || !!targets)
 	}
 }
 

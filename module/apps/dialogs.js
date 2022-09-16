@@ -40,9 +40,7 @@ export default class Dialogs  {
 					},
 				},
 				default: 'yes',
-				close: (e) => {
-					console.log(e)
-				}
+				close: () => resolve(null)
 			}).render(true)
 		})
 	}
@@ -81,9 +79,36 @@ export default class Dialogs  {
 					},
 				},
 				default: 'yes',
-				close: (e) => {
-					console.log(e)
+				close: () => resolve(null)
+			}).render(true)
+		})
+	}
+
+	static multipleButtons(elems, label, title = 'PF2E.MKS.Dialog.MultipleButtons.Title') {
+		const dialogContent = `
+		<form>
+		<div class="form-group">
+			<label>${i18n.$(label)}</label>
+		</div>
+		</form>
+		`
+
+		return new Promise((resolve) => {
+			const buttons = {}
+			elems.forEach((e, i) => {
+				buttons['_' + i] = {
+					icon: '<i class="fas fa-dot-circle"></i>',
+					label: i18n.$(e.name),
+					callback: () => resolve(e.value)
 				}
+			})
+
+			new Dialog({
+				title: i18n.$(title),
+				content: dialogContent,
+				buttons,
+				default: '_0',
+				close: () => resolve(null)
 			}).render(true)
 		})
 	}

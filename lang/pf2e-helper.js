@@ -73,7 +73,16 @@ export default class PF2EI18N {
 	}
 
 	static actionNote(action, degreeOfSuccess) {
-		const toTranslete = `PF2E.Actions.${$$strings.camelize(action)}.Notes.${DEGREE_OF_SUCCESS_STRINGS[degreeOfSuccess]}`
-		return PF2EI18N.has(toTranslete) ? PF2EI18N.$(toTranslete) : undefined
+		let toTranslete = `PF2E.Actions.${$$strings.camelize(action)}.Notes.${DEGREE_OF_SUCCESS_STRINGS[degreeOfSuccess]}`
+		if (PF2EI18N.has(toTranslete))
+			return PF2EI18N.$(toTranslete)
+		else if (degreeOfSuccess === 0) {
+			toTranslete = `PF2E.Actions.${$$strings.camelize(action)}.Notes.${DEGREE_OF_SUCCESS_STRINGS[degreeOfSuccess + 1]}`
+			return PF2EI18N.has(toTranslete) ? PF2EI18N.$(toTranslete) : undefined
+		}
+		else if (degreeOfSuccess === 3) {
+			toTranslete = `PF2E.Actions.${$$strings.camelize(action)}.Notes.${DEGREE_OF_SUCCESS_STRINGS[degreeOfSuccess - 1]}`
+			return PF2EI18N.has(toTranslete) ? PF2EI18N.$(toTranslete) : undefined
+		}
 	}
 }

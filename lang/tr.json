@@ -35,6 +35,12 @@
 	"PF2E.Actions.HighJump.Title": "Yüksek Atla",
 	"PF2E.Actions.LongJump.Title": "Uzun Atla",
 	"PF2E.Actions.ForceOpen.Title": "Güçle Aç",
+	"PF2E.Actions.CreateADiversion.Title": "Dikkat Dağıt",
+	"PF2E.Actions.CreateADiversion.TrickGesture": "Numara Çek",
+	"PF2E.Actions.CreateADiversion.DistractingWords": "Oyalayıcı Sözler",
+	"PF2E.Actions.AdministerFirstAid.Title": "İlkyardım",
+	"PF2E.Actions.AdministerFirstAid.Bleeding": "Kanama",
+	"PF2E.Actions.AdministerFirstAid.Dying": "Ölüm Hali",
 
 	"PF2E.Actions.Step.Title": "Adımla",
 	"PF2E.Actions.Stride.Title": "Koş",
@@ -96,10 +102,12 @@
 	"PF2E.MKS.ActionsPanel.ShowApplicable": "Uygun Olanlar",
 	"PF2E.MKS.ActionsPanel.InCombatTurn":   "Savaşta Sıradaki",
 
+	"PF2E.MKS.DC": "DC",
 	"PF2E.MKS.UI.Actions.add": "Ekle",
 	"PF2E.MKS.UI.Actions.ok": "Tamam",
 	"PF2E.MKS.UI.Actions.cancel": "İptal",
 	"PF2E.MKS.Dialog.SelectOne.Title": "Seçiniz",
+	"PF2E.MKS.Dialog.MultipleButtons.Title": "Seçiniz",
 	"PF2E.MKS.UI.ActionsPanel.Label": "Aksiyonlar",
 	"PF2E.MKS.Warning.Actor.OneMustBeSelected": "Bir piyon seçmelisiniz!",
 	"PF2E.MKS.Warning.Actor.AtLeastOneMustBeSelected": "En az bir piyon seçmelisiniz!",
@@ -125,8 +133,9 @@
   	"PF2E.MKS.Dialog.disarm.select": "Silah/Item Seçiniz",
   	"PF2E.MKS.Dialog.Escape.SelectCondition": "Kaçmak istediğiniz hali seçiniz",
   	"PF2E.MKS.Dialog.Escape.SelectSkill": "Nasıl kaçacaksınız ?",
-	"PF2E.MKS.Dialog.AddModifier.Title": "Add Modifier",
-	"PF2E.MKS.Dialog.AddModifier.Label": "",
 	"PF2E.MKS.Dialog.RecallKnowledge.SelectSkill": "Nasıl aklınıza getireceksiniz ?",
-	"PF2E.MKS.DC": "DC"
+	"PF2E.MKS.Dialog.CreateADiversion.SelectType": "Nasıl dikkat dağıtacaksınız ?",
+	"PF2E.MKS.Dialog.AdministerFirstAid.SelectType": "Neyi iyileştireceksiniz ?",
+	"PF2E.MKS.Dialog.AddModifier.Title": "Add Modifier",
+	"PF2E.MKS.Dialog.AddModifier.Label": ""
 }

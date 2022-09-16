@@ -5,20 +5,20 @@ export default class EffectManager {
 		this._ = MKS
 	}
 
-	getEffect(tokenOrActor, sourceId) {
+	getEffect(tokenOrActor, sourceIdOrSlug) {
 		const actor = tokenOrActor?.actor ?? tokenOrActor
-		return actor.itemTypes?.effect.find((e) => e.flags.core?.sourceId === sourceId)
+		return actor.itemTypes?.effect.find((e) => e.sourceId === sourceIdOrSlug || e.slug === sourceIdOrSlug)
 	}
 
-	hasEffect(tokenOrActor, sourceIds, any = true) {
-		sourceIds = Array.isArray(sourceIds) ? sourceIds : [sourceIds]
+	hasEffect(tokenOrActor, sourceIdOrSlugs, any = true) {
+		sourceIdOrSlugs = Array.isArray(sourceIdOrSlugs) ? sourceIdOrSlugs : [sourceIdOrSlugs]
 		const actor = tokenOrActor?.actor ?? tokenOrActor
 
 		if (any)
-			return !!actor.itemTypes.effect.find(c => sourceIds.includes(c.sourceId))
+			return !!actor.itemTypes.effect.find(c => sourceIdOrSlugs.includes(c.sourceId) || sourceIdOrSlugs.includes(c.slug))
 		else {
-			const filtered = actor.itemTypes.effect.filter(c => sourceIds.includes(c.sourceId))
-			return filtered.length === sourceIds.length
+			const filtered = actor.itemTypes.effect.filter(c => sourceIdOrSlugs.includes(c.sourceId) || sourceIdOrSlugs.includes(c.slug))
+			return filtered.length === sourceIdOrSlugs.length
 		}
 	}
 
@@ -61,9 +61,9 @@ export default class EffectManager {
 		}
 	}
 
-	async removeEffect(tokenOrActor, sourceId) {
+	async removeEffect(tokenOrActor, sourceIdOrSlug) {
 		const actor = tokenOrActor?.actor ?? tokenOrActor
-		const existingEffect = this.getEffect(actor, sourceId)
+		const existingEffect = this.getEffect(actor, sourceIdOrSlug)
 		if (existingEffect)
 			return await existingEffect.delete()
 	}
