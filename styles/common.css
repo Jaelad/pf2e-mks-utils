@@ -1,0 +1,143 @@
+.mks-list {
+	overflow-y: hidden;
+	overflow-x: hidden;
+	padding: 0;
+	margin: 0;
+}
+
+.mks-list__item {
+	padding: 4px;
+	list-style: none;
+	border-bottom: 2px solid var(--color-border-dark-3, #333);
+}
+
+.mks-noborder {
+	border-bottom: none;
+}
+
+.mks-list__item:last-of-type {
+	border-bottom: none;
+}
+
+.mks-list__collapse {
+	font-size: var(--font-size-16, 16px);
+	cursor: pointer;
+	text-indent: 5px;
+	color: darkorange;
+}
+
+.mks-list__collapse:hover {
+	text-shadow: 0 0 4px #460750;
+}
+
+.mks-list__collapsible {
+	overflow: hidden;
+	padding: 0;
+	margin: 0;
+}
+
+.mks-list__collapsible--collapsed {
+	display: none;
+}
+
+.mks-list__icon {
+	border: none;
+	flex: 0 0 18px;
+	text-align: center;
+	line-height: var(--line-height-20, 20px);
+	font-size: var(--font-size-16, 16px);
+}
+
+.mks-list__link {
+	font-size: var(--font-size-20, 20px);
+	text-indent: 5px;
+}
+
+.panel-container {
+	height: 100%;
+	width: 100%;
+	display: flex;
+}
+
+.effects {
+	padding: 5px 0;
+	max-height: calc(425px - 5rem);
+	overflow-y: scroll;
+	overflow-x: hidden;
+	flex: 1;
+	flex-direction: row;
+}
+
+.effect {
+	display: flex;
+	flex: 1 0 auto;
+}
+
+.effect > button {
+	flex: 0;
+	font-size: 0.7rem;
+	height: 1.25rem;
+	line-height: normal;
+	margin-right: 5px;
+}
+
+.effect > div {
+	flex: 1;
+	line-height: 1.25rem;
+}
+
+.mb-1 {
+	margin-bottom: 0.25rem;
+}
+
+.sheet-tabs {
+	min-width: 250px;
+}
+
+.mks-active-tab {
+	text-decoration: underline;
+	/*text-shadow: 0 0 10px var(--color-shadow-primary);*/
+}
+
+.mks-mr10 {
+	margin-right: 10px;
+}
+
+#relative-cond-panel header.table-header {
+	background: rgba(0, 0, 0, 0.5);
+	padding: 5px;
+	border: 1px solid var(--color-border-dark-primary);
+	text-align: center;
+	color: var(--color-text-light-highlight);
+	font-weight: bold;
+	text-shadow: 1px 1px var(--color-shadow-dark);
+}
+#relative-cond-panel ul.permissions-list {
+	list-style: none;
+	margin: 0;
+	padding: 0;
+	max-height: 400px;
+	overflow: hidden auto;
+	scrollbar-width: thin;
+}
+#relative-cond-panel li.permission {
+	padding: 5px;
+	border-bottom: 1px solid var(--color-border-light-tertiary);
+}
+#relative-cond-panel li.permission .form-fields {
+	justify-content: space-around;
+}
+#relative-cond-panel li.permission input[type="checkbox"] {
+	margin: 0;
+}
+#relative-cond-panel .index {
+	flex: 0 0 200px;
+	text-align: left;
+	font-weight: bold;
+}
+#relative-cond-panel .hint {
+	flex: 0 0 100%;
+	color: var(--color-text-dark-secondary);
+	font-size: var(--font-size-13);
+	margin: 5px 0 0;
+}

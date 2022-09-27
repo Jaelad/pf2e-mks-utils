@@ -32,6 +32,10 @@ export const ACTION_GLYPH = {
 
 export const DEGREE_OF_SUCCESS_STRINGS = ["criticalFailure", "failure", "success", "criticalSuccess"]
 
+export const ATTITUDES = ['hostile', 'unfriendly', 'indifferent', 'friendly', 'helpful']
+export const AWARENESS = ['unnoticed', 'undetected', 'hidden', 'observed']
+export const COVER = ['none', 'lesser', 'standard', 'greater']
+
 export const SKILLS = {
 	acrobatics: "acr",
 	arcana: "arc",

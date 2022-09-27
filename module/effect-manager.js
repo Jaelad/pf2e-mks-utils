@@ -40,7 +40,7 @@ export default class EffectManager {
 				if (newBadgeValue < 1 && badgeMod.removeIfZero)
 					return await existingEffect.delete()
 				else if (newBadgeValue !== null)
-					updates["data.badge"] = {type: "counter", value: newBadgeValue}
+					updates["system.badge"] = {type: "counter", value: newBadgeValue}
 			}
 			for (let flagKey in flags) {
 				updates["flags." + flagKey] = flags[flagKey]
@@ -53,6 +53,9 @@ export default class EffectManager {
 			for (let flagKey in flags) {
 				effectData.flags[flagKey] = flags[flagKey]
 			}
+			if (badgeMod && badgeMod.value > 0 && effectData?.system?.badge?.type === 'counter' ) {
+				effectData.system.badge.value = badgeMod.value
+			}
 			for (let change in changes) {
 				const val = changes[change]
 				eval("effectData." + change + "=" + val)
@@ -63,7 +66,7 @@ export default class EffectManager {
 
 	async removeEffect(tokenOrActor, sourceIdOrSlug) {
 		const actor = tokenOrActor?.actor ?? tokenOrActor
-		const existingEffect = this.getEffect(actor, sourceIdOrSlug)
+		const existingEffect = actor.itemTypes?.effect.find((e) => e.sourceId === sourceIdOrSlug || e.slug === sourceIdOrSlug)
 		if (existingEffect)
 			return await existingEffect.delete()
 	}
@@ -123,11 +126,13 @@ export default class EffectManager {
 		return condition
 	}
 
-	removeCondition(tokenOrActor, conditionSlug) {
+	removeCondition(tokenOrActor, conditionSlugs) {
 		const actor = tokenOrActor?.actor ?? tokenOrActor
-		const condition = this.getCondition(actor, conditionSlug)
-		if (condition)
-			return game.pf2e.ConditionManager.removeConditionFromActor(condition.id, actor)
+		const conditions = this.getConditions(actor, Array.isArray(conditionSlugs) ? conditionSlugs : [conditionSlugs])
+		if (conditions.length > 0) {
+			const ids = conditions.map(c => c.id)
+			return game.pf2e.ConditionManager.removeConditionFromActor(ids, actor)
+		}
 	}
 
 	test() {

@@ -1,0 +1,224 @@
+<form autocomplete="off" onsubmit="event.preventDefault();">
+	<p class="notes">Configure which User role has permission to perform which action. Note that some actions cannot be disabled for Game Master users. Some changes may not take effect until the game is reloaded.</p>
+
+	<header class="table-header flexrow">
+		<label class="index">Permission</label>
+		<label>Player</label>
+		<label>Trusted Player</label>
+		<label>Assistant GM</label>
+		<label>Game Master</label>
+	</header>
+
+	<ul class="permissions-list">
+		<li class="permission form-group">
+			<label class="index">Allow Broadcasting Audio</label>
+			<div class="form-fields">
+				<input type="checkbox" name="BROADCAST_AUDIO.1">
+				<input type="checkbox" name="BROADCAST_AUDIO.2" checked="">
+				<input type="checkbox" name="BROADCAST_AUDIO.3" checked="">
+				<input type="checkbox" name="BROADCAST_AUDIO.4" checked="">
+			</div>
+			<p class="hint">Allow users with this role to broadcast audio when using A/V chat integration.</p>
+		</li>
+		<li class="permission form-group">
+			<label class="index">Allow Broadcasting Video</label>
+			<div class="form-fields">
+				<input type="checkbox" name="BROADCAST_VIDEO.1">
+				<input type="checkbox" name="BROADCAST_VIDEO.2" checked="">
+				<input type="checkbox" name="BROADCAST_VIDEO.3" checked="">
+				<input type="checkbox" name="BROADCAST_VIDEO.4" checked="">
+			</div>
+			<p class="hint">Allow users with this role to broadcast video when using A/V chat integration.</p>
+		</li>
+		<li class="permission form-group">
+			<label class="index">Canvas Pings</label>
+			<div class="form-fields">
+				<input type="checkbox" name="PING_CANVAS.1" checked="">
+				<input type="checkbox" name="PING_CANVAS.2" checked="">
+				<input type="checkbox" name="PING_CANVAS.3" checked="">
+				<input type="checkbox" name="PING_CANVAS.4" checked="">
+			</div>
+			<p class="hint">Allow users with this role to bring attention to a point on the canvas with a pinging animation.</p>
+		</li>
+		<li class="permission form-group">
+			<label class="index">Configure Token Settings</label>
+			<div class="form-fields">
+				<input type="checkbox" name="TOKEN_CONFIGURE.1">
+				<input type="checkbox" name="TOKEN_CONFIGURE.2" checked="">
+				<input type="checkbox" name="TOKEN_CONFIGURE.3" checked="">
+				<input type="checkbox" name="TOKEN_CONFIGURE.4" checked="" disabled="">
+			</div>
+			<p class="hint">Allow users with this role to configure the settings for Tokens that they own.</p>
+		</li>
+		<li class="permission form-group">
+			<label class="index">Create Journal Entries</label>
+			<div class="form-fields">
+				<input type="checkbox" name="JOURNAL_CREATE.1">
+				<input type="checkbox" name="JOURNAL_CREATE.2" checked="">
+				<input type="checkbox" name="JOURNAL_CREATE.3" checked="">
+				<input type="checkbox" name="JOURNAL_CREATE.4" checked="" disabled="">
+			</div>
+			<p class="hint">Allow users with this role to create new Journal Entries in the Journal sidebar.</p>
+		</li>
+		<li class="permission form-group">
+			<label class="index">Create Map Notes</label>
+			<div class="form-fields">
+				<input type="checkbox" name="NOTE_CREATE.1">
+				<input type="checkbox" name="NOTE_CREATE.2" checked="">
+				<input type="checkbox" name="NOTE_CREATE.3" checked="">
+				<input type="checkbox" name="NOTE_CREATE.4" checked="" disabled="">
+			</div>
+			<p class="hint">Allow users with this role to create Note objects from Journal Entries which they own.</p>
+		</li>
+		<li class="permission form-group">
+			<label class="index">Create Measured Template</label>
+			<div class="form-fields">
+				<input type="checkbox" name="TEMPLATE_CREATE.1" checked="">
+				<input type="checkbox" name="TEMPLATE_CREATE.2" checked="">
+				<input type="checkbox" name="TEMPLATE_CREATE.3" checked="">
+				<input type="checkbox" name="TEMPLATE_CREATE.4" checked="" disabled="">
+			</div>
+			<p class="hint">Allow users with this role to create templates for area-of-effect measurement.</p>
+		</li>
+		<li class="permission form-group">
+			<label class="index">Create New Actors</label>
+			<div class="form-fields">
+				<input type="checkbox" name="ACTOR_CREATE.1">
+				<input type="checkbox" name="ACTOR_CREATE.2">
+				<input type="checkbox" name="ACTOR_CREATE.3" checked="">
+				<input type="checkbox" name="ACTOR_CREATE.4" checked="" disabled="">
+			</div>
+			<p class="hint">Allow users with this role to create new Actors in the World.</p>
+		</li>
+		<li class="permission form-group">
+			<label class="index">Create New Items</label>
+			<div class="form-fields">
+				<input type="checkbox" name="ITEM_CREATE.1">
+				<input type="checkbox" name="ITEM_CREATE.2">
+				<input type="checkbox" name="ITEM_CREATE.3" checked="">
+				<input type="checkbox" name="ITEM_CREATE.4" checked="" disabled="">
+			</div>
+			<p class="hint">Allow users with this role to create new Items in the World.</p>
+		</li>
+		<li class="permission form-group">
+			<label class="index">Create New Tokens</label>
+			<div class="form-fields">
+				<input type="checkbox" name="TOKEN_CREATE.1">
+				<input type="checkbox" name="TOKEN_CREATE.2">
+				<input type="checkbox" name="TOKEN_CREATE.3" checked="">
+				<input type="checkbox" name="TOKEN_CREATE.4" checked="" disabled="">
+			</div>
+			<p class="hint">Allow users with this role to place Tokens for Actors they own on the game canvas.</p>
+		</li>
+		<li class="permission form-group">
+			<label class="index">Delete Tokens</label>
+			<div class="form-fields">
+				<input type="checkbox" name="TOKEN_DELETE.1">
+				<input type="checkbox" name="TOKEN_DELETE.2">
+				<input type="checkbox" name="TOKEN_DELETE.3" checked="">
+				<input type="checkbox" name="TOKEN_DELETE.4" checked="" disabled="">
+			</div>
+			<p class="hint">Allow users with this role to delete Tokens for Actors they own on the game canvas.</p>
+		</li>
+		<li class="permission form-group">
+			<label class="index">Display Mouse Cursor</label>
+			<div class="form-fields">
+				<input type="checkbox" name="SHOW_CURSOR.1" checked="">
+				<input type="checkbox" name="SHOW_CURSOR.2" checked="">
+				<input type="checkbox" name="SHOW_CURSOR.3" checked="">
+				<input type="checkbox" name="SHOW_CURSOR.4">
+			</div>
+			<p class="hint">Display the position of the player's mouse cursor which illustrates where the user is looking on the canvas.</p>
+		</li>
+		<li class="permission form-group">
+			<label class="index">Display Ruler Measurement</label>
+			<div class="form-fields">
+				<input type="checkbox" name="SHOW_RULER.1" checked="">
+				<input type="checkbox" name="SHOW_RULER.2" checked="">
+				<input type="checkbox" name="SHOW_RULER.3" checked="">
+				<input type="checkbox" name="SHOW_RULER.4" checked="">
+			</div>
+			<p class="hint">Display measurement using the ruler tool to other connected players.</p>
+		</li>
+		<li class="permission form-group">
+			<label class="index">Modify Configuration Settings</label>
+			<div class="form-fields">
+				<input type="checkbox" name="SETTINGS_MODIFY.1">
+				<input type="checkbox" name="SETTINGS_MODIFY.2">
+				<input type="checkbox" name="SETTINGS_MODIFY.3" checked="">
+				<input type="checkbox" name="SETTINGS_MODIFY.4" checked="" disabled="">
+			</div>
+			<p class="hint">Allow users with this role to modify game settings and enable or disable modules.</p>
+		</li>
+		<li class="permission form-group">
+			<label class="index">Open and Close Doors</label>
+			<div class="form-fields">
+				<input type="checkbox" name="WALL_DOORS.1" checked="">
+				<input type="checkbox" name="WALL_DOORS.2" checked="">
+				<input type="checkbox" name="WALL_DOORS.3" checked="">
+				<input type="checkbox" name="WALL_DOORS.4" checked="" disabled="">
+			</div>
+			<p class="hint">Allow users with this role interact with doors defined on the Walls Layer.</p>
+		</li>
+		<li class="permission form-group">
+			<label class="index">Upload New Files</label>
+			<div class="form-fields">
+				<input type="checkbox" name="FILES_UPLOAD.1">
+				<input type="checkbox" name="FILES_UPLOAD.2">
+				<input type="checkbox" name="FILES_UPLOAD.3" checked="">
+				<input type="checkbox" name="FILES_UPLOAD.4" checked="" disabled="">
+			</div>
+			<p class="hint">Allow users with this role to upload content to the server using the File Browser.</p>
+		</li>
+		<li class="permission form-group">
+			<label class="index">Use Drawing Tools</label>
+			<div class="form-fields">
+				<input type="checkbox" name="DRAWING_CREATE.1">
+				<input type="checkbox" name="DRAWING_CREATE.2" checked="">
+				<input type="checkbox" name="DRAWING_CREATE.3" checked="">
+				<input type="checkbox" name="DRAWING_CREATE.4" checked="" disabled="">
+			</div>
+			<p class="hint">Allow users with this role to create Drawings using the drawing tools.</p>
+		</li>
+		<li class="permission form-group">
+			<label class="index">Use File Browser</label>
+			<div class="form-fields">
+				<input type="checkbox" name="FILES_BROWSE.1">
+				<input type="checkbox" name="FILES_BROWSE.2" checked="">
+				<input type="checkbox" name="FILES_BROWSE.3" checked="">
+				<input type="checkbox" name="FILES_BROWSE.4" checked="" disabled="">
+			</div>
+			<p class="hint">Allow users with this role to browse through available files in the File Browser.</p>
+		</li>
+		<li class="permission form-group">
+			<label class="index">Use Script Macros</label>
+			<div class="form-fields">
+				<input type="checkbox" name="MACRO_SCRIPT.1" checked="">
+				<input type="checkbox" name="MACRO_SCRIPT.2" checked="">
+				<input type="checkbox" name="MACRO_SCRIPT.3" checked="">
+				<input type="checkbox" name="MACRO_SCRIPT.4" checked="" disabled="">
+			</div>
+			<p class="hint">Allow users with this role to use JavaScript macros which access the API.</p>
+		</li>
+		<li class="permission form-group">
+			<label class="index">Whisper Private Messages</label>
+			<div class="form-fields">
+				<input type="checkbox" name="MESSAGE_WHISPER.1" checked="">
+				<input type="checkbox" name="MESSAGE_WHISPER.2" checked="">
+				<input type="checkbox" name="MESSAGE_WHISPER.3" checked="">
+				<input type="checkbox" name="MESSAGE_WHISPER.4" checked="" disabled="">
+			</div>
+			<p class="hint">Allow users with this role whisper private messages that the Game Master cannot see.</p>
+		</li>
+	</ul>
+
+	<div class="form-group">
+		<button type="submit">
+			<i class="fas fa-save"></i> Save Configuration
+		</button>
+
+		<button type="reset" name="reset">
+			<i class="fas fa-sync"></i> Reset Defaults
+		</button>
+	</div>
+</form>

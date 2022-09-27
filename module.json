@@ -1,16 +1,24 @@
 {
-	"name": "pf2e-tools-mks",
+	"id": "pf2e-tools-mks",
 	"title": "PF2e Tools by MKS",
-	"description": "General Utilities and Action Macros for Pathfinder 2e",
-	"author": "Jaelad",
-	"version": "0.1",
-	"compatibleCoreVersion": "9",
-	"minimumCoreVersion": "0.8.9",
+	"description": "General Utilities and Action Implementations for Pathfinder 2e",
+	"version": "0.2",
+	"compatibility": {
+		"minimum": "10",
+		"verified": "10.285"
+	},
 	"type": "module",
-	"systems": ["pf2e"],
-	"dependencies": [
-		{ "name": "pf2e-persistent-damage", "type": "module" }
+	"authors": [
+		{ "name": "Jaelad", "flags": {} }
 	],
+	"relationships": {
+		"systems": [
+			{ "id": "pf2e", "type": "system", "compatibility": {}}
+		],
+		"requires": [
+			{ "id": "pf2e-persistent-damage", "type": "module" }
+		]
+	},
 	"esmodules": ["./module/index.js"],
 	"styles": ["styles/common.css"],
 	"packs": [
@@ -19,7 +27,7 @@
 			"label": "MKS Core Effects",
 			"system": "pf2e",
 			"path": "./packs/core-effects.db",
-			"entity": "Item",
+			"type": "Item",
 			"module": "pf2e-tools-mks",
 			"private": false
 		},
@@ -28,7 +36,7 @@
 			"label": "MKS Combat Macros",
 			"system": "pf2e",
 			"path": "./packs/action-combat-macros.db",
-			"entity": "Macro",
+			"type": "Macro",
 			"module": "pf2e-tools-mks",
 			"private": false
 		},
@@ -37,7 +45,7 @@
 			"label": "MKS Movement Macros",
 			"system": "pf2e",
 			"path": "./packs/action-movement-macros.db",
-			"entity": "Macro",
+			"type": "Macro",
 			"module": "pf2e-tools-mks",
 			"private": false
 		},
@@ -46,7 +54,7 @@
 			"label": "MKS Other Action Macros",
 			"system": "pf2e",
 			"path": "./packs/action-other-macros.db",
-			"entity": "Macro",
+			"type": "Macro",
 			"module": "pf2e-tools-mks",
 			"private": false
 		},
@@ -55,7 +63,7 @@
 			"label": "MKS Exploration Macros",
 			"system": "pf2e",
 			"path": "./packs/explore-macros.db",
-			"entity": "Macro",
+			"type": "Macro",
 			"module": "pf2e-tools-mks",
 			"private": false
 		},
@@ -64,7 +72,7 @@
 			"label": "MKS Downtime Macros",
 			"system": "pf2e",
 			"path": "./packs/downtime-macros.db",
-			"entity": "Macro",
+			"type": "Macro",
 			"module": "pf2e-tools-mks",
 			"private": false
 		}

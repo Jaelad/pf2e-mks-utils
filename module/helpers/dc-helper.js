@@ -18,7 +18,7 @@ export default class DCHelper {
 	}
 
 	static determineSpellDcByLevel(spell) {
-		const rarity = spell.data.data.traits.rarity
+		const rarity = spell.system.traits.rarity
 		const level = spell.level
 		const table = [15,18,20,23,26,28,31,34,36,39]
 

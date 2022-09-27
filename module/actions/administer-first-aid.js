@@ -18,25 +18,34 @@ export class ActionAdministerFirstAid extends SimpleAction {
 		const {applicable, selected, targeted} = this.isApplicable(null,true)
 		if (!applicable) return
 
+		const buttons = []
 		const dyingCond = this.effectManager.getCondition(targeted, 'dying')
 		const bleedingEffect = this.effectManager.getEffect(targeted, 'persistent-damage-bleed')
+		const poisonEffect = this.effectManager.getEffect(targeted, 'persistent-damage-poison')
+
+		if (dyingCond)
+			buttons.push({ value: 'dying', name: 'PF2E.Actions.AdministerFirstAid.Dying'})
+		if (bleedingEffect)
+			buttons.push({ value: 'bleeding', name: 'PF2E.Actions.AdministerFirstAid.Bleeding'})
+		if (poisonEffect)
+			buttons.push({ value: 'poisoned', name: 'PF2E.Actions.AdministerFirstAid.Poisoned'})
 
 		let dc, affliction
-		if (dyingCond && bleedingEffect)
-			affliction = await Dialogs.multipleButtons([
-				{ value: 'dying', name: 'PF2E.Actions.AdministerFirstAid.Dying'},
-				{ value: 'bleeding', name: 'PF2E.Actions.AdministerFirstAid.Bleeding'},
-			], "PF2E.MKS.Dialog.AdministerFirstAid.SelectType")
-				?? 'dying'
+		if (buttons.length > 1)
+			affliction = await Dialogs.multipleButtons(buttons, "PF2E.MKS.Dialog.AdministerFirstAid.SelectType") ?? 'dying'
 		else if (dyingCond)
 			affliction = 'dying'
 		else if (bleedingEffect)
 			affliction = 'bleeding'
+		else if (poisonEffect)
+			affliction = 'poisoned'
 
 		if (affliction === 'dying')
 			dc = dyingCond.badge.value + 15
 		else if (affliction === 'bleeding')
 			dc = bleedingEffect.flags.persistent.dc
+		else if (affliction === 'poison')
+			dc = poisonEffect.flags.persistent.dc
 
 		super.act({overrideDC: dc, affliction})
 	}
@@ -54,26 +63,32 @@ export class ActionAdministerFirstAid extends SimpleAction {
 			}
 		}
 		else if (options.affliction === 'bleeding') {
-			const flatCheckRoll = await new Roll('1d20').roll({async: true})
-			if (flatCheckRoll.result >= options.overrideDC) {
-				this.effectManager.removeEffect(targeted, 'persistent-damage-bleed').then()
+			if (roll?.data.degreeOfSuccess > 1) {
+				const flatCheckRoll = await new Roll('1d20').roll({async: true})
+				if (flatCheckRoll.result >= options.overrideDC) {
+					this.effectManager.removeEffect(targeted, 'persistent-damage-bleed').then()
+				}
 			}
 			else if (roll?.data.degreeOfSuccess === 0) {
 				const bleedingEffect = this.effectManager.getEffect(targeted, 'persistent-damage-bleed')
 				const healthLost = await new Roll(bleedingEffect.flags.persistent.value).roll({async: true})
-				this._.actorManager.hpChange(targeted, -1 * healthLost)
+				this._.actorManager.applyHPChange(targeted, {value: -1 * healthLost}).then()
 			}
+		}
+		else if (options.affliction === 'poisoned') {
+
 		}
 	}
 
 	applies(selected, targeted) {
 		const healersTools = selected.actor.itemTypes.equipment.find(e => e.slug === 'healers-tools' && ['held', 'worn'].includes(e.carryType))
-		const healersToolsOk = healersTools.carryType === 'held' || this._.inventoryManager.handsFree(selected) > 0
+		const healersToolsOk = healersTools && (healersTools.carryType === 'held' || this._.inventoryManager.handsFree(selected) > 0)
 		const dyingCond = this.effectManager.getCondition(targeted, 'dying')
 		const bleedingEffect = this.effectManager.getEffect(targeted, 'persistent-damage-bleed')
+		const poisonEffect = this.effectManager.getEffect(targeted, 'persistent-damage-poison')
 
 		const distance = this._.distanceTo(selected, targeted)
-		return !!selected && !!targeted && selected.actor.alliance === targeted.actor.alliance && distance < 10
-			&& (dyingCond?.badge?.value > 0 || !!bleedingEffect) && healersToolsOk
+		return selected.actor.alliance === targeted.actor.alliance && distance < 10
+			&& (dyingCond?.badge?.value > 0 || !!bleedingEffect || !!poisonEffect) && healersToolsOk
 	}
 }

@@ -33,7 +33,7 @@ export class ActionSenseMotive extends SimpleAction {
 	}
 
 	applies(selected, targeted) {
-		return !!selected && !!targeted && selected.actor.alliance !== targeted.actor.alliance
+		return selected.actor.alliance !== targeted.actor.alliance
 	}
 }
 
@@ -145,8 +145,8 @@ export class ActionFeint extends SimpleAction {
 	}
 
 	applies(selected, targeted) {
-		const distance = this._.distanceTo(selected, targeted)
-		return !!selected && !!targeted && selected.actor.alliance !== targeted.actor.alliance
+		let distance = this._.distanceTo(selected, targeted)
+		return selected.actor.alliance !== targeted.actor.alliance
 			&& distance < (this._.inventoryManager.wieldsWeaponWithTraits(selected, ['reach']) ? 15 : 10)
 	}
 
@@ -172,5 +172,46 @@ export class ActionRequest extends SimpleAction {
 	}
 }
 
+export class ActionCommandAnAnimal extends SimpleAction {
+	constructor(MKS) {
+		super(MKS, {action: 'commandAnAnimal',
+			traits: ['concentrate', 'auditory'],
+			checkType: 'skill[nature]',
+			icon: "systems/pf2e/icons/spells/awaken-animal.webp",
+			tags: ['social'],
+			actionGlyph: 'A',
+			targetCount: 1
+		})
+	}
 
+	applies(selected, targeted) {
+		return Array.from(targeted.actor.traits).indexOf('animal') !== -1
+	}
+}
 
+export class ActionPerform extends SimpleAction {
+	constructor(MKS) {
+		super(MKS, {action: 'perform',
+			traits: ['concentrate'],
+			checkType: 'skill[performance]',
+			icon: "systems/pf2e/icons/spells/spirit-song.webp",
+			tags: ['social'],
+			actionGlyph: 'A',
+			targetCount: 0
+		})
+	}
+}
+
+export class ActionConcealAnObject extends SimpleAction {
+	constructor(MKS) {
+		super(MKS, {action: 'concealAnObject',
+			traits: ['manipulate', 'secret'],
+			checkType: 'skill[stealth]',
+			icon: "systems/pf2e/icons/spells/umbral-mindtheft.webp",
+			tags: ['stealth'],
+			actionGlyph: 'A',
+			targetCount: 2,
+			dc: t => t.actor.perception.dc.value
+		})
+	}
+}

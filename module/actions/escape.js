@@ -15,9 +15,9 @@ export default class ActionEscape extends Action {
 		if (!applicable)
 			return
 
-		let conditionSlug //[1].data.data.references.parent.type == condition
+		let conditionSlug //[1].system.references.parent.type == condition
 		const conditions = this._.effectManager.getConditions(selected, ActionEscape.CONDITIONS)
-			.filter((c) => !c.data.data.references?.parent?.type)
+			.filter((c) => !c.system.references?.parent?.type)
 		if (conditions.length === 1)
 			conditionSlug = conditions[0].slug
 		else

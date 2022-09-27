@@ -17,7 +17,7 @@ export class ActionDemoralize extends SimpleAction {
 	applies(selected, targeted) {
 		const immuneEffect = this.effectManager.getEffect(targeted, Compendium.EFFECT_IMMUNE_TO_DEMORALIZE)
 		const distance = this._.distanceTo(selected, targeted)
-		return !!selected && !!targeted && selected.actor.alliance !== targeted.actor.alliance && distance <= 30
+		return selected.actor.alliance !== targeted.actor.alliance && distance <= 30
 			&& !(immuneEffect?.flags?.mks?.actors?.includes(selected.actor.id))
 	}
 

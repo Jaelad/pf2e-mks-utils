@@ -1,5 +1,6 @@
 import {default as LOG} from "../utils/logging.js"
 import Compendium from "./compendium.js"
+import Objects from "../utils/objects.js"
 
 export default class ActorManager {
 	constructor(MKS) {
@@ -27,27 +28,35 @@ export default class ActorManager {
 				dt = (value > 0 || target === 'temp') && target !== 'regular' && target !== 'max' ? Math.min(tmp, value) : 0
 				// Remaining goes to health
 				tmpMax = parseInt(hp.tempmax) || 0
-				updates[resourcename + ".temp"] = tmp - dt
+				if (dt !== 0)
+					updates[resourcename + ".temp"] = tmp - dt
 			}
 
 			// Update the Actor
 			if (target !== 'temp' && target !== 'max' && dt >= 0) {
-				let change = (value - dt)
-				updates[resourcename + ".value"] = Math.clamped(hp.value - change, 0, hp.max + tmpMax)
-
-				let display = change + dt
-				canvas.interface.createScrollingText(token.center, (-display).signedString(), {
-					anchor: CONST.TEXT_ANCHOR_POINTS.CENTER,
-					direction: display > 0 ? CONST.TEXT_ANCHOR_POINTS.BOTTOM : CONST.TEXT_ANCHOR_POINTS.TOP,
-					distance: token.h,
-					fontSize: 28,
-					stroke: 0x000000,
-					strokeThickness: 4,
-					jitter: 0.25
-				}).then()
+				const change = (value - dt)
+				const newValue = Math.clamped(hp.value - change, 0, hp.max + tmpMax)
+				if (newValue !== hp.value) {
+					updates[resourcename + ".value"] = newValue
+				}
 			}
 		}
-		return await actor.update(updates)
+		if (!Objects.isEmpty(updates)) {
+			LOG.info("HP Temp:" + hp.temp + "->" + updates["system.attributes.hp.temp"])
+			LOG.info("HP:" + hp.value + "->" + updates["system.attributes.hp.value"])
+			const diff = (updates["system.attributes.hp.temp"] ? hp.temp - updates["system.attributes.hp.temp"] : 0)
+				+ (updates["system.attributes.hp.value"] ? hp.value - updates["system.attributes.hp.value"] : 0)
+			canvas.interface.createScrollingText(token.center, (-diff).signedString(), {
+				anchor: CONST.TEXT_ANCHOR_POINTS.CENTER,
+				direction: diff > 0 ? CONST.TEXT_ANCHOR_POINTS.BOTTOM : CONST.TEXT_ANCHOR_POINTS.TOP,
+				distance: token.h,
+				fontSize: 28,
+				stroke: 0x000000,
+				strokeThickness: 4,
+				jitter: 0.25
+			}).then()
+			return await actor.update(updates)
+		}
 	}
 
 }

@@ -8,7 +8,7 @@ export default class SocketHandler {
 		this._ = MKS
 		this.listeners = {}
 
-		socket.on(SocketHandler.CHANNEL, (data) => {
+		game.socket.on(SocketHandler.CHANNEL, (data) => {
 			const event = data.type
 			const gm = data.gm
 			delete data.type
@@ -21,7 +21,7 @@ export default class SocketHandler {
 
 	emit(event, data, onlyGM = false) {
 		const eventData = {type: event, gm: onlyGM, ...data}
-		socket.emit(SocketHandler.CHANNEL, eventData)
+		game.socket.emit(SocketHandler.CHANNEL, eventData)
 	}
 
 	on(event, handler, onlyGM = false) {

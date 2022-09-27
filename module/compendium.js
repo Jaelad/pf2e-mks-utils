@@ -16,6 +16,7 @@ export default class Compendium {
 	static ACTION_AVERT_GAZE = "Compendium.pf2e.actionspf2e.UWdRX1VelipCzrCg"
 	static ACTION_SWIM = "Compendium.pf2e.actionspf2e.c8TGiZ48ygoSPofx"
 	static ACTION_CLIMB = "Compendium.pf2e.actionspf2e.pprgrYQ1QnIDGZiy"
+	static ACTION_ADMINISTER_FIRST_AID = "Compendium.pf2e.actionspf2e.MHLuKy4nQO2Z4Am1"
 
 	static EFFECT_MULTIPLE_ATTACK = "Compendium.pf2e-tools-mks.core-effects.DPVfUT43aCQMvauJ"
 	static EFFECT_AID_READY = "Compendium.pf2e-tools-mks.core-effects.p9PSILLD0f0NkBc5"

@@ -13,7 +13,7 @@ export default class ActionCover extends Action {
 			return
 
 		if (this.effectManager.hasEffect(selected, Compendium.EFFECT_COVER))
-			this.effectManager.setEffect(selected, Compendium.EFFECT_COVER, {badgeMod: {value: 4}}).then()
+			this.effectManager.setEffect(selected, Compendium.EFFECT_COVER, {badgeMod: {value: 3}}).then()
 		else
 			this.effectManager.setEffect(selected, Compendium.EFFECT_COVER, {changes: {"data.badge.value": 2}}).then()
 	}
@@ -23,7 +23,7 @@ export default class ActionCover extends Action {
 		if (!applicable)
 			return
 
-		this.effectManager.setEffect(selected, Compendium.EFFECT_COVER, {badgeMod: {multiply: 2}}).then()
+		this.effectManager.setEffect(selected, Compendium.EFFECT_COVER, {badgeMod: {increment: 1}}).then()
 	}
 
 	methods(onlyApplicable) {
@@ -59,8 +59,8 @@ export default class ActionCover extends Action {
 		const coverEffect = this.effectManager.getEffect(selected, Compendium.EFFECT_COVER)
 		const prone = this.effectManager.hasCondition(selected, 'prone')
 		if (method === 'giveCover')
-			return {applicable: game.user.isGM && (!coverEffect || coverEffect.data.data.badge?.value < 4), selected}
+			return {applicable: game.user.isGM && (!coverEffect || coverEffect.system.badge?.value < 3), selected}
 		else if (method === 'takeCover')
-			return {applicable: !game.user.isGM && prone || coverEffect?.data.data.badge?.value === 2, selected}
+			return {applicable: !game.user.isGM && prone || coverEffect?.system.badge?.value === 2, selected}
 	}
 }

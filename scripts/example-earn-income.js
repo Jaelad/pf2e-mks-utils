@@ -93,7 +93,7 @@ function calculateIncome(actor, skill, roll, level, days) {
 }
 function runEarnIncome(actor, skill, assurance, level, days) {
     if (assurance) {
-        const actorLevel = actor.data.data.details?.level?.value ?? 1;
+        const actorLevel = actor.system.details?.level?.value ?? 1;
         const proficiencyLevel = isProficiencyWithoutLevel() ? 0 : actorLevel;
         const proficiencyBonus = proficiencyLevel + skill.rank * 2;
         calculateIncome(actor, skill, { dieValue: 10, modifier: proficiencyBonus }, level, days);
@@ -103,7 +103,7 @@ function runEarnIncome(actor, skill, assurance, level, days) {
         game.pf2e.Check.roll(
             new game.pf2e.CheckModifier(
                 '<span style="font-family: Pathfinder2eActions">A</span> Earn Income',
-                actor.data.data.skills[skill.acronym],
+                actor.system.skills[skill.acronym],
                 [],
             ),
             { actor, type: 'skill-check', options },
@@ -118,7 +118,7 @@ function runEarnIncome(actor, skill, assurance, level, days) {
 }
 function getSkills(actor) {
     return (
-        Object.entries(actor.data.data.skills)
+        Object.entries(actor.system.skills)
             .map(([acronym, value]) => {
                 return {
                     acronym,

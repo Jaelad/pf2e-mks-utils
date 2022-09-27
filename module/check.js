@@ -73,7 +73,7 @@ export default class Check {
 		}
 		else if (match = SELECTORS.skill.exec(type)) {
 			let skill = match[1]
-			statisticModifier = actor.data.data.skills[SKILLS[skill] ?? skill]
+			statisticModifier = actor.system.skills[SKILLS[skill] ?? skill]
 			checkSlug = 'skill-check', statSlug = skill
 		}
 
@@ -82,7 +82,7 @@ export default class Check {
 		}
 		else if (match = SELECTORS.strike.exec(type)) {
 			let slug = match[1]
-			statisticModifier = actor.data.data.actions.find(strike => strike.slug === slug)
+			statisticModifier = actor.system.actions.find(strike => strike.slug === slug)
 			checkSlug = 'attack-roll', statSlug = slug
 		}
 
@@ -234,13 +234,13 @@ export default class Check {
 
 	static getApplicableEquippedWeapons(actor, trait) {
 		if (actor.isOfType("character"))
-			return actor.data.data.actions.flatMap((s) => (s.ready && s.item.traits.has(trait) ? s.item : []))
+			return actor.system.actions.flatMap((s) => (s.ready && s.item.traits.has(trait) ? s.item : []))
 		else
 			return actor.itemTypes.weapon.filter((w) => w.isEquipped && w.traits.has(trait))
 	}
 
 	static getWeaponPotencyModifier(item, selector) {
-		const itemBonus = item.data.data.runes.potency;
+		const itemBonus = item.system.runes.potency;
 		const slug = "potency";
 		if (game.settings.get("pf2e", "automaticBonusVariant") !== "noABP") {
 			return new game.pf2e.Modifier({
@@ -320,7 +320,7 @@ export default class Check {
 		actor.spellcasting.forEach(sc => {
 			checkTypes.push("spell[" + sc.tradition + "]")
 		})
-		actor.data.data.actions.forEach(action => {
+		actor.system.actions.forEach(action => {
 			if (action.type === 'strike' && action.ready)
 				checkTypes.push("strike[" + action.slug + "]")
 		})

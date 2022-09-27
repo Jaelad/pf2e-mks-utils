@@ -71,12 +71,12 @@ export class SimpleAction extends Action {
 
 	act({overrideDC}) {
 		const options = arguments[0]
-		const {applicable, selected, targets} = this.isApplicable(null,true)
+		const {applicable, selected, targeted, targets} = this.isApplicable(null,true)
 		if (!applicable)
 			return
 
 		const rollCallback = ({roll, actor}) => {
-			this.resultHandler(roll, selected, targets, options)
+			this.resultHandler(roll, selected, targets ?? targeted, options)
 		}
 
 		const check = new Check({
@@ -95,7 +95,7 @@ export class SimpleAction extends Action {
 		check.roll(selected).then(rollCallback)
 	}
 
-	resultHandler(roll, selected, targets) {
+	resultHandler(roll, selected, targets, options) {
 		this.resultToChat(selected, this.action, roll?.data.degreeOfSuccess, this.actionGlyph)
 	}
 
@@ -113,13 +113,23 @@ export class SimpleAction extends Action {
 
 	isApplicable(method=null, warn=false) {
 		const selected = this._.ensureOneSelected(warn)
-		let targets
-		if (this.targetCount === 1)
-			targets = this._.ensureOneTarget(null, warn)
-		else if (this.targetCount > 1)
-			targets = this._.ensureAtLeastOneTarget(null, warn)
+		if (!selected) return {applicable: false}
 
-		return {applicable: this.applies(selected, targets), selected, targets}
+		if (this.targetCount === 1) {
+			const targeted = this._.ensureOneTarget(null, warn)
+			if (!targeted) return {applicable: false}
+			return {applicable: this.applies(selected, targeted), selected, targeted}
+		}
+		else if (this.targetCount > 1) {
+			const targets = this._.ensureAtLeastOneTarget(null, warn)
+			if (!targets) return {applicable: false}
+			return {applicable: this.applies(selected, targets), selected, targets}
+		}
+		else if (this.targetCount === 0) {
+			return {applicable: this.applies(selected), selected}
+		}
+		else
+			return {applicable: false}
 	}
 
 	applies(selected, targets) {

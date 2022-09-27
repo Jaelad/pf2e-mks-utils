@@ -21,14 +21,15 @@ import ActionProne from "./actions/prone.js"
 import ActionRecallKnowledge from "./actions/recall-knowledge.js"
 import {RUDIMENTARY_ACTIONS} from "./action.js"
 import {
-	ActionBalance, ActionClimb, ActionFeint, ActionForceOpen,
-	ActionGrabAnEdge, ActionHighJump, ActionLongJump, ActionRequest,
+	ActionBalance, ActionClimb, ActionCommandAnAnimal, ActionConcealAnObject, ActionFeint, ActionForceOpen,
+	ActionGrabAnEdge, ActionHighJump, ActionLongJump, ActionPerform, ActionRequest,
 	ActionSenseMotive, ActionSwim, ActionTumbleThrough
 } from "./actions/simple-actions.js"
 import ActionCreateADiversion from "./actions/create-a-diversion.js"
 import {ActionDemoralize} from "./actions/demoralize.js"
 import {ActionAdministerFirstAid} from "./actions/administer-first-aid.js"
 import ActorManager from "./actor-manager.js"
+import {registerHandlebarsHelpers} from "./helpers/handlebars.js"
 
 
 export default class MksTools {
@@ -86,10 +87,14 @@ export default class MksTools {
 			request: new ActionRequest(this),
 			demoralize: new ActionDemoralize(this),
 			administerFirstAid: new ActionAdministerFirstAid(this),
+			concealAnObject: new ActionConcealAnObject(this),
+			perform: new ActionPerform(this),
+			commandAnAnimal: new ActionCommandAnAnimal(this),
 		}
 		this.rudimentaryActions = RUDIMENTARY_ACTIONS
 
 		Object.values(this.actions).forEach(a => a.initialize())
+		registerHandlebarsHelpers()
 	}
 
 	ensureOneSelected(warn = true) {
@@ -153,7 +158,7 @@ export default class MksTools {
 		let actor = this.ensureOneSelected()?.actor
 		if (!actor) return
 
-		return actor.data.data.actions.filter(a => ready === null || a.ready === ready)
+		return actor.system.actions.filter(a => ready === null || a.ready === ready)
 	}
 
     getSkillStat(skill) {
@@ -183,7 +188,11 @@ export default class MksTools {
 	distanceTo(token1, token2, weapon = null) {
 		const self = token1.actor
 
-		const reach =weapon ? ["character", "npc", "familiar"].includes(self.type) ? self.getReach({action: "attack", weapon}) ?? null : null : null
+		const reach = weapon
+			? ["character", "npc", "familiar"].includes(self.type)
+				? self.getReach({action: "attack", weapon})
+				: null
+			: null
 		return token1.distanceTo(token2, {reach})
 	}
 

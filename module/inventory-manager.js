@@ -29,7 +29,7 @@ export default class InventoryManager {
 
 	handsFree(tokenOrActor) {
 		const actor = tokenOrActor?.actor ?? tokenOrActor
-		const handsFree = actor.data.data.attributes.handsFree
+		const handsFree = actor.system.attributes.handsFree
 		const grabbing = this._.effectManager.hasEffect(tokenOrActor, Compendium.EFFECT_GRABBING)
 
 		return Math.max(0, handsFree - (grabbing ? 1 : 0))
@@ -38,7 +38,7 @@ export default class InventoryManager {
 	wieldsWeaponWithTraits(tokenOrActor, traits, all = true) {
 		const actor = tokenOrActor?.actor ?? tokenOrActor
 		return actor.itemTypes.weapon.find((w => {
-			const wTraits = w.data.data.traits.value
+			const wTraits = w.system.traits.value
 			if (all) {
 				for (let i = 0; i < traits.length; i++) {
 					if (!wTraits.includes(traits[i]))
