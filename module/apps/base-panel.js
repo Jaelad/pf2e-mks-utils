@@ -17,7 +17,7 @@ export default class BasePanel extends FormApplication {
             }
         }
         if (activeApp) {
-            if (activeApp._tabs && activeApp._tabs[0].active !== tab) {
+            if (activeApp._tabs && activeApp._tabs?.[0]?.active !== tab) {
                 activeApp.render(true, { focus: inFocus })
             }
         }

@@ -1,7 +1,7 @@
 import Compendium from "./compendium.js"
 import {default as i18n} from "../lang/pf2e-helper.js"
 import {default as LOG} from "../utils/logging.js"
-import {ATTITUDES} from "./constants.js"
+import {ATTITUDES, AWARENESS, SYSTEM} from "./constants.js"
 import RelativeCondPanel from "./apps/relative-cond-panel.js"
 
 export default class EncounterManager {
@@ -21,7 +21,7 @@ export default class EncounterManager {
 			this._.effectManager.setEffect(token, Compendium.EFFECT_MULTIPLE_ATTACK, {badgeMod: {increment:1}}).then()
 		}
 
-		const aided = pf2e.modifiers.find(mod => mod.slug === 'aided')
+		const aided = pf2e.modifiers.find(mod => mod.slug === "aided")
 		if (aided)
 			this._.effectManager.removeEffect(token, Compendium.EFFECT_AIDED).then()
 	}
@@ -44,7 +44,7 @@ export default class EncounterManager {
 		const effects = combatant.actor.itemTypes.effect
 		effects.forEach(effect => {
 			LOG.info(`Effect '${effect.name} : ${effect?.remainingDuration?.remaining}`)
-			if (effect.slug === 'effect-grabbing') {
+			if (effect.slug === "effect-grabbing") {
 				if (effect?.remainingDuration?.remaining === 0) {
 					const grabbedTokenId = effect.flags?.mks?.grapple?.grabbed
 					grabbedTokenId && this._.actions.grapple.onGrabbingExpired(grabbedTokenId)
@@ -53,9 +53,30 @@ export default class EncounterManager {
 		})
 	}
 	
+	async applyCover(combatant, targetCombatant, cover) {
+		const coverTaken = this._.effectManager.hasEffect(targetCombatant.actor, "cover-taken")
+		const coverState = coverTaken ? cover === 2 ? 4 : 2 : cover
+		if (coverState > 0)
+			await this._.effectManager.setEffect(targetCombatant.actor, Compendium.EFFECT_COVER, {badgeMod: {value: coverState}})
+		else
+			await this._.effectManager.removeEffect(targetCombatant.actor, Compendium.EFFECT_COVER)
+	}
+	
+	async applyAwareness(combatant, targetCombatant, awareness) {
+		await this._.effectManager.removeCondition(targetCombatant.actor, AWARENESS)
+		if (awareness !== 3)
+			await this._.effectManager.setCondition(targetCombatant.actor, AWARENESS[awareness])
+	}
+	
+	async applyAttitude(combatant, targetCombatant, attitude) {
+		await this._.effectManager.removeCondition(targetCombatant.actor, ATTITUDES)
+		if (attitude !== 2)
+			await this._.effectManager.setCondition(targetCombatant.actor, ATTITUDES[attitude])
+	}
+	
 	async applyRelativeConditions(combatant) {
 		const encounter = combatant.parent
-		let relativeData = encounter.flags?.mks?.relative ?? {}
+		let relativeData = encounter.flags?.[SYSTEM.moduleId]?.relative ?? {}
 		let actorRelativeConds = relativeData?.[combatant.token.id], flagUpdate = false
 		if (!actorRelativeConds) {
 			actorRelativeConds = {}
@@ -67,13 +88,16 @@ export default class EncounterManager {
 		for (let i = 0; i < combatants.length; i++) {
 			const c = combatants[i], tokenId = c.token.id
 			await this._.effectManager.removeEffect(c.actor, Compendium.EFFECT_COVER)
-			await this._.effectManager.removeCondition(c.actor, ['hidden', 'hostile', 'unfriendly', 'friendly', 'helpful'])
+			await this._.effectManager.removeCondition(c.actor, AWARENESS.concat(ATTITUDES))
 			
 			if (c.actor.alliance === combatant.actor.alliance) continue
 			
+			if (!actorRelativeConds[tokenId])
+				actorRelativeConds[tokenId] = {}
 			const relativeConds = actorRelativeConds[tokenId]
+			
 			if (relativeConds.cover > -1) {
-				const coverTaken = this._.effectManager.hasEffect(c.actor, 'cover-taken')
+				const coverTaken = this._.effectManager.hasEffect(c.actor, "cover-taken")
 				const coverState = coverTaken ? relativeConds.cover === 2 ? 4 : 2 : relativeConds.cover
 				if (coverState > 0)
 					await this._.effectManager.setEffect(c.actor, Compendium.EFFECT_COVER, {badgeMod: {value: coverState}})
@@ -84,9 +108,8 @@ export default class EncounterManager {
 			}
 			
 			if (relativeConds.awareness > -1) {
-				await c.token.update({hidden: relativeConds.awareness < 2})
-				if (relativeConds.awareness === 2)
-					await this._.effectManager.setCondition(c.actor, 'hidden')
+				if (relativeConds.awareness !== 3)
+					await this._.effectManager.setCondition(c.actor, AWARENESS[relativeConds.awareness])
 			}
 			else {
 				relativeConds.awareness = c.token.hidden ? 1 : 3
@@ -104,24 +127,6 @@ export default class EncounterManager {
 		}
 		
 		if (flagUpdate)
-			await encounter.update({"flags.mks.relative" : relativeData})
-	}
-	
-	onEncounterStart(encounter) {
-		const relative = {}
-		const combatants = Array.from(encounter.combatants)
-		for (let i = 0; i < combatants.length; i++) {
-			let ref = combatants[i]
-			let refRelative = relative[ref.token.id] = {}
-			for (let j = 0; j < combatants.length; j++) {
-				let target = combatants[j]
-				if (ref.actor.alliance === target.actor.alliance) continue
-				
-				refRelative[target.token.id] = {cover: 0, awareness: target.token.hidden ? 1 : 3, attitude: 2}
-			}
-		}
-		
-		encounter.update({"flags.mks.relative" : relative})
-		RelativeCondPanel.rerender()
+			await encounter.setFlag(SYSTEM.moduleId, "relative", relativeData)
 	}
 }

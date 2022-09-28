@@ -19,10 +19,11 @@ import ActionEscape from "./actions/escape.js"
 import ActionCover from "./actions/cover.js"
 import ActionProne from "./actions/prone.js"
 import ActionRecallKnowledge from "./actions/recall-knowledge.js"
+import ActionHide from "./actions/hide.js"
 import {RUDIMENTARY_ACTIONS} from "./action.js"
 import {
 	ActionBalance, ActionClimb, ActionCommandAnAnimal, ActionConcealAnObject, ActionFeint, ActionForceOpen,
-	ActionGrabAnEdge, ActionHighJump, ActionLongJump, ActionPerform, ActionRequest,
+	ActionGrabAnEdge, ActionHighJump, ActionLie, ActionLongJump, ActionPerform, ActionRequest,
 	ActionSenseMotive, ActionSwim, ActionTumbleThrough
 } from "./actions/simple-actions.js"
 import ActionCreateADiversion from "./actions/create-a-diversion.js"
@@ -90,6 +91,8 @@ export default class MksTools {
 			concealAnObject: new ActionConcealAnObject(this),
 			perform: new ActionPerform(this),
 			commandAnAnimal: new ActionCommandAnAnimal(this),
+			lie: new ActionLie(this),
+			hide: new ActionHide(this),
 		}
 		this.rudimentaryActions = RUDIMENTARY_ACTIONS
 

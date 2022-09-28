@@ -1,5 +1,4 @@
 import {default as i18n} from "../../lang/pf2e-helper.js"
-import LocalStorage from "../../utils/local-storage.js";
 import {SYSTEM} from "../constants.js";
 import BasePanel from "./base-panel.js"
 import $$strings from "../../utils/strings.js"
@@ -30,6 +29,15 @@ export default class RelativeCondPanel extends BasePanel {
                 i18n.$("PF2E.Concept.Attitude.Helpful"),
             ]
         }
+        
+        setInterval(() => {
+            if (game.combat && this.relativeData && this.relativeData.changed) {
+                this.relativeData.changed = false
+                game.combat.setFlag(SYSTEM.moduleId, 'relative', this.relativeData).then(() => {
+                    console.log("Updated Relative Data")
+                })
+            }
+        }, 5000)
     }
 
     static get defaultOptions() {
@@ -61,8 +69,13 @@ export default class RelativeCondPanel extends BasePanel {
         if (dataset?.action && dataset.reference && dataset.target) {
             const length = this.labels[dataset.action].length
             const val = this.relativeData[dataset.reference][dataset.target][dataset.action]
-            this.relativeData[dataset.reference][dataset.target][dataset.action] = (val + length + (shift ? -1 : 1)) % length
+            let relativeValue = (val + length + (shift ? -1 : 1)) % length
+            this.relativeData[dataset.reference][dataset.target][dataset.action] = relativeValue
             RelativeCondPanel.rerender()
+    
+            const targetCombatant = game.combat.combatants.find(c => c.token.id === dataset.target)
+            game.MKS.encounterManager["apply" + $$strings.camelize(dataset.action)](game.combat.combatant, targetCombatant, relativeValue)
+            this.relativeData.changed = true
         }
     }
     
@@ -93,7 +106,7 @@ export default class RelativeCondPanel extends BasePanel {
         if (this.combatId && game.combat.id !== this.combatId)
             this.relativeData = null
         this.combatId = game.combat.id
-        this.relativeData = this.relativeData ?? game.combat.flags?.mks?.relative
+        this.relativeData = this.relativeData ?? game.combat.flags?.[SYSTEM.moduleId]?.relative
         if (this.relativeData) {
             data.referenceTokenId = game.combat.combatant.token.id
             data.relative = this.relativeData[data.referenceTokenId]

@@ -80,6 +80,7 @@
 	"PF2E.Actions.Release.Title": "Bırak",
 	"PF2E.Actions.Ready.Title": "Hazırlan",
 	"PF2E.Actions.Interact.Title": "Etkileş",
+	"PF2E.Actions.Hide.Title": "Gizlen",
 
 	"PF2E.ConditionTypeGrabbed": "Zaptedilmiş",
 	"PF2E.ConditionTypeProne": "Yere Düşmüş",

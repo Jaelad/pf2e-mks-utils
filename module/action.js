@@ -2,7 +2,6 @@ import {default as i18n} from "../lang/pf2e-helper.js"
 import {ACTION_GLYPH, ROLL_MODE} from "./constants.js"
 import Compendium from "./compendium.js"
 import Check from "./check.js"
-import $$strings from "../utils/strings.js"
 import DCHelper from "./helpers/dc-helper.js"
 
 export default class Action {
@@ -69,7 +68,7 @@ export class SimpleAction extends Action {
 		this.targetCount = targetCount
 	}
 
-	act({overrideDC}) {
+	async act({overrideDC}) {
 		const options = arguments[0]
 		const {applicable, selected, targeted, targets} = this.isApplicable(null,true)
 		if (!applicable)
@@ -86,7 +85,7 @@ export class SimpleAction extends Action {
 			extraOptions: ["action:" + game.pf2e.system.sluggify(this.action)],
 			traits: this.traits,
 			checkType: this.checkType,
-			difficultyClass: overrideDC ?? this.targetCount > 1 ? DCHelper.getMaxDC(targets, this.dc) : this.dc?.(targets),
+			difficultyClass: overrideDC ?? this.targetCount > 1 ? DCHelper.getMaxDC(targets, this.dc) : this.dc?.(targeted),
 			askGmForDC: {
 				action: this.action,
 				defaultDC: 20

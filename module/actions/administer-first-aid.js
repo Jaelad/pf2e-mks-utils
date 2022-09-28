@@ -13,8 +13,8 @@ export class ActionAdministerFirstAid extends SimpleAction {
 			targetCount: 1
 		})
 	}
-
-	async act(options = {}) {
+	
+	async act({overrideDC}) {
 		const {applicable, selected, targeted} = this.isApplicable(null,true)
 		if (!applicable) return
 
@@ -47,7 +47,7 @@ export class ActionAdministerFirstAid extends SimpleAction {
 		else if (affliction === 'poison')
 			dc = poisonEffect.flags.persistent.dc
 
-		super.act({overrideDC: dc, affliction})
+		await super.act({overrideDC: dc, affliction})
 	}
 
 	async resultHandler(roll, selected, targeted, options) {
