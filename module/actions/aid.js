@@ -6,7 +6,7 @@ import $$strings from "../../utils/strings.js"
 import Finders from "../helpers/finders.js"
 
 export default class ActionAid extends Action {
-
+	
 	readyAid() {
 		const willAid = this._.ensureOneSelected()
 		const willBeAided = this._.ensureOneTarget()

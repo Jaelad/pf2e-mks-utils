@@ -1,8 +1,6 @@
 import Compendium from "./compendium.js"
-import {default as i18n} from "../lang/pf2e-helper.js"
 import {default as LOG} from "../utils/logging.js"
 import {ATTITUDES, AWARENESS, SYSTEM} from "./constants.js"
-import RelativeCondPanel from "./apps/relative-cond-panel.js"
 
 export default class EncounterManager {
 	constructor(MKS) {
@@ -33,7 +31,6 @@ export default class EncounterManager {
 		await this._.effectManager.removeEffect(combatant.actor, Compendium.EFFECT_MULTIPLE_ATTACK)
 		
 		await this.applyRelativeConditions(combatant)
-		RelativeCondPanel.rerender()
 	}
 	
 	async onEndTurn(combatant) {

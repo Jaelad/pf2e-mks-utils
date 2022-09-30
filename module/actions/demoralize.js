@@ -1,7 +1,7 @@
 import {SimpleAction} from "../action.js"
 import Compendium from "../compendium.js"
 
-export class ActionDemoralize extends SimpleAction {
+export default class ActionDemoralize extends SimpleAction {
 	constructor(MKS) {
 		super(MKS, {action: 'demoralize',
 			traits: ['mental', 'concentrate', 'auditory', 'emotion', 'fear'],

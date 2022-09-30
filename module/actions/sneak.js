@@ -1,12 +1,12 @@
 import {SimpleAction} from "../action.js"
 import {SYSTEM} from "../constants.js"
 
-export default class ActionHide extends SimpleAction {
+export default class ActionSneak extends SimpleAction {
 	constructor(MKS) {
-		super(MKS, {action: 'hide',
-			traits: ['secret'],
+		super(MKS, {action: 'sneak',
+			traits: ['move', 'secret'],
 			checkType: 'skill[stealth]',
-			icon: "systems/pf2e/icons/spells/zealous-conviction.webp",
+			icon: "systems/pf2e/icons/spells/undetectable-alignment.webp",
 			tags: ['combat', 'stealth'],
 			actionGlyph: 'A',
 			targetCount: 2,
@@ -25,7 +25,7 @@ export default class ActionHide extends SimpleAction {
 			const relative = relativeData[t.id]
 			
 			if (relative?.[selected.id]?.awareness > -1)
-				relative[selected.id].awareness = dc > roll.total ? 3 : Math.min(relative[selected.id].awareness, 2)
+				relative[selected.id].awareness = dc <= roll.total ? 1 : dc > roll.total + 10 ? 3 : 2
 		}
 		game.combat.setFlag(SYSTEM.moduleId, 'relative', relativeData).then()
 	}

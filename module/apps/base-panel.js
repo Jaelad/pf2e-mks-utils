@@ -32,9 +32,19 @@ export default class BasePanel extends FormApplication {
     setTab(tab){
         if (!tab || !this._tabs) return
         this._tabs[0].active = tab
+        console.log(this.activeTab)
         return this
     }
-
+    
+    get activeTab() {
+        return this._tabs?.[0]?.active
+    }
+    
+    _onChangeTab(event, tabs, active) {
+        super._onChangeTab(event, tabs, active)
+        this.render()
+    }
+    
     static rerender() {
         let activeApp;
         for (let app of Object.values(ui.windows)) {

@@ -2,7 +2,7 @@ import {default as i18n} from "../../lang/pf2e-helper.js"
 import Action from "../action.js"
 import Compendium from "../compendium.js"
 
-export default class ActionCover extends Action {
+export default class ActionTakeCover extends Action {
 
 	takeCover(options = {}) {
 		const {applicable, selected} = this.isApplicable('takeCover',true)

@@ -6,9 +6,10 @@ import DCHelper from "./helpers/dc-helper.js"
 
 export default class Action {
 
-	constructor(MKS) {
+	constructor(MKS, mode = 'encounter') {
 		this._ = MKS
 		this.effectManager = MKS.effectManager
+		this.mode = mode
 	}
 
 	initialize() {
@@ -55,17 +56,17 @@ export default class Action {
 }
 
 export class SimpleAction extends Action {
-	constructor(MKS, {action, traits, checkType, dc, icon, tags, mode='encounter', actionGlyph = 'A', targetCount = 0}) {
-		super(MKS)
+	constructor(MKS, {action, traits, checkType, dc, icon, tags, mode='encounter', requiresEncounter = false, actionGlyph = 'A', targetCount = 0}) {
+		super(MKS, mode)
 		this.actionGlyph = actionGlyph
 		this.action = action
 		this.traits = traits
 		this.checkType = checkType
 		this.dc = dc
 		this.icon = icon
-		this.mode = mode
 		this.tags = tags
 		this.targetCount = targetCount
+		this.requiresEncounter = requiresEncounter
 	}
 
 	async act({overrideDC}) {
@@ -99,19 +100,18 @@ export class SimpleAction extends Action {
 	}
 
 	methods(onlyApplicable) {
-		const {applicable} = this.isApplicable()
-		return !onlyApplicable || applicable ? [{
+		const {applicable} = onlyApplicable ? this.isApplicable() : {applicable: true}
+		return applicable ? [{
 			method: 'act',
 			label: i18n.action(this.action),
 			icon: this.icon,
 			actionGlyph: this.actionGlyph,
-			mode: this.mode,
 			tags: this.tags
 		}] : []
 	}
 
 	isApplicable(method=null, warn=false) {
-		const selected = this._.ensureOneSelected(warn)
+		const selected = this._.ensureOneSelected(warn, this.requiresEncounter)
 		if (!selected) return {applicable: false}
 
 		if (this.targetCount === 1) {
@@ -137,16 +137,27 @@ export class SimpleAction extends Action {
 }
 
 export const RUDIMENTARY_ACTIONS = {
-	step: {icon: 'systems/pf2e/icons/spells/synchronise-steps.webp', compendium: Compendium.ACTION_STEP},
-	stride: {icon: 'systems/pf2e/icons/spells/fleet-step.webp', compendium: Compendium.ACTION_STRIDE},
-	interact: {icon: 'systems/pf2e/icons/spells/mage-hand.webp', compendium: Compendium.ACTION_INTERACT},
-	mount: {icon: 'systems/pf2e/icons/spells/phantom-steed.webp', compendium: Compendium.ACTION_MOUNT},
-	ready: {icon: 'systems/pf2e/icons/features/feats/cavaliers-banner.webp', compendium: Compendium.ACTION_READY},
-	release: {icon: 'systems/pf2e/icons/spells/mending.webp', compendium: Compendium.ACTION_RELEASE},
-	sustainASpell: {icon: 'systems/pf2e/icons/spells/faerie-dust.webp', compendium: Compendium.ACTION_SUSTAIN_A_SPELL},
-	sustainAnActivation: {icon: 'systems/pf2e/icons/spells/friendfetch.webp', compendium: Compendium.ACTION_SUSTAIN_AN_ACTIVATION},
-	crawl: {icon: 'systems/pf2e/icons/spells/uncontrollable-dance.webp', compendium: Compendium.ACTION_CRAWL},
-	leap: {icon: 'systems/pf2e/icons/spells/wind-jump.webp', compendium: Compendium.ACTION_LEAP},
-	pointOut: {icon: 'systems/pf2e/icons/spells/object-memory.webp', compendium: Compendium.ACTION_POINT_OUT},
-	avertGaze: {icon: 'systems/pf2e/icons/spells/veil-of-dreams.webp', compendium: Compendium.ACTION_AVERT_GAZE},
+	step: {icon: 'systems/pf2e/icons/spells/synchronise-steps.webp', compendium: Compendium.ACTION_STEP, mode: 'encounter'},
+	stride: {icon: 'systems/pf2e/icons/spells/fleet-step.webp', compendium: Compendium.ACTION_STRIDE, mode: 'encounter'},
+	interact: {icon: 'systems/pf2e/icons/spells/mage-hand.webp', compendium: Compendium.ACTION_INTERACT, mode: 'encounter'},
+	mount: {icon: 'systems/pf2e/icons/spells/phantom-steed.webp', compendium: Compendium.ACTION_MOUNT, mode: 'encounter'},
+	ready: {icon: 'systems/pf2e/icons/features/feats/cavaliers-banner.webp', compendium: Compendium.ACTION_READY, mode: 'encounter'},
+	release: {icon: 'systems/pf2e/icons/spells/mending.webp', compendium: Compendium.ACTION_RELEASE, mode: 'encounter'},
+	sustainASpell: {icon: 'systems/pf2e/icons/spells/faerie-dust.webp', compendium: Compendium.ACTION_SUSTAIN_A_SPELL, mode: 'encounter'},
+	sustainAnActivation: {icon: 'systems/pf2e/icons/spells/friendfetch.webp', compendium: Compendium.ACTION_SUSTAIN_AN_ACTIVATION, mode: 'encounter'},
+	crawl: {icon: 'systems/pf2e/icons/spells/uncontrollable-dance.webp', compendium: Compendium.ACTION_CRAWL, mode: 'encounter'},
+	leap: {icon: 'systems/pf2e/icons/spells/wind-jump.webp', compendium: Compendium.ACTION_LEAP, mode: 'encounter'},
+	pointOut: {icon: 'systems/pf2e/icons/spells/object-memory.webp', compendium: Compendium.ACTION_POINT_OUT, mode: 'encounter'},
+	avertGaze: {icon: 'systems/pf2e/icons/spells/veil-of-dreams.webp', compendium: Compendium.ACTION_AVERT_GAZE, mode: 'encounter'},
+	
+	avoidNotice: {icon: 'systems/pf2e/icons/spells/pass-without-trace.webp', compendium: Compendium.ACTION_AVERT_GAZE, mode: 'exploration'},
+	defend: {icon: 'systems/pf2e/icons/spells/rebounding-barrier.webp', compendium: Compendium.ACTION_AVERT_GAZE, mode: 'exploration'},
+	detectMagic: {icon: 'systems/pf2e/icons/spells/detect-magic.webp', compendium: Compendium.ACTION_AVERT_GAZE, mode: 'exploration'},
+	followTheExport: {icon: 'systems/pf2e/icons/spells/perseiss-precautions.webp', compendium: Compendium.ACTION_AVERT_GAZE, mode: 'exploration'},
+	hustle: {icon: 'systems/pf2e/icons/spells/triple-time.webp', compendium: Compendium.ACTION_AVERT_GAZE, mode: 'exploration'},
+	investigate: {icon: 'systems/pf2e/icons/spells/anticipate-peril.webp', compendium: Compendium.ACTION_AVERT_GAZE, mode: 'exploration'},
+	refocus: {icon: 'systems/pf2e/icons/spells/perfected-mind.webp', compendium: Compendium.ACTION_AVERT_GAZE, mode: 'exploration'},
+	repeatASpell: {icon: 'systems/pf2e/icons/spells/read-fate.webp', compendium: Compendium.ACTION_AVERT_GAZE, mode: 'exploration'},
+	scout: {icon: 'systems/pf2e/icons/spells/vision-of-weakness.webp', compendium: Compendium.ACTION_AVERT_GAZE, mode: 'exploration'},
+	search: {icon: 'systems/pf2e/icons/spells/far-sight.webp', compendium: Compendium.ACTION_AVERT_GAZE, mode: 'exploration'},
 }

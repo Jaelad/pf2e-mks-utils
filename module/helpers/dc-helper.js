@@ -52,7 +52,7 @@ export default class DCHelper {
 			<form>
 			<div class="form-group">
 				<button type="button" onclick="${compendiumOnClick}" style="margin-left: 30px; margin-right: 5px">
-					<label>${i18n.$("PF2E.MKS.DC") + ': ' + actionTitle + ' '}</label>
+					<label>${i18n.$("PF2E.Concept.DC") + ': ' + actionTitle + ' '}</label>
 					<i class="fas fa-head-side-cough"></i>
 				</button>
 				<input type="number" name="dc" value="${defaultDC}" maxlength="2" size="2" style="margin-left: 5px; margin-right: 30px">

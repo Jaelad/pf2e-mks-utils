@@ -27,6 +27,10 @@ Hooks.on("init", () => {
 	Hooks.on("pf2e.endTurn", (combatant) => {
 		MKS.encounterManager.onEndTurn(combatant).then()
 	})
+	
+	Hooks.on("updateCombat", (combatant) => {
+		RelativeCondPanel.rerender()
+	})
 })
 
 Hooks.on("ready", () => {
@@ -42,7 +46,7 @@ Hooks.on("getSceneControlButtons", (controls) => {
 		button: true,
 		visible: true,
 		onClick: () => {
-			ActionsPanel.show({ inFocus: true, tab: "manager" })
+			ActionsPanel.show({ inFocus: true, tab: "encounter" })
 		}
 	}
 	const relativeCondPanelLink = {

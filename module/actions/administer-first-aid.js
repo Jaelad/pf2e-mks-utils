@@ -2,7 +2,7 @@ import Action, {SimpleAction} from "../action.js"
 import Compendium from "../compendium.js"
 import Dialogs from "../apps/dialogs.js"
 
-export class ActionAdministerFirstAid extends SimpleAction {
+export default class ActionAdministerFirstAid extends SimpleAction {
 	constructor(MKS) {
 		super(MKS, {action: 'administerFirstAid',
 			traits: ['manipulate'],
@@ -51,37 +51,42 @@ export class ActionAdministerFirstAid extends SimpleAction {
 	}
 
 	async resultHandler(roll, selected, targeted, options) {
+		super.resultHandler(roll, selected, targeted, options)
+		
+		const degreeOfSuccess = roll.data.degreeOfSuccess
 		if (options.affliction === 'dying') {
-			if (roll?.data.degreeOfSuccess > 1) {
+			if (degreeOfSuccess > 1) {
 				this.effectManager.removeCondition(targeted, 'dying').then(() => {
 					this.effectManager.setCondition(targeted, 'unconscious').then()
 				})
 			}
-			else if (roll?.data.degreeOfSuccess === 0) {
+			else if (degreeOfSuccess === 0) {
 				const dyingCond = this.effectManager.getCondition(targeted, 'dying')
 				this.effectManager.setBadge(dyingCond, {increment: 1}).then()
 			}
 		}
 		else if (options.affliction === 'bleeding') {
-			if (roll?.data.degreeOfSuccess > 1) {
+			if (degreeOfSuccess > 1) {
 				const flatCheckRoll = await new Roll('1d20').roll({async: true})
 				if (flatCheckRoll.result >= options.overrideDC) {
 					this.effectManager.removeEffect(targeted, 'persistent-damage-bleed').then()
 				}
 			}
-			else if (roll?.data.degreeOfSuccess === 0) {
+			else if (degreeOfSuccess === 0) {
 				const bleedingEffect = this.effectManager.getEffect(targeted, 'persistent-damage-bleed')
 				const healthLost = await new Roll(bleedingEffect.flags.persistent.value).roll({async: true})
 				this._.actorManager.applyHPChange(targeted, {value: -1 * healthLost}).then()
 			}
 		}
 		else if (options.affliction === 'poisoned') {
-
+			const bonus = degreeOfSuccess === 2 ? 2 : degreeOfSuccess === 3 ? 4 : degreeOfSuccess === 0 ? -2 : 0
+			if (bonus !== 0)
+				this.effectManager.setEffect(targeted, Compendium.EFFECT_POISON_TREATED, {flags: {"mks.treatPoisonBonus": bonus}}).then()
 		}
 	}
 
 	applies(selected, targeted) {
-		const healersTools = selected.actor.itemTypes.equipment.find(e => e.slug === 'healers-tools' && ['held', 'worn'].includes(e.carryType))
+		const healersTools = !!selected && selected.actor.itemTypes.equipment.find(e => e.slug === 'healers-tools' && ['held', 'worn'].includes(e.carryType))
 		const healersToolsOk = healersTools && (healersTools.carryType === 'held' || this._.inventoryManager.handsFree(selected) > 0)
 		const dyingCond = this.effectManager.getCondition(targeted, 'dying')
 		const bleedingEffect = this.effectManager.getEffect(targeted, 'persistent-damage-bleed')

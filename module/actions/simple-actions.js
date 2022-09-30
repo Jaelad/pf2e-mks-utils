@@ -1,6 +1,4 @@
 import {SimpleAction} from "../action.js"
-import Compendium from "../compendium.js"
-import $$arrays from "../../utils/arrays.js"
 
 export class ActionTumbleThrough extends SimpleAction {
 
@@ -194,7 +192,7 @@ export class ActionPerform extends SimpleAction {
 		super(MKS, {action: 'perform',
 			traits: ['concentrate'],
 			checkType: 'skill[performance]',
-			icon: "systems/pf2e/icons/spells/spirit-song.webp",
+			icon: "systems/pf2e/icons/features/classes/magnum-opus.webp",
 			tags: ['social'],
 			actionGlyph: 'A',
 			targetCount: 0
@@ -215,3 +213,61 @@ export class ActionConcealAnObject extends SimpleAction {
 		})
 	}
 }
+
+export class ActionPalmAnObject extends SimpleAction {
+	constructor(MKS) {
+		super(MKS, {action: 'palmAnObject',
+			traits: ['manipulate'],
+			checkType: 'skill[thievery]',
+			icon: "systems/pf2e/icons/spells/quivering-palm.webp",
+			tags: ['stealth'],
+			actionGlyph: 'A',
+			targetCount: 2,
+			dc: t => t.actor.perception.dc.value
+		})
+	}
+}
+
+export class ActionSteal extends SimpleAction {
+	constructor(MKS) {
+		super(MKS, {action: 'steal',
+			traits: ['manipulate'],
+			checkType: 'skill[thievery]',
+			icon: "systems/pf2e/icons/spells/mending.webp",
+			tags: ['stealth'],
+			actionGlyph: 'A',
+			targetCount: 1
+		})
+	}
+}
+
+export class ActionPickALock extends SimpleAction {
+	constructor(MKS) {
+		super(MKS, {action: 'pickALock',
+			traits: ['manipulate'],
+			checkType: 'skill[thievery]',
+			icon: "systems/pf2e/icons/spells/freedom.webp",
+			tags: ['stealth'],
+			actionGlyph: 'D',
+		})
+	}
+	
+	applies(selected, targeted) {
+		const thievesTools = !!selected && selected.actor.itemTypes.equipment.find(e => e.slug === 'thieves-tools' && ['held', 'worn'].includes(e.carryType))
+		return thievesTools && (thievesTools.carryType === 'held' || this._.inventoryManager.handsFree(selected) > 0)
+	}
+}
+
+export class ActionDisableADevice extends SimpleAction {
+	constructor(MKS) {
+		super(MKS, {action: 'disableADevice',
+			traits: ['manipulate'],
+			checkType: 'skill[thievery]',
+			icon: "systems/pf2e/icons/spells/visions-of-danger.webp",
+			tags: ['stealth'],
+			actionGlyph: 'D',
+		})
+	}
+}
+
+

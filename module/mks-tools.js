@@ -1,37 +1,53 @@
 import {default as i18n} from "../lang/pf2e-helper.js"
 import {ROLL_MODE} from "./constants.js"
+import {registerHandlebarsHelpers} from "./helpers/handlebars.js"
+import DCHelper from "./helpers/dc-helper.js"
+import Finders from "./helpers/finders.js"
+import ActorManager from "./actor-manager.js"
 import EffectManager from "./effect-manager.js"
 import EncounterManager from "./encounter-manager.js"
 import TemplateManager from "./measurement/template-manager.js"
 import InventoryManager from "./inventory-manager.js"
 import SettingsManager from "./settings-manager.js"
 import SocketHandler from "./socket-handler.js"
-import DCHelper from "./helpers/dc-helper.js"
-import Finders from "./helpers/finders.js"
-import ActionAid from "./actions/aid.js"
-import ActionGrapple from "./actions/grapple.js"
-import ActionSeek from "./actions/seek.js"
-import ActionRaiseAShield from "./actions/raise-a-shield.js"
-import ActionDisarm from "./actions/disarm.js"
-import ActionShove from "./actions/shove.js"
-import ActionTrip from "./actions/trip.js"
-import ActionEscape from "./actions/escape.js"
-import ActionCover from "./actions/cover.js"
-import ActionProne from "./actions/prone.js"
-import ActionRecallKnowledge from "./actions/recall-knowledge.js"
-import ActionHide from "./actions/hide.js"
 import {RUDIMENTARY_ACTIONS} from "./action.js"
-import {
-	ActionBalance, ActionClimb, ActionCommandAnAnimal, ActionConcealAnObject, ActionFeint, ActionForceOpen,
-	ActionGrabAnEdge, ActionHighJump, ActionLie, ActionLongJump, ActionPerform, ActionRequest,
-	ActionSenseMotive, ActionSwim, ActionTumbleThrough
-} from "./actions/simple-actions.js"
+import ActionAdministerFirstAid from "./actions/administer-first-aid.js"
+import ActionAid from "./actions/aid.js"
 import ActionCreateADiversion from "./actions/create-a-diversion.js"
-import {ActionDemoralize} from "./actions/demoralize.js"
-import {ActionAdministerFirstAid} from "./actions/administer-first-aid.js"
-import ActorManager from "./actor-manager.js"
-import {registerHandlebarsHelpers} from "./helpers/handlebars.js"
-
+import ActionDemoralize from "./actions/demoralize.js"
+import ActionDisarm from "./actions/disarm.js"
+import ActionEscape from "./actions/escape.js"
+import ActionGrapple from "./actions/grapple.js"
+import ActionHide from "./actions/hide.js"
+import ActionProne from "./actions/prone.js"
+import ActionRaiseAShield from "./actions/raise-a-shield.js"
+import ActionRecallKnowledge from "./actions/recall-knowledge.js"
+import ActionSeek from "./actions/seek.js"
+import ActionShove from "./actions/shove.js"
+import ActionSneak from "./actions/sneak.js"
+import ActionTakeCover from "./actions/cover.js"
+import ActionTrip from "./actions/trip.js"
+import {
+	ActionBalance,
+	ActionClimb,
+	ActionCommandAnAnimal,
+	ActionConcealAnObject,
+	ActionDisableADevice,
+	ActionFeint,
+	ActionForceOpen,
+	ActionGrabAnEdge,
+	ActionHighJump,
+	ActionLie,
+	ActionLongJump,
+	ActionPalmAnObject,
+	ActionPerform,
+	ActionPickALock,
+	ActionRequest,
+	ActionSenseMotive,
+	ActionSteal,
+	ActionSwim,
+	ActionTumbleThrough
+} from "./actions/simple-actions.js"
 
 export default class MksTools {
 
@@ -72,7 +88,7 @@ export default class MksTools {
 			trip: new ActionTrip(this),
 			escape: new ActionEscape(this),
 			senseMotive: new ActionSenseMotive(this),
-			cover: new ActionCover(this),
+			takeCover: new ActionTakeCover(this),
 			prone: new ActionProne(this),
 			grabAnEdge: new ActionGrabAnEdge(this),
 			balance: new ActionBalance(this),
@@ -93,6 +109,11 @@ export default class MksTools {
 			commandAnAnimal: new ActionCommandAnAnimal(this),
 			lie: new ActionLie(this),
 			hide: new ActionHide(this),
+			sneak: new ActionSneak(this),
+			palmAnObject: new ActionPalmAnObject(this),
+			steal: new ActionSteal(this),
+			pickALock: new ActionPickALock(this),
+			disableADevice: new ActionDisableADevice(this),
 		}
 		this.rudimentaryActions = RUDIMENTARY_ACTIONS
 
@@ -100,7 +121,16 @@ export default class MksTools {
 		registerHandlebarsHelpers()
 	}
 
-	ensureOneSelected(warn = true) {
+	ensureOneSelected(warn = true, requiresEncounter = false) {
+		if (requiresEncounter) {
+			if (game.combat?.combatant)
+				return game.combat?.combatant?.token?.object
+			else {
+				if (warn)
+					ui.notifications.warn(i18n.$("PF2E.MKS.Warning.Encounter.NoneExists"))
+				return
+			}
+		}
 		const inCombatTurn = this.settingsManager.get("selectCombatantFirst")
 		let token
 		if (inCombatTurn && game.combat?.combatant)

@@ -31,57 +31,9 @@ export default class ActionsPanel extends BasePanel {
 			tabs: [{
 				navSelector: ".tabs",
 				contentSelector: ".content",
-				initial: "exploration"
+				initial: "encounter"
 			}]
 		})
-	}
-	
-	static show({inFocus = true, tab = "exploration"} = {}) {
-		let activeApp
-		for (let app of Object.values(ui.windows)) {
-			if (app instanceof this) {
-				activeApp = app
-				break
-			}
-		}
-		if (activeApp) {
-			if (activeApp._tabs[0].active !== tab) {
-				activeApp.render(true, {focus: inFocus})
-			}
-		}
-		else {
-			activeApp = new this()
-			activeApp.render(true, {focus: inFocus})
-		}
-		
-		return activeApp.setTab(tab)
-	}
-	
-	static rerender() {
-		let activeApp
-		for (let app of Object.values(ui.windows)) {
-			if (app instanceof this) {
-				activeApp = app
-				break
-			}
-		}
-		if (activeApp)
-			setTimeout(() => activeApp.render(), 300)
-	}
-	
-	setTab(tab) {
-		this._tabs[0].active = tab
-		return this
-	}
-	
-	static get isVisible() {
-		return this.activeInstance !== undefined
-	}
-	
-	static get activeInstance() {
-		for (let app of Object.values(ui.windows)) {
-			if (app instanceof this) return app
-		}
 	}
 	
 	/** @override */
@@ -104,8 +56,8 @@ export default class ActionsPanel extends BasePanel {
 	_runActionMethod(event) {
 		const dataset = event?.currentTarget?.dataset
 		if (dataset?.action && dataset?.method) {
-			if (dataset.action === "rudimentary")
-				game.MKS.compendiumToChat(null, game.MKS.rudimentaryActions[dataset.method].compendium)
+			if (dataset.action.startsWith("Compendium"))
+				game.MKS.compendiumToChat(null, dataset.action)
 			else
 				game.MKS.actions[dataset.action][dataset.method]({})
 		}
@@ -157,9 +109,10 @@ export default class ActionsPanel extends BasePanel {
 		data.showApplicable = localSettings?.showApplicable ?? true
 		data.inCombatTurn = game.settings.get(SYSTEM.moduleId, "selectCombatantFirst")
 		
-		const allTags = {}
-		for (let action in game.MKS.actions) {
-			const methods = game.MKS.actions[action].methods(data.showApplicable)
+		const allTags = {}, mksActions = game.MKS.actions, mksRudimentaryActions = game.MKS.rudimentaryActions
+		for (let action in mksActions) {
+			if (!mksActions.hasOwnProperty(action) || mksActions[action].mode !== this.activeTab) continue
+			const methods = mksActions[action].methods(data.showApplicable)
 			methods.forEach((m) => {
 				(m.tags ?? []).forEach(tag => {
 					if (!allTags[tag])
@@ -174,21 +127,21 @@ export default class ActionsPanel extends BasePanel {
 			})
 		}
 		
-		if (game.MKS.ensureAtLeastOneSelected(false)) {
-			allTags.rudimentary = {
-				expanded: localSettings?.expanded?.["rudimentary"] ?? false,
-				label: i18n.actionTag("rudimentary"),
-				methods: []
-			}
-			for (let rudimentaryAction in game.MKS.rudimentaryActions) {
-				const definition = game.MKS.rudimentaryActions[rudimentaryAction]
+		
+		allTags.rudimentary = {
+			expanded: localSettings?.expanded?.["rudimentary"] ?? false,
+			label: i18n.actionTag("rudimentary"),
+			methods: []
+		}
+		for (let rudimentaryAction in mksRudimentaryActions) {
+			const definition = mksRudimentaryActions[rudimentaryAction]
+			if (definition.mode === this.activeTab)
 				allTags.rudimentary.methods.push({
 					method: rudimentaryAction,
 					label: i18n.action(rudimentaryAction),
 					icon: definition.icon,
-					action: "rudimentary"
+					action: definition.compendium,
 				})
-			}
 		}
 		
 		const allTagsArr = [], sort = (a, b) => a.label.localeCompare(b.label)
@@ -200,6 +153,7 @@ export default class ActionsPanel extends BasePanel {
 		allTagsArr.sort(sort)
 		data.actions = allTagsArr
 		
+		console.log(data)
 		return data
 	}
 }
