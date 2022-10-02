@@ -1,8 +1,9 @@
 import {SELECTORS} from "./constants.js"
 import {default as i18n} from "../lang/pf2e-helper.js"
 import {MODIFIER_TYPE, DC_SLUGS, SKILLS, PROFICIENCY_RANK_OPTION} from "./constants.js"
-import Action from "./action.js";
-import DCHelper from "./helpers/dc-helper.js";
+import Action from "./action.js"
+import DCHelper from "./helpers/dc-helper.js"
+import Dialogs from "./apps/dialogs.js"
 
 // Lines: 42441 42347
 export default class Check {
@@ -49,7 +50,7 @@ export default class Check {
 		return new game.pf2e.StatisticModifier(statistic.label, statistic.modifiers, rollOptions)
 	}
 
-	getStatisticModifier(actor, type) {
+	async getStatisticModifier(actor, type) {
 		let match, checkSlug, statSlug, statistic, statisticModifier
 
 		if (type === "ac")
@@ -72,7 +73,12 @@ export default class Check {
 			checkSlug = 'spell-attack-roll', statSlug = tradition + '-spell-attack'
 		}
 		else if (match = SELECTORS.skill.exec(type)) {
-			let skill = match[1]
+			const skill = await Check.selectSkill(actor, match[1])
+			statisticModifier = actor.system.skills[SKILLS[skill] ?? skill]
+			checkSlug = 'skill-check', statSlug = skill
+		}
+		else if (type === 'skill') {
+			const skill = await Check.selectSkill(actor, Object.keys(SKILLS))
 			statisticModifier = actor.system.skills[SKILLS[skill] ?? skill]
 			checkSlug = 'skill-check', statSlug = skill
 		}
@@ -96,7 +102,7 @@ export default class Check {
 		if (!actor)
 			throw new Error("No actor found to roll check!")
 
-		const {checkSlug, statSlug, stat} = this.getStatisticModifier(actor, this.context.checkType)
+		const {checkSlug, statSlug, stat} = await this.getStatisticModifier(actor, this.context.checkType)
 
 		const targetOptions = target?.actor?.getSelfRollOptions("target") ?? []
 		const selfToken = actor.getActiveTokens(false, true).shift()
@@ -344,5 +350,13 @@ export default class Check {
 			return i18n.spellAttack(checkType.substring(6, checkType.length - 1))
 		else
 			throw new Error("Illegal check type : " + checkType)
+	}
+
+	static async selectSkill(tokenOrActor, skills) {
+		const actor = tokenOrActor?.actor ?? tokenOrActor
+		const possibleSkills = typeof skills === 'string' ? skills.trim().split(',') : skills
+		if (possibleSkills.length === 1) return possibleSkills[0]
+		const selectSkillDialogData = possibleSkills.map(s => {return {value: s, name: i18n.skillCheck(s) ?? actor.skills[s].label}})
+		return await Dialogs.selectOne(selectSkillDialogData, "PF2E.MKS.Dialog.SelectSkill")
 	}
 }

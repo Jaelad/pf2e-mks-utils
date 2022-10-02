@@ -28,10 +28,15 @@ import ActionSneak from "./actions/sneak.js"
 import ActionTakeCover from "./actions/cover.js"
 import ActionTrip from "./actions/trip.js"
 import {
+	ActionAvoidNotice,
 	ActionBalance,
+	ActionBorrowAnArcaneSpell,
 	ActionClimb,
+	ActionCoerce,
 	ActionCommandAnAnimal,
 	ActionConcealAnObject,
+	ActionCoverTracks,
+	ActionDecipherWriting,
 	ActionDisableADevice,
 	ActionFeint,
 	ActionForceOpen,
@@ -114,6 +119,11 @@ export default class MksTools {
 			steal: new ActionSteal(this),
 			pickALock: new ActionPickALock(this),
 			disableADevice: new ActionDisableADevice(this),
+			avoidNotice: new ActionAvoidNotice(this),
+			borrowAnArcaneSpell: new ActionBorrowAnArcaneSpell(this),
+			coerce: new ActionCoerce(this),
+			coverTracks: new ActionCoverTracks(this),
+			decipherWriting: new ActionDecipherWriting(this),
 		}
 		this.rudimentaryActions = RUDIMENTARY_ACTIONS
 

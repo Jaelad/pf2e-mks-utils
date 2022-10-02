@@ -7,7 +7,7 @@ export const SYSTEM = {
 
 export const SELECTORS = {
 	spellcasting: /spell\[(arcane|primal|divine|occult)]/,
-	skill: /skill\[([\w-]+)]/,
+	skill: /skill\[([\w,]+)]/,
 	strike: /strike\[([\w-]+)]/,
 }
 

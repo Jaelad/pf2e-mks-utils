@@ -10,12 +10,16 @@ export function registerHandlebarsHelpers() {
 			return token
 	})
 	
-	Handlebars.registerHelper("i18n", (func, toTranslate) => {
+	Handlebars.registerHelper("i18n", (func, toTranslate) => {	
 		i18n[func](toTranslate)
 	})
 	
 	Handlebars.registerHelper("at", (arr, i) => {
 		return arr[i]
+	})
+
+	Handlebars.registerHelper("startsWith", (str, start) => {
+		return str.startsWith(start)
 	})
 	
 	Handlebars.registerPartial('actions-list', `
@@ -34,7 +38,7 @@ export function registerHandlebarsHelpers() {
 							{{#if method.icon}}
 							<img class="mks-list__icon" width="24" height="24" src="{{method.icon}}" alt="{{method.label}}">
 							{{/if}}
-							<a data-action="{{method.action}}" data-method="{{method.method}}" class="mks-list__link">{{method.label}} {{#if (ne method.action 'rudimentary')}}<i class="fas fa-caret-right"></i>{{/if}}</a>
+							<a data-action="{{method.action}}" data-method="{{method.method}}" class="mks-list__link">{{method.label}} {{#unless (startsWith method.action 'Compendium')}}<i class="fas fa-caret-right"></i>{{/unless}}</a>
 						</header>
 					</li>
 					{{/each}}

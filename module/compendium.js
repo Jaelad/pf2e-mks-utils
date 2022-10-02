@@ -17,7 +17,18 @@ export default class Compendium {
 	static ACTION_SWIM = "Compendium.pf2e.actionspf2e.c8TGiZ48ygoSPofx"
 	static ACTION_CLIMB = "Compendium.pf2e.actionspf2e.pprgrYQ1QnIDGZiy"
 	static ACTION_ADMINISTER_FIRST_AID = "Compendium.pf2e.actionspf2e.MHLuKy4nQO2Z4Am1"
-
+	
+	static ACTION_AVOID_NOTICE = "Compendium.pf2e.actionspf2e.IE2nThCmoyhQA0Jn"
+	static ACTION_DEFEND = "Compendium.pf2e.actionspf2e.cYtYKa1gDEl7y2N0"
+	static ACTION_DETECT_MAGIC = "Compendium.pf2e.actionspf2e.Yb0C1uLzeHrVLl7a"
+	static ACTION_FOLLOW_THE_EXPERT = "Compendium.pf2e.actionspf2e.tfa4Sh7wcxCEqL29"
+	static ACTION_HUSTLE = "Compendium.pf2e.actionspf2e.JuqmIAnkL9hVGai8"
+	static ACTION_INVESTIGATE = "Compendium.pf2e.actionspf2e.EwgTZBWsc8qKaViP"
+	static ACTION_REFOCUS = "Compendium.pf2e.actionspf2e.OSefkMgojBLqmRDh"
+	static ACTION_REPEAT_A_SPELL = "Compendium.pf2e.actionspf2e.OQaFzDtVEOMWizJJ"
+	static ACTION_SCOUT = "Compendium.pf2e.actionspf2e.kV3XM0YJeS2KCSOb"
+	static ACTION_SEARCH = "Compendium.pf2e.actionspf2e.TiNDYUGlMmxzxBYU"
+	
 	static EFFECT_MULTIPLE_ATTACK = "Compendium.pf2e-tools-mks.core-effects.DPVfUT43aCQMvauJ"
 	static EFFECT_AID_READY = "Compendium.pf2e-tools-mks.core-effects.p9PSILLD0f0NkBc5"
 	static EFFECT_AIDED = "Compendium.pf2e-tools-mks.core-effects.lgOBZWFDOE9xIXzS"

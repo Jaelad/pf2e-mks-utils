@@ -270,4 +270,68 @@ export class ActionDisableADevice extends SimpleAction {
 	}
 }
 
+export class ActionAvoidNotice extends SimpleAction {
+	constructor(MKS) {
+		super(MKS, {action: 'avoidNotice',
+			traits: ['exploration'],
+			checkType: 'skill[stealth]',
+			icon: "systems/pf2e/icons/spells/pass-without-trace.webp",
+			tags: ['stealth'],
+			actionGlyph: '',
+			mode: 'exploration'
+		})
+	}
+}
 
+export class ActionBorrowAnArcaneSpell extends SimpleAction {
+	constructor(MKS) {
+		super(MKS, {action: 'borrowAnArcaneSpell',
+			traits: ['exploration', 'concentrate'],
+			checkType: 'skill[arcana]',
+			icon: "systems/pf2e/icons/spells/message.webp",
+			tags: ['preparation'],
+			actionGlyph: '',
+			mode: 'exploration'
+		})
+	}
+}
+
+export class ActionCoerce extends SimpleAction {
+	constructor(MKS) {
+		super(MKS, {action: 'coerce',
+			traits: ['exploration', 'concentrate', 'auditory', 'emotion', 'linguistic', 'mental'],
+			checkType: 'skill[intimidation]',
+			icon: "systems/pf2e/icons/spells/inveigle.webp",
+			tags: ['social'],
+			actionGlyph: '',
+			mode: 'exploration'
+		})
+	}
+}
+
+
+export class ActionCoverTracks extends SimpleAction {
+	constructor(MKS) {
+		super(MKS, {action: 'coverTracks',
+			traits: ['exploration', 'concentrate', 'move'],
+			checkType: 'skill[survival]',
+			icon: "systems/pf2e/icons/spells/unseen-servant.webp",
+			tags: ['situational'],
+			actionGlyph: '',
+			mode: 'exploration'
+		})
+	}
+}
+
+export class ActionDecipherWriting extends SimpleAction {
+	constructor(MKS) {
+		super(MKS, {action: 'decipherWriting',
+			traits: ['exploration', 'concentrate', 'secret'],
+			checkType: 'skill',
+			icon: "systems/pf2e/icons/spells/pact-broker.webp",
+			tags: ['situational'],
+			actionGlyph: '',
+			mode: 'exploration'
+		})
+	}
+}
