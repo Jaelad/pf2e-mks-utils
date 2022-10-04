@@ -2,35 +2,60 @@ import {default as i18n} from "../../lang/pf2e-helper.js"
 import Compendium from "../compendium.js"
 import $$strings from "../../utils/strings.js"
 
+const adjustmentScale = [
+	{name: "incredibly easy", dc: -10},
+	{name: "very easy", dc: -5},
+	{name: "easy", dc: -2},
+	{name: "normal", dc: 0},
+	{name: "hard", dc: 2},
+	{name: "very hard", dc: 5},
+	{name: "incredibly hard", dc: 10}
+]
+
+const simpleDCs = [
+	{rank: "untrained", dc: 10},
+	{rank: "trained", dc: 15},
+	{rank: "expert", dc: 20},
+	{rank: "master", dc: 30},
+	{rank: "legendary", dc: 40},
+]
+
 export default class DCHelper {
-	static determineDcByLevel(tokenOrActor) {
-		const actor = tokenOrActor?.actor ?? tokenOrActor
-
-		let dcByLevel = actor.level < 20 ? Math.floor(actor.level / 3) + 14 + actor.level : actor.level * 2
-		if (actor.rarity === 'uncommon')
-			dcByLevel += 2
-		else if (actor.rarity === 'rare')
-			dcByLevel += 5
-		else if (actor.rarity === 'unique')
-			dcByLevel += 10
-		else
-			return dcByLevel
+	static dcByLevel(level) {
+		return level < 20 ? Math.floor(level / 3) + 14 + level : level * 2
 	}
-
-	static determineSpellDcByLevel(spell) {
+	
+	static adjustDCByRarity(dc, rarity) {
+		if (rarity === 'uncommon')
+			return dc + 2
+		else if (rarity === 'rare')
+			return dc + 5
+		else if (rarity === 'unique')
+			return dc + 10
+		else
+			return dc
+	}
+	
+	static calculateDC(level, rarity) {
+		const dc = DCHelper.dcByLevel(level)
+		return DCHelper.adjustDCByRarity(dc, rarity)
+	}
+	
+	static calculateSimpleDC(rank) {
+		if (typeof rank === 'number')
+			return simpleDCs[rank].dc
+		else if (typeof rank === 'string')
+			return simpleDCs.find(dc => dc.rank === rank)?.dc ?? 10
+		return 10
+	}
+	
+	static calculateSpellDC(spell) {
 		const rarity = spell.system.traits.rarity
 		const level = spell.level
 		const table = [15,18,20,23,26,28,31,34,36,39]
 
 		let dcByLevel = table[level]
-		if (rarity === 'uncommon')
-			dcByLevel += 2
-		else if (rarity === 'rare')
-			dcByLevel += 5
-		else if (rarity === 'unique')
-			dcByLevel += 10
-		else
-			return dcByLevel
+		return DCHelper.adjustDCByRarity(dcByLevel, rarity)
 	}
 
 	static getMaxDC(tokens, dcFunc) {

@@ -329,9 +329,161 @@ export class ActionDecipherWriting extends SimpleAction {
 			traits: ['exploration', 'concentrate', 'secret'],
 			checkType: 'skill',
 			icon: "systems/pf2e/icons/spells/pact-broker.webp",
+			tags: ['learning'],
+			actionGlyph: '',
+			mode: 'exploration'
+		})
+	}
+}
+
+export class ActionGatherInformation extends SimpleAction {
+	constructor(MKS) {
+		super(MKS, {action: 'gatherInformation',
+			traits: ['exploration', 'secret'],
+			checkType: 'skill[diplomacy,society,survival]',
+			icon: "systems/pf2e/icons/spells/resplendent-mansion.webp",
+			tags: ['social'],
+			actionGlyph: '',
+			mode: 'exploration'
+		})
+	}
+}
+
+export class ActionIdentifyAlchemy extends SimpleAction {
+	constructor(MKS) {
+		super(MKS, {action: 'identifyAlchemy',
+			traits: ['exploration', 'concentrate', 'secret'],
+			checkType: 'skill[crafting]',
+			icon: "systems/pf2e/icons/spells/sanctified-ground.webp",
+			tags: ['learning'],
+			actionGlyph: '',
+			mode: 'exploration'
+		})
+	}
+	
+	applies(selected, targets) {
+		return !!selected && !!selected.actor.itemTypes.equipment.find(e => e.slug === 'alchemists-tools')
+	}
+}
+
+export class ActionIdentifyMagic extends SimpleAction {
+	constructor(MKS) {
+		super(MKS, {action: 'identifyMagic',
+			traits: ['exploration', 'concentrate', 'secret'],
+			checkType: 'skill[arcana,nature,occultism,religion]',
+			icon: "systems/pf2e/icons/spells/unrelenting-observation.webp",
+			tags: ['learning'],
+			actionGlyph: '',
+			mode: 'exploration'
+		})
+	}
+}
+
+export class ActionImpersonate extends SimpleAction {
+	constructor(MKS) {
+		super(MKS, {action: 'impersonate',
+			traits: ['exploration', 'concentrate', 'secret', 'manipulate'],
+			checkType: 'skill[deception]',
+			icon: "systems/pf2e/icons/spells/illusory-disguise.webp",
+			tags: ['situational'],
+			actionGlyph: '',
+			mode: 'exploration',
+			targetCount: 2,
+			dc: t => t.actor.perception.dc.value
+		})
+	}
+}
+
+export class ActionLearnASpell extends SimpleAction {
+	constructor(MKS) {
+		super(MKS, {action: 'learnASpell',
+			traits: ['exploration', 'concentrate'],
+			checkType: 'skill[arcana,nature,occultism,religion]',
+			icon: "systems/pf2e/icons/spells/timely-tutor.webp",
+			tags: ['learning'],
+			actionGlyph: '',
+			mode: 'exploration'
+		})
+	}
+}
+
+export class ActionMakeAnImpression extends SimpleAction {
+	constructor(MKS) {
+		super(MKS, {action: 'impersonate',
+			traits: ['exploration', 'concentrate', 'auditory', 'linguistic', 'mental'],
+			checkType: 'skill[diplomacy]',
+			icon: "systems/pf2e/icons/spells/entrancing-eyes.webp",
+			tags: ['social'],
+			actionGlyph: '',
+			mode: 'exploration',
+			targetCount: 2,
+			dc: t => t.actor.saves.will.dc.value,
+		})
+	}
+}
+
+export class ActionSenseDirection extends SimpleAction {
+	constructor(MKS) {
+		super(MKS, {action: 'senseDirection',
+			traits: ['exploration', 'secret'],
+			checkType: 'skill[survival]',
+			icon: "systems/pf2e/icons/spells/gravity-weapon.webp",
 			tags: ['situational'],
 			actionGlyph: '',
 			mode: 'exploration'
 		})
 	}
 }
+
+export class ActionSqueeze extends SimpleAction {
+	constructor(MKS) {
+		super(MKS, {action: 'squeeze',
+			traits: ['exploration', 'move'],
+			checkType: 'skill[acrobatics]',
+			icon: "systems/pf2e/icons/spells/abundant-step.webp",
+			tags: ['situational'],
+			actionGlyph: '',
+			mode: 'exploration'
+		})
+	}
+}
+
+export class ActionTrack extends SimpleAction {
+	constructor(MKS) {
+		super(MKS, {action: 'track',
+			traits: ['exploration', 'move', 'concentrate'],
+			checkType: 'skill[survival]',
+			icon: "systems/pf2e/icons/spells/locate.webp",
+			tags: ['situational'],
+			actionGlyph: '',
+			mode: 'exploration'
+		})
+	}
+}
+
+export class ActionCreateForgery extends SimpleAction {
+	constructor(MKS) {
+		super(MKS, {action: 'createForgery',
+			traits: ['downtime', 'secret'],
+			checkType: 'skill[society]',
+			icon: "systems/pf2e/icons/spells/crusade.webp",
+			tags: ['social'],
+			actionGlyph: '',
+			mode: 'downtime'
+		})
+	}
+}
+
+export class ActionSubsist extends SimpleAction {
+	constructor(MKS) {
+		super(MKS, {action: 'subsist',
+			traits: ['downtime'],
+			checkType: 'skill[society,survival]',
+			icon: "systems/pf2e/icons/spells/curse-of-lost-time.webp",
+			tags: ['social'],
+			actionGlyph: '',
+			mode: 'downtime'
+		})
+	}
+}
+

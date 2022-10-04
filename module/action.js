@@ -3,6 +3,7 @@ import {ACTION_GLYPH, ROLL_MODE} from "./constants.js"
 import Compendium from "./compendium.js"
 import Check from "./check.js"
 import DCHelper from "./helpers/dc-helper.js"
+import $$lang from "../utils/lang.js"
 
 export default class Action {
 
@@ -86,10 +87,10 @@ export class SimpleAction extends Action {
 			extraOptions: ["action:" + game.pf2e.system.sluggify(this.action)],
 			traits: this.traits,
 			checkType: this.checkType,
-			difficultyClass: overrideDC ?? this.targetCount > 1 ? DCHelper.getMaxDC(targets, this.dc) : this.dc?.(targeted),
+			difficultyClass: overrideDC ?? $$lang.isFunction(this.dc) ? this.targetCount > 1 ? DCHelper.getMaxDC(targets, this.dc) : this.dc?.(targeted) : null,
 			askGmForDC: {
 				action: this.action,
-				defaultDC: 20
+				defaultDC: typeof this.dc === 'number' ? this.dc : 20
 			}
 		})
 		check.roll(selected).then(rollCallback)
@@ -159,4 +160,6 @@ export const RUDIMENTARY_ACTIONS = {
 	repeatASpell: {icon: 'systems/pf2e/icons/spells/read-fate.webp', compendium: Compendium.ACTION_REPEAT_A_SPELL, mode: 'exploration'},
 	scout: {icon: 'systems/pf2e/icons/spells/vision-of-weakness.webp', compendium: Compendium.ACTION_SCOUT, mode: 'exploration'},
 	search: {icon: 'systems/pf2e/icons/spells/far-sight.webp', compendium: Compendium.ACTION_SEARCH, mode: 'exploration'},
+	
+	retraining: {icon: 'systems/pf2e/icons/spells/scouring-pulse.webp', compendium: Compendium.ACTION_RETRAINING, mode: 'downtime'},
 }

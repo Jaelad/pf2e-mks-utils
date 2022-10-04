@@ -1,97 +1,66 @@
 {
-	"id": "pf2e-tools-mks",
-	"title": "PF2e Tools by MKS",
-	"description": "General Utilities and Action Implementations for Pathfinder 2e",
-	"version": "0.2",
-	"compatibility": {
-		"minimum": "10",
-		"verified": "10.285"
-	},
-	"type": "module",
-	"authors": [
-		{ "name": "Jaelad", "flags": {} }
-	],
-	"relationships": {
-		"systems": [
-			{ "id": "pf2e", "type": "system", "compatibility": {}}
-		],
-		"requires": [
-			{ "id": "pf2e-persistent-damage", "type": "module" }
-		]
-	},
-	"esmodules": ["./module/index.js"],
-	"styles": ["styles/common.css"],
-	"packs": [
-		{
-			"name": "core-effects",
-			"label": "MKS Core Effects",
-			"system": "pf2e",
-			"path": "./packs/core-effects.db",
-			"type": "Item",
-			"module": "pf2e-tools-mks",
-			"private": false
-		},
-		{
-			"name": "combat-macros",
-			"label": "MKS Combat Macros",
-			"system": "pf2e",
-			"path": "./packs/action-combat-macros.db",
-			"type": "Macro",
-			"module": "pf2e-tools-mks",
-			"private": false
-		},
-		{
-			"name": "movement-macros",
-			"label": "MKS Movement Macros",
-			"system": "pf2e",
-			"path": "./packs/action-movement-macros.db",
-			"type": "Macro",
-			"module": "pf2e-tools-mks",
-			"private": false
-		},
-		{
-			"name": "other-macros",
-			"label": "MKS Other Action Macros",
-			"system": "pf2e",
-			"path": "./packs/action-other-macros.db",
-			"type": "Macro",
-			"module": "pf2e-tools-mks",
-			"private": false
-		},
-		{
-			"name": "explore-macros",
-			"label": "MKS Exploration Macros",
-			"system": "pf2e",
-			"path": "./packs/explore-macros.db",
-			"type": "Macro",
-			"module": "pf2e-tools-mks",
-			"private": false
-		},
-		{
-			"name": "downtime-macros",
-			"label": "MKS Downtime Macros",
-			"system": "pf2e",
-			"path": "./packs/downtime-macros.db",
-			"type": "Macro",
-			"module": "pf2e-tools-mks",
-			"private": false
-		}
-	],
-	"languages": [
-		{
-			"lang": "en",
-			"name": "English",
-			"path": "lang/en.json"
-		},
-		{
-			"lang": "tr",
-			"name": "Türkçe",
-			"path": "lang/tr.json"
-		}
-	],
-	"url": "https://github.com/Jaelad/pf2e-tools-mks",
-	"manifest": "https://raw.githubusercontent.com/Jaelad/pf2e-tools-mks/main/module.json",
-	"protected": false,
-	"coreTranslation": false,
-	"socket": true
+  "id": "pf2e-tools-mks",
+  "title": "PF2e Tools by MKS",
+  "description": "General Utilities and Action Implementations for Pathfinder 2e",
+  "version": "0.3",
+  "compatibility": {
+    "minimum": "10",
+    "verified": "10.286"
+  },
+  "authors": [
+    {
+      "name": "Jaelad",
+      "flags": {}
+    }
+  ],
+  "relationships": {
+    "systems": [
+      {
+        "id": "pf2e",
+        "type": "system",
+        "compatibility": {}
+      }
+    ],
+    "requires": [
+      {
+        "id": "pf2e-persistent-damage",
+        "type": "module",
+        "compatibility": {}
+      }
+    ]
+  },
+  "esmodules": [
+    "module/index.js"
+  ],
+  "styles": [
+    "styles/common.css"
+  ],
+  "packs": [
+    {
+      "name": "core-effects",
+      "label": "MKS Core Effects",
+      "system": "pf2e",
+      "path": "packs/core-effects.db",
+      "type": "Item",
+      "private": false,
+      "flags": {}
+    }
+  ],
+  "languages": [
+    {
+      "lang": "en",
+      "name": "English",
+      "path": "lang/en.json",
+      "flags": {}
+    },
+    {
+      "lang": "tr",
+      "name": "Türkçe",
+      "path": "lang/tr.json",
+      "flags": {}
+    }
+  ],
+  "url": "https://github.com/Jaelad/pf2e-tools-mks",
+  "manifest": "https://raw.githubusercontent.com/Jaelad/pf2e-tools-mks/main/module.json",
+  "socket": true
 }

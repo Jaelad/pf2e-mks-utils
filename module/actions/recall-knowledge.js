@@ -21,7 +21,7 @@ export default class ActionRecallKnowledge extends Action {
 
 		let dc = 15, possibleSkills = []
 		Object.keys(selected.actor.skills).filter(s => s.indexOf('lore') > -1).forEach(l => possibleSkills.push('skill[' + l + ']'))
-		dc = DCHelper.determineDcByLevel(targeted)
+		dc = DCHelper.calculateDC(targeted.actor.level, targeted.actor.rarity)
 		const traits = Array.from(targeted.actor.traits)
 		traits.forEach(t => {
 			ACTOR_IDENTIFICATION[t]?.forEach(s => possibleSkills.push('skill[' + s + ']'))

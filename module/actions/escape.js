@@ -12,8 +12,7 @@ export default class ActionEscape extends Action {
 
 	async escape(options = {}) {
 		const {applicable, selected} = this.isApplicable(null,true)
-		if (!applicable)
-			return
+		if (!applicable) return
 
 		let conditionSlug //[1].system.references.parent.type == condition
 		const conditions = this._.effectManager.getConditions(selected, ActionEscape.CONDITIONS)

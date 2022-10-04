@@ -28,6 +28,7 @@ export default class Compendium {
 	static ACTION_REPEAT_A_SPELL = "Compendium.pf2e.actionspf2e.OQaFzDtVEOMWizJJ"
 	static ACTION_SCOUT = "Compendium.pf2e.actionspf2e.kV3XM0YJeS2KCSOb"
 	static ACTION_SEARCH = "Compendium.pf2e.actionspf2e.TiNDYUGlMmxzxBYU"
+	static ACTION_RETRAINING = "Compendium.pf2e.actionspf2e.24PSsn1SKpUwYA1X"
 	
 	static EFFECT_MULTIPLE_ATTACK = "Compendium.pf2e-tools-mks.core-effects.DPVfUT43aCQMvauJ"
 	static EFFECT_AID_READY = "Compendium.pf2e-tools-mks.core-effects.p9PSILLD0f0NkBc5"
@@ -40,6 +41,7 @@ export default class Compendium {
 	static EFFECT_RESIST_A_DIVERSION = "Compendium.pf2e-tools-mks.core-effects.GK9OckuuNDJFdFDe"
 	static EFFECT_IMMUNE_TO_DEMORALIZE = "Compendium.pf2e-tools-mks.core-effects.0mPMeOFZfos07cut"
 	static EFFECT_POISON_TREATED = "Compendium.pf2e-tools-mks.core-effects.9CucVXo0BT77gw2h"
+	static EFFECT_DISEASE_TREATED = "Compendium.pf2e-tools-mks.core-effects.VhUYetlOZu2PQGQZ"
 
 	static CONDITION_GRABBED = "Compendium.pf2e.conditionitems.kWc1fhmv9LBiTuei"
 	static CONDITION_RESTRAINED = "Compendium.pf2e.conditionitems.VcDeM8A5oI6VqhbM"

@@ -9,8 +9,7 @@ export default class ActionTrip extends Action {
 
 	trip(options = {}) {
 		const {applicable, selected, targeted} = this.isApplicable(null,true)
-		if (!applicable)
-			return
+		if (!applicable) return
 
 		const rollCallback = ({roll, actor}) => {
 			let degreeOfSuccess = roll?.data.degreeOfSuccess;

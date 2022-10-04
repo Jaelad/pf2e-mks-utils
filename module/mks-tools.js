@@ -53,6 +53,9 @@ import {
 	ActionSwim,
 	ActionTumbleThrough
 } from "./actions/simple-actions.js"
+import ActionRepair from "./actions/repair.js"
+import ActionTreatWounds from "./actions/treat-wounds.js"
+import ActionCraft from "./actions/craft.js"
 
 export default class MksTools {
 
@@ -124,6 +127,9 @@ export default class MksTools {
 			coerce: new ActionCoerce(this),
 			coverTracks: new ActionCoverTracks(this),
 			decipherWriting: new ActionDecipherWriting(this),
+			repair: new ActionRepair(this),
+			treatWounds: new ActionTreatWounds(this),
+			craft: new ActionCraft(this),
 		}
 		this.rudimentaryActions = RUDIMENTARY_ACTIONS
 

@@ -16,10 +16,10 @@ export default class InventoryManager {
 		let item = tokenOrActorOrItem.carryType ? tokenOrActorOrItem : null, actor
 		if (!item) {
 			actor = tokenOrActorOrItem.actor ? tokenOrActorOrItem.actor : tokenOrActorOrItem
-			return await actor.updateEmbeddedDocuments("Item", [{"_id": itemId, "data.equipped": equipped}])
+			return await actor.updateEmbeddedDocuments("Item", [{"_id": itemId, "system.equipped": equipped}])
 		}
 		else {
-			return await item.update({ "data.equipped": equipped})
+			return await item.update({ "system.equipped": equipped})
 		}
 	}
 

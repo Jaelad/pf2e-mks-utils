@@ -6,7 +6,12 @@ export default class ActorManager {
 	constructor(MKS) {
 		this._ = MKS
 	}
-
+	
+	hasLostHP(tokenOrActor) {
+		const actor = tokenOrActor?.actor ?? tokenOrActor
+		return actor.system.attributes.hp.max > actor.system.attributes.hp.value
+	}
+	
 	// from AllwaysHP module
 	async applyHPChange(token, change, multiplier = 1) {
 		const actor = token.actor

@@ -68,6 +68,7 @@
 	"PF2E.Actions.Coerce.Title": "Coerce",
 	"PF2E.Actions.CoverTracks.Title": "Cover Tracks",
 	"PF2E.Actions.DecipherWriting.Title": "Decipher Writing",
+	"PF2E.Actions.Retraining.Title": "Retraining",
 
 	"PF2E.ActionTag.situational": "Situational",
 	"PF2E.ActionTag.combat": "Combat",
@@ -76,6 +77,7 @@
 	"PF2E.ActionTag.social": "Social",
 	"PF2E.ActionTag.stealth": "Stealth",
 	"PF2E.ActionTag.preparation": "Prep",
+	"PF2E.ActionTag.learning": "Study",
 	"PF2E.ActionTag.rudimentary": "Rudimentary",
 	"PF2E.MKS.ActionsPanel.ShowApplicable": "Show Applicable",
 	"PF2E.MKS.ActionsPanel.InCombatTurn": "In Combat Turn",
@@ -126,6 +128,8 @@
 	"PF2E.MKS.Dialog.CreateADiversion.SelectType": "Select Diversion",
 	"PF2E.MKS.Dialog.AdministerFirstAid.SelectType": "Select Dying or Bleeding Condition",
 	"PF2E.MKS.Dialog.AddModifier.Title": "Add Modifier",
-	"PF2E.MKS.Dialog.AddModifier.Label": ""
-
+	"PF2E.MKS.Dialog.AddModifier.Label": "",
+	"PF2E.MKS.Dialog.Repair.SelectItem": "Select Item to Repair",
+	"PF2E.Actions.Craft.SelectItemDialog.Title": "Select Item to Craft",
+	"PF2E.Actions.Craft.SelectItemDialog.DropItemZoneLabel": "Drag item here..."
 }
