@@ -26,6 +26,11 @@
 	"PF2E.Actions.CreateADiversion.DistractingWords": "Distracting Words",
 	"PF2E.Actions.Escape.Title": "Escape",
 	"PF2E.Actions.Aid.Title": "Aid",
+	"PF2E.Actions.AdministerFirstAid.Title": "First Aid",
+	"PF2E.Actions.AdministerFirstAid.Bleeding": "Bleeding",
+	"PF2E.Actions.AdministerFirstAid.Poisoned": "Poisoned",
+	"PF2E.Actions.AdministerFirstAid.Dying": "Dying",
+	"PF2E.Actions.AdministerFirstAid.BleedingFlatCheck": "Bleeding Flat Check : {roll}",
 	"PF2E.Actions.TakeCover.Title": "Take Cover",
 	"PF2E.Actions.ReceiveAid.Title": "Receive Aid",
 	"PF2E.Actions.RaiseAShield.Title": "Raise a Shield",
@@ -36,9 +41,6 @@
 	"PF2E.Actions.RecallKnowledge.Notes.criticalSuccess": "<strong>Critical Success</strong> You recall the knowledge accurately and gain additional information or context.",
 	"PF2E.Actions.RecallKnowledge.Notes.success": "<strong>Success</strong> You recall the knowledge accurately or gain a useful clue about your current situation.",
 	"PF2E.Actions.RecallKnowledge.Notes.criticalFailure": "<strong>Critical Failure</strong> You recall incorrect information or gain an erroneous or misleading clue.",
-	"PF2E.Actions.AdministerFirstAid.Bleeding": "Bleeding",
-	"PF2E.Actions.AdministerFirstAid.Poisoned": "Poisoned",
-	"PF2E.Actions.AdministerFirstAid.Dying": "Dying",
 	"PF2E.Actions.DisableADevice.Title": "Disable a Device",
 	"PF2E.Actions.PalmAnObject.Title": "Palm an Object",
 	"PF2E.Actions.Steal.Title": "Steal",
@@ -88,6 +90,8 @@
 	"PF2E.MKS.SC.divine": "Kutsal - Divine Büyü",
 
 	"PF2E.MKS.Modifier.partially-disarmed": "Loose Grip",
+	
+	"PF2E.MKS.Chat.HealthLost": "Has lost {healthLost} HP",
 
 	"PF2E.MKS.UI.Actions.cancel": "Cancel",
 	"PF2E.MKS.UI.Actions.ok": "OK",
@@ -103,6 +107,7 @@
 	"PF2E.MKS.Warning.Target.OneMustBeSelected": "You must target exactly one token!",
 	"PF2E.MKS.Warning.Target.AtLeastOneMustBeSelected": "You must target at least one token!",
 	"PF2E.MKS.Warning.Encounter.NoneExists": "No encounter found.",
+	"PF2E.MKS.Error.DCNotSetInTime": "GM didn't set required DC in time.",
 	"pf2e.mks.check.skill-check.defaulttitle.firstpart": "${actor.name} ${stat.label} Check",
 	"pf2e.mks.check.perception-check.defaulttitle.firstpart": "${actor.name} Perception Check",
 	"pf2e.mks.check.spell-attack.defaulttitle.firstpart": "${actor.name} Spell Attack",

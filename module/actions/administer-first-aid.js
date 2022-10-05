@@ -1,6 +1,8 @@
 import Action, {SimpleAction} from "../action.js"
 import Compendium from "../compendium.js"
 import Dialogs from "../apps/dialogs.js"
+import {default as i18n} from "../../lang/pf2e-i18n.js"
+import CommonUtils from "../helpers/common-utils.js"
 
 export default class ActionAdministerFirstAid extends SimpleAction {
 	constructor(MKS) {
@@ -44,13 +46,13 @@ export default class ActionAdministerFirstAid extends SimpleAction {
 			dc = dyingCond.badge.value + 15
 		else if (affliction === 'bleeding')
 			dc = bleedingEffect.flags.persistent.dc
-		else if (affliction === 'poison')
+		else if (affliction === 'poisoned')
 			dc = poisonEffect.flags.persistent.dc
 
 		await super.act({overrideDC: dc, affliction})
 	}
 
-	async resultHandler(roll, selected, targeted, options) {
+	resultHandler(roll, selected, targeted, options) {
 		super.resultHandler(roll, selected, targeted, options)
 		
 		const degreeOfSuccess = roll.data.degreeOfSuccess
@@ -67,15 +69,19 @@ export default class ActionAdministerFirstAid extends SimpleAction {
 		}
 		else if (options.affliction === 'bleeding') {
 			if (degreeOfSuccess > 1) {
-				const flatCheckRoll = await new Roll('1d20').roll({async: true})
-				if (flatCheckRoll.result >= options.overrideDC) {
+				const flatCheckRoll = new Roll('1d20').roll({async: false})
+				CommonUtils.chat(targeted, i18n.$$("PF2E.Actions.AdministerFirstAid.BleedingFlatCheck", {roll: flatCheckRoll.result}))
+				
+				if (flatCheckRoll.result >= 15) {
 					this.effectManager.removeEffect(targeted, 'persistent-damage-bleed').then()
 				}
 			}
 			else if (degreeOfSuccess === 0) {
 				const bleedingEffect = this.effectManager.getEffect(targeted, 'persistent-damage-bleed')
-				const healthLost = await new Roll(bleedingEffect.flags.persistent.value).roll({async: true})
-				this._.actorManager.applyHPChange(targeted, {value: -1 * healthLost}).then()
+				const healthLost = new Roll(bleedingEffect.flags.persistent.value).roll({async: false})
+				this._.actorManager.applyHPChange(targeted, {value: -1 * healthLost}).then(()=> {
+					CommonUtils.chat(targeted, i18n.$$("PF2E.MKS.Chat.HealthLost", {healthLost}))
+				})
 			}
 		}
 		else if (options.affliction === 'poisoned') {

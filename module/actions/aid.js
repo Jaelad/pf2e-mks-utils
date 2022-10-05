@@ -1,9 +1,9 @@
-import {default as i18n} from "../../lang/pf2e-helper.js"
+import {default as i18n} from "../../lang/pf2e-i18n.js"
 import Action from "../action.js"
 import Compendium from "../compendium.js"
 import Check from "../check.js"
 import $$strings from "../../utils/strings.js"
-import Finders from "../helpers/finders.js"
+import CommonUtils from "../helpers/common-utils.js"
 
 export default class ActionAid extends Action {
 	
@@ -76,12 +76,15 @@ export default class ActionAid extends Action {
 
 		if (aidTokens.length === 1) {
 			const config = aid[aidTokens[0]]
-			const helperToken = Finders.getTokenById(aidTokens[0])
+			const helperToken = CommonUtils.getTokenById(aidTokens[0])
 			if (helperToken?.actor) {
 				checkContext.checkType = config.checkType
 				const check = new Check(checkContext)
 				const {roll} = await check.roll(helperToken)
-				let bonus = ((roll?.data?.degreeOfSuccess ?? 1) - 1)
+				if (!roll) return
+				const proficiency = Check.getProficiency(helperToken, config.checkType)
+				let degreeOfSuccess = roll.data.degreeOfSuccess
+				let bonus = degreeOfSuccess === 3 ? Math.max(2, proficiency.rank) : degreeOfSuccess - 1
 				if (bonus !== 0)
 					this.effectManager.setEffect(token, Compendium.EFFECT_AIDED, {changes: {"data.rules[0].value": bonus}}).then()
 			}
@@ -93,7 +96,7 @@ export default class ActionAid extends Action {
 				${aidTokens.map((tokenId) =>
 						`
 						<div class="form-group">
-							<label>${Finders.getTokenById(tokenId).name}</label>
+							<label>${CommonUtils.getTokenById(tokenId).name}</label>
 							<input name="${tokenId}" type="checkbox">
 						</div>
 						`
@@ -111,7 +114,7 @@ export default class ActionAid extends Action {
 				let bonus = 0
 				for (let helperTokenId in checkedAids) {
 					const config = aid[helperTokenId]
-					const helperToken = Finders.getTokenById(helperTokenId)
+					const helperToken = CommonUtils.getTokenById(helperTokenId)
 					if (helperToken?.actor) {
 						checkContext.checkType = config.checkType
 						const check = new Check(checkContext)
@@ -173,7 +176,9 @@ export default class ActionAid extends Action {
 		const aidReadied = !!selected ? this.effectManager.hasEffect(selected, Compendium.EFFECT_AID_READY) : false
 
 		if (method === 'readyAid')
-			return {applicable: !!selected && !!targeted && selected.actor.alliance === targeted.actor.alliance, selected, targeted}
+			return {applicable: !!selected && !!targeted
+					&& selected.id !== targeted.id
+					&& selected.actor.alliance === targeted.actor.alliance, selected, targeted}
 		else if (method === 'receiveAid')
 			return {applicable: !!selected && aidReadied, selected}
 	}

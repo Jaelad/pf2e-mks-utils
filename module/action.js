@@ -1,4 +1,4 @@
-import {default as i18n} from "../lang/pf2e-helper.js"
+import {default as i18n} from "../lang/pf2e-i18n.js"
 import {ACTION_GLYPH, ROLL_MODE} from "./constants.js"
 import Compendium from "./compendium.js"
 import Check from "./check.js"
@@ -87,7 +87,7 @@ export class SimpleAction extends Action {
 			extraOptions: ["action:" + game.pf2e.system.sluggify(this.action)],
 			traits: this.traits,
 			checkType: this.checkType,
-			difficultyClass: overrideDC ?? $$lang.isFunction(this.dc) ? this.targetCount > 1 ? DCHelper.getMaxDC(targets, this.dc) : this.dc?.(targeted) : null,
+			difficultyClass: overrideDC > 0 ? overrideDC : $$lang.isFunction(this.dc) ? this.targetCount > 1 ? DCHelper.getMaxDC(targets, this.dc) : this.dc?.(targeted) : null,
 			askGmForDC: {
 				action: this.action,
 				defaultDC: typeof this.dc === 'number' ? this.dc : 20
@@ -97,6 +97,7 @@ export class SimpleAction extends Action {
 	}
 
 	resultHandler(roll, selected, targets, options) {
+		if (!roll) return
 		this.resultToChat(selected, this.action, roll?.data.degreeOfSuccess, this.actionGlyph)
 	}
 
@@ -117,12 +118,12 @@ export class SimpleAction extends Action {
 
 		if (this.targetCount === 1) {
 			const targeted = this._.ensureOneTarget(null, warn)
-			if (!targeted) return {applicable: false}
+			if (!targeted || targeted.id === selected.id) return {applicable: false}
 			return {applicable: this.applies(selected, targeted), selected, targeted}
 		}
 		else if (this.targetCount > 1) {
 			const targets = this._.ensureAtLeastOneTarget(null, warn)
-			if (!targets) return {applicable: false}
+			if (!targets || targets.find(t => t.id === selected.id)) return {applicable: false}
 			return {applicable: this.applies(selected, targets), selected, targets}
 		}
 		else if (this.targetCount === 0) {

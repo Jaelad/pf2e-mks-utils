@@ -1,5 +1,5 @@
 import {SELECTORS} from "./constants.js"
-import {default as i18n} from "../lang/pf2e-helper.js"
+import {default as i18n} from "../lang/pf2e-i18n.js"
 import {MODIFIER_TYPE, DC_SLUGS, SKILLS, PROFICIENCY_RANK_OPTION} from "./constants.js"
 import Action from "./action.js"
 import DCHelper from "./helpers/dc-helper.js"
@@ -44,13 +44,13 @@ export default class Check {
 		}
 	}
 
-	statisticToModifier(statistic) {
+	static statisticToModifier(statistic) {
 		const domains = statistic.data.domains
 		const rollOptions = statistic.createRollOptions(domains)
 		return new game.pf2e.StatisticModifier(statistic.label, statistic.modifiers, rollOptions)
 	}
 
-	async getStatisticModifier(actor, type) {
+	static async getStatisticModifier(actor, type) {
 		let match, checkSlug, statSlug, statistic, statisticModifier
 
 		if (type === "ac")
@@ -84,7 +84,7 @@ export default class Check {
 		}
 
 		if (!statisticModifier && statistic) {
-			statisticModifier = this.statisticToModifier(statistic)
+			statisticModifier = Check.statisticToModifier(statistic)
 		}
 		else if (match = SELECTORS.strike.exec(type)) {
 			let slug = match[1]
@@ -96,13 +96,20 @@ export default class Check {
 			throw new Error("Illegal stat type : " + type)
 		return {checkSlug, statSlug, stat: statisticModifier}
 	}
+	
+	static getProficiency(tokenOrActor, type) {
+		const actor = tokenOrActor?.actor ?? tokenOrActor
+		const {stat} = Check.getStatisticModifier(actor, type)
+		const modifier = stat.modifiers.find(m => m.type === "proficiency")
+		return {value: modifier.modifier, proficiency: modifier.slug, rank: PROFICIENCY_RANK_OPTION.indexOf("proficiency:" + modifier.slug)}
+	}
 
 	async roll(tokenOrActor, target) {
 		const actor = tokenOrActor?.actor ?? tokenOrActor
 		if (!actor)
 			throw new Error("No actor found to roll check!")
 
-		const {checkSlug, statSlug, stat} = await this.getStatisticModifier(actor, this.context.checkType)
+		const {checkSlug, statSlug, stat} = await Check.getStatisticModifier(actor, this.context.checkType)
 
 		const targetOptions = target?.actor?.getSelfRollOptions("target") ?? []
 		const selfToken = actor.getActiveTokens(false, true).shift()
@@ -162,7 +169,9 @@ export default class Check {
 			difficultyClass = this.context.difficultyClass
 		}
 		else if (this.context.askGmForDC?.defaultDC) {
-			const dcObject = await DCHelper.requestGmSetDC(this.context.askGmForDC)
+			const dcObject = await DCHelper.requestGmSetDC({...this.context.askGmForDC, challenger: actor.name})
+			if (!dcObject?.dc)
+				return Promise.resolve({actor, target})
 			difficultyClass = dcObject?.dc
 		}
 		else if (["character", "npc", "familiar"].includes(target.actor.type)) {

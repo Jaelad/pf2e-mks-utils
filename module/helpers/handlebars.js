@@ -1,9 +1,9 @@
-import Finders from "./finders.js"
-import {default as i18n} from "../../lang/pf2e-helper.js"
+import CommonUtils from "./common-utils.js"
+import {default as i18n} from "../../lang/pf2e-i18n.js"
 
 export function registerHandlebarsHelpers() {
 	Handlebars.registerHelper("token", (id, property) => {
-		const token = Finders.getTokenById(id)
+		const token = CommonUtils.getTokenById(id)
 		if (typeof property === 'string')
 			return eval('token.' + property)
 		else

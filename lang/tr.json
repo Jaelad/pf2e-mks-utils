@@ -32,6 +32,7 @@
 	"PF2E.Actions.AdministerFirstAid.Bleeding": "Kanama",
 	"PF2E.Actions.AdministerFirstAid.Poisoned": "Zehirlenme",
 	"PF2E.Actions.AdministerFirstAid.Dying": "Ölüm Hali",
+	"PF2E.Actions.AdministerFirstAid.BleedingFlatCheck": "Kanamayı engeleme atışı : {roll}",
 	"PF2E.Actions.AvertGaze.Title": "Gözünü Kaçır",
 	"PF2E.Actions.Balance.Title": "Dengeni Sağla",
 	"PF2E.Actions.CommandAnAnimal.Title": "Hayvana Emret",
@@ -151,8 +152,9 @@
 	
 	"PF2E.MKS.ActionsPanel.ShowApplicable": "Uygun Olanlar",
 	"PF2E.MKS.ActionsPanel.InCombatTurn":   "Savaşta Sıradaki",
+	
+	"PF2E.MKS.Chat.HealthLost": "{healthLost} can kaybedildi.",
 
-	"PF2E.MKS.DC": "DC",
 	"PF2E.MKS.UI.Actions.add": "Ekle",
 	"PF2E.MKS.UI.Actions.ok": "Tamam",
 	"PF2E.MKS.UI.Actions.cancel": "İptal",
@@ -167,6 +169,7 @@
 	"PF2E.MKS.Warning.Target.OneMustBeSelected": "Bir piyon hedeflemelisiniz!",
 	"PF2E.MKS.Warning.Target.AtLeastOneMustBeSelected": "En az bir piyon hedeflemelisiniz!",
 	"PF2E.MKS.Warning.Encounter.NoneExists": "Mücadelede değilsiniz.",
+	"PF2E.MKS.Error.DCNotSetInTime": "GM DC'yi zamanında tayin edemedi.",
 	"pf2e.mks.check.skill-check.defaulttitle.firstpart": "${actor.name} ${stat.label} Atışı",
 	"pf2e.mks.check.perception-check.defaulttitle.firstpart": "${actor.name} Algı Atışı",
 	"pf2e.mks.check.spell-attack.defaulttitle.firstpart": "${actor.name} Büyü Atağı",

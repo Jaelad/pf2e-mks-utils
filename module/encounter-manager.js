@@ -50,6 +50,14 @@ export default class EncounterManager {
 		})
 	}
 	
+	async onEncounterEnd(encounter) {
+		const combatants = Array.from(encounter.combatants)
+		for (let i = 0; i < combatants.length; i++) {
+			await this._.effectManager.removeEffect(combatants[i].actor, Compendium.EFFECT_COVER)
+			await this._.effectManager.removeCondition(combatants[i].actor, AWARENESS.concat(ATTITUDES))
+		}
+	}
+	
 	async applyCover(combatant, targetCombatant, cover) {
 		const coverTaken = this._.effectManager.hasEffect(targetCombatant.actor, "cover-taken")
 		const coverState = coverTaken ? cover === 2 ? 4 : 2 : cover

@@ -1,4 +1,4 @@
-import {default as i18n} from "../../lang/pf2e-helper.js"
+import {default as i18n} from "../../lang/pf2e-i18n.js"
 import {SYSTEM} from "../constants.js"
 import BasePanel from "./base-panel.js"
 import $$strings from "../../utils/strings.js"
@@ -31,7 +31,7 @@ export default class RelativeCondPanel extends BasePanel {
 		}
 		
 		setInterval(() => {
-			const relativeData = game.combat.flags?.[SYSTEM.moduleId]?.relative
+			const relativeData = game.combat?.flags?.[SYSTEM.moduleId]?.relative
 			if (relativeData && relativeData.changed) {
 				relativeData.changed = false
 				game.combat.setFlag(SYSTEM.moduleId, "relative", relativeData).then(() => {

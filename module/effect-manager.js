@@ -98,8 +98,11 @@ export default class EffectManager {
 		let condition = this.getCondition(actor, conditionSlug)
 
 		//let promise = new Promise(() => condition)
-		if (!condition)
-			condition = await game.pf2e.ConditionManager.addConditionToActor(conditionSlug, actor)
+		if (!condition) {
+			condition = game.pf2e.ConditionManager.getCondition(conditionSlug).toObject()
+			await actor.createEmbeddedDocuments("Item", [condition])
+			//condition = await game.pf2e.ConditionManager.addConditionToActor(conditionSlug, actor)
+		}
 
 		condition = await this.setBadge(condition, badgeMod)
 		condition = await this.setConditionFlags(condition, flags)
@@ -131,7 +134,8 @@ export default class EffectManager {
 		const conditions = this.getConditions(actor, Array.isArray(conditionSlugs) ? conditionSlugs : [conditionSlugs])
 		if (conditions.length > 0) {
 			const ids = conditions.map(c => c.id)
-			return game.pf2e.ConditionManager.removeConditionFromActor(ids, actor)
+			//return game.pf2e.ConditionManager.removeConditionFromActor(ids, actor)
+			return actor.deleteEmbeddedDocuments("Item", ids);
 		}
 	}
 

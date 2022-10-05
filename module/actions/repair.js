@@ -1,6 +1,6 @@
 import {SimpleAction} from "../action.js"
 import {SYSTEM} from "../constants.js"
-import {default as i18n} from "../../lang/pf2e-helper.js"
+import {default as i18n} from "../../lang/pf2e-i18n.js"
 import Dialogs from "../apps/dialogs.js"
 
 export default class ActionRepair extends SimpleAction {

@@ -1,8 +1,8 @@
-import {default as i18n} from "../lang/pf2e-helper.js"
+import {default as i18n} from "../lang/pf2e-i18n.js"
 import {ROLL_MODE} from "./constants.js"
 import {registerHandlebarsHelpers} from "./helpers/handlebars.js"
 import DCHelper from "./helpers/dc-helper.js"
-import Finders from "./helpers/finders.js"
+import CommonUtils from "./helpers/common-utils.js"
 import ActorManager from "./actor-manager.js"
 import EffectManager from "./effect-manager.js"
 import EncounterManager from "./encounter-manager.js"
@@ -25,7 +25,7 @@ import ActionRecallKnowledge from "./actions/recall-knowledge.js"
 import ActionSeek from "./actions/seek.js"
 import ActionShove from "./actions/shove.js"
 import ActionSneak from "./actions/sneak.js"
-import ActionTakeCover from "./actions/cover.js"
+import ActionTakeCover from "./actions/take-cover.js"
 import ActionTrip from "./actions/trip.js"
 import {
 	ActionAvoidNotice,
@@ -60,13 +60,13 @@ import ActionCraft from "./actions/craft.js"
 export default class MksTools {
 
 	static registerSocketListeners() {
-		game.MKS.socketHandler.on('SetDC', ({action, defaultDC, title}) => {
-			DCHelper.setDC(action, defaultDC, title).then((dc) => {
+		game.MKS.socketHandler.on('SetDC', ({action, defaultDC, title, challenger}) => {
+			DCHelper.setDC(action, defaultDC, title, challenger).then((dc) => {
 				game.MKS.socketHandler.emit('SetDCResponse', dc)
 			})
 		}, true)
 		game.MKS.socketHandler.on('CompendiumToChat', ({actorId, source, rollMode}) => {
-			const actor = Finders.getActorById(actorId)
+			const actor = CommonUtils.getActorById(actorId)
 			game.MKS.compendiumToChat(actor, source, rollMode)
 		}, true)
 		game.MKS.socketHandler.on('GmChatMessage', (chatData) => {
@@ -85,6 +85,7 @@ export default class MksTools {
 
 		this.socketHandler = new SocketHandler(this)
 		this.dcHelper = DCHelper
+		this.commons = CommonUtils
 
 		this.actions = {
 			aid: new ActionAid(this),

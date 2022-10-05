@@ -1,4 +1,4 @@
-import {default as i18n} from "../../lang/pf2e-helper.js"
+import {default as i18n} from "../../lang/pf2e-i18n.js"
 
 export default class SelectItemDialog extends Application {
 	constructor(resolve, {title, classes, filter, filteredOutWarning}) {

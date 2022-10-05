@@ -1,10 +1,10 @@
-import {default as i18n} from "../../lang/pf2e-helper.js"
+import {default as i18n} from "../../lang/pf2e-i18n.js"
 import {default as LOG} from "../../utils/logging.js"
 import Action from "../action.js"
 import Compendium from "../compendium.js"
 import $$arrays from "../../utils/arrays.js"
 import Check from "../check.js"
-import Finders from "../helpers/finders.js"
+import CommonUtils from "../helpers/common-utils.js"
 
 export default class ActionGrapple extends Action {
 
@@ -82,7 +82,7 @@ export default class ActionGrapple extends Action {
 	onGrabbingExpired(grabbedTokenId) {
 		// TODO Maybe some other actor also grappled it
 		LOG.info("Grabbing Expired : " + grabbedTokenId)
-		const token = Finders.getTokenById(grabbedTokenId)
+		const token = CommonUtils.getTokenById(grabbedTokenId)
 		this.effectManager.removeCondition(token, 'grabbed')?.then()
 		this.effectManager.removeCondition(token, 'restrained')?.then()
 	}

@@ -1,4 +1,4 @@
-import {default as i18n} from "../../lang/pf2e-helper.js"
+import {default as i18n} from "../../lang/pf2e-i18n.js"
 import Compendium from "../compendium.js"
 import $$strings from "../../utils/strings.js"
 
@@ -67,24 +67,25 @@ export default class DCHelper {
 		})
 	}
 
-	static setDC(action, defaultDC = 20, title) { //"PF2E.MKS.Dialog.SetDC.Title"
+	static setDC(action, defaultDC = 20, title, challenger) { //"PF2E.MKS.Dialog.SetDC.Title"
 		const compendium = Compendium['ACTION_' + $$strings.underscored(action)]
 		const actionTitle = i18n.action(action)
-		title = title ?? actionTitle
+		title = title ?? ((challenger ? challenger + ": " : "") + actionTitle)
 		return new Promise(resolve => {
 			const compendiumOnClick = compendium ? `game.MKS.compendiumToChat(null, '${compendium}', 'blindroll')` : ''
 			const dialogContent = `
 			<form>
 			<div class="form-group">
-				<button type="button" onclick="${compendiumOnClick}" style="margin-left: 30px; margin-right: 5px">
+				<button type="button" onclick="${compendiumOnClick}" style="margin-left: 20px; margin-right: 5px">
 					<label>${i18n.$("PF2E.Concept.DC") + ': ' + actionTitle + ' '}</label>
 					<i class="fas fa-head-side-cough"></i>
 				</button>
-				<input type="number" name="dc" value="${defaultDC}" maxlength="2" size="2" style="margin-left: 5px; margin-right: 30px">
+				<input type="number" name="dc" value="${defaultDC}" maxlength="2" size="2" style="margin-left: 5px; margin-right: 20px">
 			</div>
 			</form>
 			`
-			new Dialog({
+			let timeout
+			const dialog = new Dialog({
 				title: i18n.$(title),
 				content: dialogContent,
 				buttons: {
@@ -97,17 +98,28 @@ export default class DCHelper {
 				close: ($html) => {
 					const dc = parseInt($html[0].querySelector('[name="dc"]').value, 10) ?? defaultDC
 					resolve({dc})
+					clearTimeout(timeout)
 				}
-			}).render(true)
+			})
+			
+			timeout = setTimeout( ()=> {
+				resolve({})
+				dialog?.close({}).then()
+			},20000)
+			
+			dialog.render(true)
 		})
 	}
 
-	static requestGmSetDC({action, title, defaultDC= 20}) {
+	static requestGmSetDC({action, title, challenger, defaultDC= 20}) {
 		if (game.user.isGM)
-			return DCHelper.setDC(action, defaultDC, title)
+			return DCHelper.setDC(action, defaultDC, title, challenger)
 		else {
-			game.MKS.socketHandler.emit('SetDC', {action, title, defaultDC}, true)
-			return game.MKS.socketHandler.waitFor('SetDCResponse', 20000)
+			game.MKS.socketHandler.emit('SetDC', {action, title, defaultDC, challenger}, true)
+			return game.MKS.socketHandler.waitFor('SetDCResponse', 22000)
+				.catch(e => {
+					ui.notifications.error(i18n.$("PF2E.MKS.Error.DCNotSetInTime"))
+				})
 		}
 	}
 }

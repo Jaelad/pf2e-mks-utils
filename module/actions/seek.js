@@ -1,16 +1,16 @@
-import {default as i18n} from "../../lang/pf2e-helper.js"
+import {default as i18n} from "../../lang/pf2e-i18n.js"
 import {default as LOG} from "../../utils/logging.js"
 import Action from "../action.js"
 import Check from "../check.js"
-import Finders from "../helpers/finders.js"
+import CommonUtils from "../helpers/common-utils.js"
 import {ROLL_MODE} from "../constants.js"
 
 export default class ActionSeek extends Action {
 
 	initialize() {
 		this._.socketHandler.on('SeekRequest', ({seekerId, targetIds, userId}) => {
-			const seeker = Finders.getTokenById(seekerId)
-			const targets = targetIds.map((tid => Finders.getTokenById(tid)))
+			const seeker = CommonUtils.getTokenById(seekerId)
+			const targets = targetIds.map((tid => CommonUtils.getTokenById(tid)))
 			const user = game.users.get(userId)
 			this.seekTargets(seeker, targets, user)
 		})

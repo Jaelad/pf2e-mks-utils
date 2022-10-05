@@ -1,4 +1,4 @@
-import {default as i18n} from "../../lang/pf2e-helper.js"
+import {default as i18n} from "../../lang/pf2e-i18n.js"
 import $$strings from "../../utils/strings.js";
 import Check from "../check.js";
 import Compendium from "../compendium.js";

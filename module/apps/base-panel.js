@@ -1,4 +1,4 @@
-import {default as i18n} from "../../lang/pf2e-helper.js"
+import {default as i18n} from "../../lang/pf2e-i18n.js"
 import LocalStorage from "../../utils/local-storage.js";
 import {SYSTEM} from "../constants.js";
 
