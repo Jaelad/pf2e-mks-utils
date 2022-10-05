@@ -97,9 +97,9 @@ export default class Check {
 		return {checkSlug, statSlug, stat: statisticModifier}
 	}
 	
-	static getProficiency(tokenOrActor, type) {
+	static async getProficiency(tokenOrActor, type) {
 		const actor = tokenOrActor?.actor ?? tokenOrActor
-		const {stat} = Check.getStatisticModifier(actor, type)
+		const {stat} = await Check.getStatisticModifier(actor, type)
 		const modifier = stat.modifiers.find(m => m.type === "proficiency")
 		return {value: modifier.modifier, proficiency: modifier.slug, rank: PROFICIENCY_RANK_OPTION.indexOf("proficiency:" + modifier.slug)}
 	}

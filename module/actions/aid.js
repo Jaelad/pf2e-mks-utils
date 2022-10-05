@@ -8,11 +8,10 @@ import CommonUtils from "../helpers/common-utils.js"
 export default class ActionAid extends Action {
 	
 	readyAid() {
-		const willAid = this._.ensureOneSelected()
-		const willBeAided = this._.ensureOneTarget()
-		if (!willAid || !willBeAided) return
+		const {applicable, selected, targeted} = this.isApplicable('readyAid', true)
+		if (!applicable) return
 
-		const checkTypes = Check.getCheckTypes(willAid.actor).filter(ct => ct.indexOf("-lore") === -1)
+		const checkTypes = Check.getCheckTypes(selected.actor).filter(ct => ct.indexOf("-lore") === -1)
 
 		const dialogContent = `
 		<form>
@@ -42,8 +41,8 @@ export default class ActionAid extends Action {
 					callback: ($html) => {
 						const checkType = $html[0].querySelector('[name="checkType"]').value
 						const mksFlagData = {}
-						mksFlagData[willAid.id] = {checkType}
-						this.effectManager.setEffect(willBeAided, Compendium.EFFECT_AID_READY, {flags: {"mks.aid": mksFlagData}}).then()
+						mksFlagData[selected.id] = {checkType}
+						this.effectManager.setEffect(targeted, Compendium.EFFECT_AID_READY, {flags: {"mks.aid": mksFlagData}}).then()
 					},
 				},
 			},
@@ -52,12 +51,9 @@ export default class ActionAid extends Action {
 	}
 
 	async receiveAid() {
-		this.isApplicable(true, 'receiveAid')
-		const token = this._.ensureOneSelected()
-		if (!token) return
-		const effect = this.effectManager.getEffect(token, Compendium.EFFECT_AID_READY)
-		if (!effect)
-			return
+		const {applicable, selected} = this.isApplicable('receiveAid', true)
+		if (!applicable) return
+		const effect = this.effectManager.getEffect(selected, Compendium.EFFECT_AID_READY)
 
 		const checkContext = {
 			actionGlyph: "R",
@@ -82,13 +78,13 @@ export default class ActionAid extends Action {
 				const check = new Check(checkContext)
 				const {roll} = await check.roll(helperToken)
 				if (!roll) return
-				const proficiency = Check.getProficiency(helperToken, config.checkType)
+				const proficiency = await Check.getProficiency(helperToken, config.checkType)
 				let degreeOfSuccess = roll.data.degreeOfSuccess
 				let bonus = degreeOfSuccess === 3 ? Math.max(2, proficiency.rank) : degreeOfSuccess - 1
 				if (bonus !== 0)
-					this.effectManager.setEffect(token, Compendium.EFFECT_AIDED, {changes: {"data.rules[0].value": bonus}}).then()
+					this.effectManager.setEffect(selected, Compendium.EFFECT_AIDED, {changes: {"data.rules[0].value": bonus}}).then()
 			}
-			this.effectManager.removeEffect(token, Compendium.EFFECT_AID_READY).then()
+			this.effectManager.removeEffect(selected, Compendium.EFFECT_AID_READY).then()
 		}
 		else if (aidTokens.length > 1) {
 			const dialogContent = `
@@ -128,7 +124,7 @@ export default class ActionAid extends Action {
 				}
 
 				if (bonus !== 0)
-					this.effectManager.setEffect(token, Compendium.EFFECT_AIDED, {changes:{"data.rules[0].value": bonus}}).then()
+					this.effectManager.setEffect(selected, Compendium.EFFECT_AIDED, {changes:{"data.rules[0].value": bonus}}).then()
 			}
 
 			new Dialog({
@@ -172,14 +168,15 @@ export default class ActionAid extends Action {
 
 	isApplicable(method, warn = false) {
 		const selected = this._.ensureOneSelected(warn)
-		const targeted = this._.ensureOneTarget(null, warn)
-		const aidReadied = !!selected ? this.effectManager.hasEffect(selected, Compendium.EFFECT_AID_READY) : false
+		const aidReadied = !!selected && this.effectManager.hasEffect(selected, Compendium.EFFECT_AID_READY)
 
-		if (method === 'readyAid')
+		if (method === 'readyAid') {
+			const targeted = this._.ensureOneTarget(null, warn)
 			return {applicable: !!selected && !!targeted
 					&& selected.id !== targeted.id
 					&& selected.actor.alliance === targeted.actor.alliance, selected, targeted}
+		}
 		else if (method === 'receiveAid')
-			return {applicable: !!selected && aidReadied, selected}
+			return {applicable: aidReadied, selected}
 	}
 }

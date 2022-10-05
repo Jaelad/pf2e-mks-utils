@@ -116,10 +116,12 @@ export default class DCHelper {
 			return DCHelper.setDC(action, defaultDC, title, challenger)
 		else {
 			game.MKS.socketHandler.emit('SetDC', {action, title, defaultDC, challenger}, true)
+			game.paused || game.togglePause()
 			return game.MKS.socketHandler.waitFor('SetDCResponse', 22000)
 				.catch(e => {
 					ui.notifications.error(i18n.$("PF2E.MKS.Error.DCNotSetInTime"))
 				})
+				.finally(() => game.paused && game.togglePause())
 		}
 	}
 }
