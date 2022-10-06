@@ -33,7 +33,8 @@
     "module/index.js"
   ],
   "styles": [
-    "styles/common.css"
+    "styles/common.css",
+    "styles/equipments.css"
   ],
   "packs": [
     {

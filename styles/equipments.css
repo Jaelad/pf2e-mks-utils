@@ -1,0 +1,115 @@
+#equipments-panel .window-content {
+	padding: 0;
+}
+
+.equipments {
+	background-image: url("../assets/equipments-bg.png");
+	background-repeat: no-repeat;
+	height: 588px;
+	width: 496px;
+	margin: 0;
+	padding: 0;
+	position: relative;
+}
+
+.eq-slot {
+	position: absolute;
+}
+
+.slot-armor {
+	left: 196px;
+	top: 162px;
+	width: 120px;
+	height: 120px;
+}
+
+.slot-hand1 {
+	left: 53px;
+	top: 287px;
+	width: 85px;
+	height: 85px;
+}
+
+.slot-hand2 {
+	left: 52px;
+	top: 414px;
+	width: 85px;
+	height: 85px;
+}
+
+.slot-head {
+	left: 206px;
+	top: 37px;
+	width: 88px;
+	height: 88px;
+}
+
+.slot-legs {
+	left: 215px;
+	top: 417px;
+	width: 84px;
+	height: 84px;
+}
+
+.slot-feet {
+	left: 364px;
+	top: 428px;
+	width: 58px;
+	height: 58px;
+}
+
+.slot-gloves {
+	left: 63px;
+	top: 164px;
+	width: 68px;
+	height: 68px;
+}
+
+.slot-bracers {
+	left: 183px;
+	top: 323px;
+	width: 58px;
+	height: 58px;
+}
+
+.slot-shoulders {
+	left: 63px;
+	top: 72px;
+	width: 68px;
+	height: 68px;
+}
+
+.slot-cloak {
+	left: 370px;
+	top: 80px;
+	width: 58px;
+	height: 58px;
+}
+
+.slot-necklace {
+	left: 369px;
+	top: 158px;
+	width: 58px;
+	height: 58px;
+}
+
+.slot-belt {
+	left: 261px;
+	top: 323px;
+	width: 58px;
+	height: 58px;
+}
+
+.slot-ring1 {
+	left: 369px;
+	top: 233px;
+	width: 58px;
+	height: 58px;
+}
+
+.slot-ring2 {
+	left: 368px;
+	top: 310px;
+	width: 58px;
+	height: 58px;
+}

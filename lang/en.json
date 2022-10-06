@@ -100,6 +100,8 @@
 	"PF2E.MKS.UI.Actions.revert": "Revert",
 	"PF2E.MKS.UI.ActionsPanel.Label": "Action Panel",
 	"PF2E.MKS.UI.RelativeCondPanel.Label": "Relative Conditions",
+	"PF2E.MKS.UI.EquipmentsPanel.Label": "Equipments",
+	"PF2E.MKS.UI.EquipmentsPanel.NoActorSelected": "Please select an actor...",
 	"PF2E.MKS.Dialog.SelectOne.Title": "Select One",
 	"PF2E.MKS.Dialog.MultipleButtons.Title": "Press One",
 	"PF2E.MKS.Warning.Actor.OneMustBeSelected": "You must select exactly one actor!",

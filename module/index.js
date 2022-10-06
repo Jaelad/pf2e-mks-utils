@@ -3,6 +3,7 @@ import ActionsPanel from "./apps/actions-panel.js"
 import Action from "./action.js"
 import {ROLL_MODE} from "./constants.js"
 import RelativeCondPanel from "./apps/relative-cond-panel.js"
+import EquipmentsPanel from "./apps/equipments-panel.js"
 
 Hooks.on("init", () => {
 	const MKS = new MksTools()
@@ -71,10 +72,22 @@ Hooks.on("getSceneControlButtons", (controls) => {
 			RelativeCondPanel.show({ inFocus: true})
 		}
 	}
+	
+	const equipmentsPanelLink = {
+		icon: "fas fa-vest",
+		name: "equipmentspanel",
+		title: game.i18n.localize("PF2E.MKS.UI.EquipmentsPanel.Label"),
+		button: true,
+		visible: true,
+		onClick: () => {
+			EquipmentsPanel.show({ inFocus: true})
+		}
+	}
 
 	const bar = controls.find(c => c.name === "token")
 	bar.tools.push(actionsPanelLink)
 	bar.tools.push(relativeCondPanelLink)
+	bar.tools.push(equipmentsPanelLink)
 })
 
 Hooks.on("targetToken", (user, token) => {

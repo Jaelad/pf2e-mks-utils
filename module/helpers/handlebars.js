@@ -10,6 +10,11 @@ export function registerHandlebarsHelpers() {
 			return token
 	})
 	
+	Handlebars.registerHelper("invItem", (actorId, itemId) => {
+		const actor = CommonUtils.getActorById(actorId)
+		return actor?.items?.find((i => i.id === itemId))
+	})
+	
 	Handlebars.registerHelper("i18n", (func, toTranslate) => {	
 		i18n[func](toTranslate)
 	})
