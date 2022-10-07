@@ -1,8 +1,27 @@
 <div class="equipments">
 	{{#each equipments as |eqp slot|}}
-	<div class="eq-slot slot-{{slot}}" style="background-image: url('{{@root.equipmentsData.[slot].img}}');">
-		{{#if eqp}}
-		{{/if}}
+	<div class="eq-slot slot-{{slot}}" slot-title="{{eqp.name}}" style="background-image: url('{{eqp.img}}');">
+		<a title="{{localize 'PF2E.MKS.UI.EquipmentsPanel.Unequip'}}" data-action="unequip" data-item="{{eqp.id}}" data-slot="{{slot}}">
+			<i class="fas fa-sign-out-alt"></i>
+		</a>
+		<!--
+		<a title="{{localize 'PF2E.MKS.UI.EquipmentsPanel.Change'}}" data-action="change" data-item="{{eqp.id}}">
+			<i class="fas fa-tshirt"></i>
+		</a>
+		-->
+		{{#unless (isNullish eqp.invested)}}
+		<a title="{{localize 'PF2E.MKS.UI.EquipmentsPanel.ToggleInvested'}}" data-action="toggleInvested" data-item="{{eqp.id}}" data-slot="{{slot}}">
+			<i class="fas fa-gem {{#if eqp.invested}}fas-active{{else}}fas-inactive{{/if}}"></i>
+		</a>
+		{{/unless}}
 	</div>
 	{{/each}}
+	<div class="eq-slot slot-token" style="background-image: url('{{token.img}}');" data-token="{{token.id}}">
+		<a title="{{localize 'PF2E.MKS.UI.EquipmentsPanel.Refresh'}}" data-action="refresh">
+			<i class="fas fa-sync-alt"></i>
+		</a>
+	</div>
+	<div class="eq-slot slot-token-name">
+		<h1 data-token="{{token.id}}">{{token.name}}</h1>
+	</div>
 </div>

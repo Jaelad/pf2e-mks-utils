@@ -25,6 +25,23 @@ export default class EquipmentsPanel extends BasePanel {
 	
 	activateListeners(html) {
 		super.activateListeners(html)
+		
+		html.find("a[data-action][data-item]").click((event) => this._takeAction(event))
+		html.find("a[data-action=refresh]").click((event) => {
+			game.MKS.inventoryManager.equipments(this.token).then(() => {
+				EquipmentsPanel.rerender()
+			})
+			event.stopPropagation()
+		})
+		html.find("[data-token]").click((event) =>	game.MKS.inventoryManager.openCharacterSheet(this.token))
+	}
+	
+	_takeAction(event) {
+		const dataset = event?.currentTarget?.dataset
+		const itemId = dataset?.item, action = dataset?.action, slot = dataset?.slot
+		if (!itemId || !action || !this.token) return
+		
+		game.MKS.inventoryManager[action](this.token, itemId, slot).then()
 	}
 	
 	async getData(options = {}) {
@@ -32,20 +49,23 @@ export default class EquipmentsPanel extends BasePanel {
 		
 		const selected = game.MKS.ensureOneSelected(false)
 		if (!selected) return data
+		this.token = selected
 		
 		let equipments = selected.actor.getFlag(SYSTEM.moduleId, "equipments")
 		if (!equipments)
-			equipments = await game.MKS.inventoryManager.equipments(selected)
-		data.equipments = equipments
-		data.equipmentsData = {}
+			equipments = await game.MKS.inventoryManager.equipments(this.token)
 		
+		data.token = {id: selected.id, name: selected.name, img: selected.document.texture.src}
+		data.equipments = {}
 		Object.keys(equipments).forEach(slot => {
-			const itemId = data.equipments[slot]
+			const itemId = equipments[slot]
+			if (!itemId) return
 			const item = selected.actor.items.find(i => i.id === itemId)
 			const investable = item.system.traits.value.includes('invested')
-			data.equipmentsData[slot] = {img: item.img, name: item.name, id: itemId, invested: investable ? !!item.system.equipped.invested : null}
+			data.equipments[slot] = {img: item.img, name: item.name, id: itemId, invested: investable ? !!item.system.equipped.invested : null}
 		})
 		
+		console.log(data)
 		return data
 	}
 }

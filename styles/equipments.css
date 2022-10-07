@@ -12,8 +12,65 @@
 	position: relative;
 }
 
+[slot-title]:hover:after {
+	opacity: 1;
+	transition: all 0.1s ease 0.5s;
+	visibility: visible;
+}
+[slot-title]:after {
+	content: attr(slot-title);
+	background-color: white;
+	color: darkgoldenrod;
+	font-size: 120%;
+	position: absolute;
+	padding: 1px;
+	bottom: 0;
+	left: 0;
+	white-space: nowrap;
+	box-shadow: 1px 1px 3px #222222;
+	opacity: 0;
+	border: 1px solid darkgoldenrod;
+	z-index: 99999;
+	visibility: hidden;
+}
+
 .eq-slot {
 	position: absolute;
+	background-repeat: no-repeat;
+	background-size: contain;
+}
+
+.eq-slot .fas {
+	color:white;
+}
+
+.eq-slot h1 {
+	color:darkgoldenrod;
+	border-bottom: none;
+	font-size: 3em;
+	margin-top: 10px;
+}
+
+.eq-slot .fas-inactive {
+	color:lightsteelblue;
+}
+
+.eq-slot .fas-active {
+	color:aqua;
+}
+
+.slot-token {
+	left: 140px;
+	top: 520px;
+	width: 60px;
+	height: 60px;
+}
+
+.slot-token-name {
+	left: 210px;
+	top: 520px;
+	width: 100px;
+	height: 60px;
 }
 
 .slot-armor {

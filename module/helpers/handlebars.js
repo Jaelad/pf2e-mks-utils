@@ -19,8 +19,11 @@ export function registerHandlebarsHelpers() {
 		i18n[func](toTranslate)
 	})
 	
-	Handlebars.registerHelper("at", (arr, i) => {
-		return arr[i]
+	Handlebars.registerHelper("chain", (obj, ...ev) => {
+		for (let i = 0; i < ev.length - 1; i++) {
+			obj = obj[ev[i]]
+		}
+		return obj
 	})
 
 	Handlebars.registerHelper("startsWith", (str, start) => {

@@ -23,13 +23,13 @@
 			{{/with}}
 			<div class="form-fields">
 				<div style="text-align: center">
-					<a {{#if @root.editable}}data-action="cover"{{/if}} data-reference="{{@root.referenceTokenId}}" data-target="{{tokenId}}">{{at @root.labels.cover conds.cover}}</a>
+					<a {{#if @root.editable}}data-action="cover"{{/if}} data-reference="{{@root.referenceTokenId}}" data-target="{{tokenId}}">{{lookup @root.labels.cover conds.cover}}</a>
 				</div>
 				<div style="text-align: center">
-					<a {{#if @root.editable}}data-action="awareness"{{/if}} data-reference="{{@root.referenceTokenId}}" data-target="{{tokenId}}">{{at @root.labels.awareness conds.awareness}}</a>
+					<a {{#if @root.editable}}data-action="awareness"{{/if}} data-reference="{{@root.referenceTokenId}}" data-target="{{tokenId}}">{{lookup @root.labels.awareness conds.awareness}}</a>
 				</div>
 				<div style="text-align: center">
-					<a {{#if @root.editable}}data-action="attitude"{{/if}} data-reference="{{@root.referenceTokenId}}" data-target="{{tokenId}}">{{at @root.labels.attitude conds.attitude}}</a>
+					<a {{#if @root.editable}}data-action="attitude"{{/if}} data-reference="{{@root.referenceTokenId}}" data-target="{{tokenId}}">{{lookup @root.labels.attitude conds.attitude}}</a>
 				</div>
 			</div>
 		</li>
