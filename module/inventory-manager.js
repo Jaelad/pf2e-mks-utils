@@ -27,7 +27,7 @@ export default class InventoryManager {
 		this._ = MKS
 	}
 	
-	openCharacterSheet(token) {
+	openCharacterSheet(token, tab) {
 		const sheet = token.actor.sheet
 		if ( sheet.rendered ) {
 			sheet.maximize()
@@ -35,6 +35,8 @@ export default class InventoryManager {
 		}
 		else
 			sheet.render(true, {token: token.document})
+		if (tab)
+			sheet.activateTab(tab)
 	}
 
 	heldItems(tokenOrActor) {

@@ -33,7 +33,7 @@ export default class EquipmentsPanel extends BasePanel {
 			})
 			event.stopPropagation()
 		})
-		html.find("[data-token]").click((event) =>	game.MKS.inventoryManager.openCharacterSheet(this.token))
+		html.find("[data-token]").click((event) =>	game.MKS.inventoryManager.openCharacterSheet(this.token, 'inventory'))
 	}
 	
 	_takeAction(event) {
