@@ -4,7 +4,7 @@ import {SYSTEM} from "./constants.js"
 import EquipmentsPanel from "./apps/equipments-panel.js"
 import $$lang from "../utils/lang.js"
 
-const SLOT_USAGES = {
+export const SLOT_USAGES = {
 	'armor': {exclusive: true, slot: 'armor'},
 	'circlet': {exclusive: false, slot: 'head'},
 	'crown': {exclusive: false, slot: 'head'},
@@ -36,8 +36,9 @@ export default class InventoryManager {
 		}
 		else
 			sheet.render(true, {token: token.document})
+		
 		if (tab)
-			sheet.activateTab(tab)
+			setTimeout(() => sheet.activateTab(tab), 200)
 	}
 
 	heldItems(tokenOrActor) {

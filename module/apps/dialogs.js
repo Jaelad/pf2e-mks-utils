@@ -103,6 +103,11 @@ export default class Dialogs  {
 			</ol>
 		`
 		return new Promise((resolve) => {
+			if (items.length === 0) {
+				ui.notifications.warn(i18n.$("PF2E.MKS.Dialog.SelectItem.NoItemFound"))
+				resolve(undefined)
+				return
+			}
 			new Dialog({
 				title: i18n.$(title),
 				content: dialogContent,

@@ -142,6 +142,7 @@
 	"PF2E.MKS.Dialog.AddModifier.Title": "Add Modifier",
 	"PF2E.MKS.Dialog.AddModifier.Label": "",
 	"PF2E.MKS.Dialog.Repair.SelectItem": "Select Item to Repair",
+	"PF2E.MKS.Dialog.SelectItem.NoItemFound": "No Item Found!",
 	"PF2E.Actions.Craft.SelectItemDialog.Title": "Select Item to Craft",
 	"PF2E.Actions.Craft.SelectItemDialog.DropItemZoneLabel": "Drag item here..."
 }

@@ -4,7 +4,7 @@ import BasePanel from "./base-panel.js"
 import $$strings from "../../utils/strings.js"
 import CommonUtils from "../helpers/common-utils.js"
 import Dialogs from "./dialogs.js"
-import SLOT_USAGES from "../inventory-manager.js"
+import {SLOT_USAGES} from "../inventory-manager.js"
 
 export default class EquipmentsPanel extends BasePanel {
 	
@@ -31,22 +31,46 @@ export default class EquipmentsPanel extends BasePanel {
 		html.find("a[data-action][data-item]").click((event) => this._takeAction(event))
 		html.find("div[data-slot][data-item]").click((event) => this._slotLeftClick(event))
 		html.find("div[data-slot][data-item]").contextmenu((event) => this._slotRightClick(event))
+		html.contextmenu((event) => this._mainRightClick(event))
 		html.find("a[data-action=refresh]").click((event) => {
+			event.stopPropagation()
 			game.MKS.inventoryManager.equipments(this.token).then(() => {
 				EquipmentsPanel.rerender()
 			})
-			event.stopPropagation()
 		})
-		html.find("[data-token]").click((event) =>	game.MKS.inventoryManager.openCharacterSheet(this.token, 'inventory'))
+		html.find("[data-token]").click((event) => {
+			event.stopPropagation();
+			game.MKS.inventoryManager.openCharacterSheet(this.token, 'inventory')
+		})
 	}
 
-	async _slotRightClick(event) {
+	_mainRightClick(event) {
+		event.stopPropagation()
+		const x = event.pageX - $(event?.currentTarget).offset().left
+		const y = event.pageY - $(event?.currentTarget).offset().top
+
+		let inSlot
+		for (const [slot, coor] of Object.entries(COORDINATES))
+			if (x > coor.left && x < coor.left + coor.width && y > coor.top && y < coor.top + coor.height) {
+				inSlot = slot
+				break
+			}
+		if (inSlot)
+			this._slotItemSelect(inSlot)
+	}
+
+	_slotRightClick(event) {
+		event.stopPropagation()
 		const {item, slot} = event?.currentTarget?.dataset
 
+		this._slotItemSelect(slot)
+	}
+
+	async _slotItemSelect(slot) {
 		const pf2eSlots = []
-		for (const [pf2eSlot, value] of Object.entries(SLOT_USAGES)) {
+		for (const [key, value] of Object.entries(SLOT_USAGES)) {
 			if (Array.isArray(value.slot) ? value.slot.includes(slot) : value.slot === slot)
-				pf2eSlots.push(pf2eSlot)
+				pf2eSlots.push(key)
 		}
 
 		const selectedItem = await Dialogs.selectItem(this.token, (item) => {
@@ -99,5 +123,92 @@ export default class EquipmentsPanel extends BasePanel {
 		
 		console.log(data)
 		return data
+	}
+}
+
+const COORDINATES = {
+	armor: {
+		left: 196,
+		top: 162,
+		width: 120,
+		height: 120,
+	},
+	hand1: {
+		left: 53,
+		top: 287,
+		width: 85,
+		height: 85,
+	},
+	hand2: {
+		left: 52,
+		top: 414,
+		width: 85,
+		height: 85,
+	},
+	head: {
+		left: 206,
+		top: 37,
+		width: 88,
+		height: 88,
+	},
+	legs: {
+		left: 215,
+		top: 417,
+		width: 84,
+		height: 84,
+	},
+	feet: {
+		left: 364,
+		top: 428,
+		width: 58,
+		height: 58,
+	},
+	gloves: {
+		left: 63,
+		top: 164,
+		width: 68,
+		height: 68,
+	},
+	bracers: {
+		left: 183,
+		top: 323,
+		width: 58,
+		height: 58,
+	},
+	shoulders: {
+		left: 63,
+		top: 72,
+		width: 68,
+		height: 68,
+	},
+	cloak: {
+		left: 370,
+		top: 80,
+		width: 58,
+		height: 58,
+	},
+	necklace: {
+		left: 369,
+		top: 158,
+		width: 58,
+		height: 58,
+	},
+	belt: {
+		left: 261,
+		top: 323,
+		width: 58,
+		height: 58,
+	},
+	ring1: {
+		left: 369,
+		top: 233,
+		width: 58,
+		height: 58,
+	},
+	ring2: {
+		left: 368,
+		top: 310,
+		width: 58,
+		height: 58,
 	}
 }

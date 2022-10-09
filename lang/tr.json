@@ -204,6 +204,7 @@
 	"PF2E.MKS.Dialog.AddModifier.Title": "Add Modifier",
 	"PF2E.MKS.Dialog.AddModifier.Label": "",
 	"PF2E.MKS.Dialog.Repair.SelectItem": "Tamir edilecek Nesneyi Seçiniz",
+	"PF2E.MKS.Dialog.SelectItem.NoItemFound": "Uygun nesne bulunamadı!",
 	"PF2E.Actions.Craft.SelectItemDialog.Title": "İmal edilecek Nesneyi Seçiniz",
 	"PF2E.Actions.Craft.SelectItemDialog.DropItemZoneLabel": "Nesneyi buraya sürükleyin..."
 }
