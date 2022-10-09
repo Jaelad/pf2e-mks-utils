@@ -96,6 +96,7 @@
 	"PF2E.MKS.UI.Actions.cancel": "Cancel",
 	"PF2E.MKS.UI.Actions.ok": "OK",
 	"PF2E.MKS.UI.Actions.add": "Add",
+	"PF2E.MKS.UI.Actions.remove": "Remove",
 	"PF2E.MKS.UI.Actions.submit": "Submit",
 	"PF2E.MKS.UI.Actions.revert": "Revert",
 	"PF2E.MKS.UI.ActionsPanel.Label": "Action Panel",

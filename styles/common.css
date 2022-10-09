@@ -141,3 +141,21 @@
 	font-size: var(--font-size-13);
 	margin: 5px 0 0;
 }
+
+.selectable-item {
+	display: flex;
+	position: relative;
+	align-items: center;
+	margin-bottom: 10px;
+}
+
+.selectable-item > input {
+	margin-right: 10px;
+}
+
+.selectable-item > img {
+	width: 32px;
+	height: 32px";
+}
+
+

@@ -156,6 +156,7 @@
 	"PF2E.MKS.Chat.HealthLost": "{healthLost} can kaybedildi.",
 
 	"PF2E.MKS.UI.Actions.add": "Ekle",
+	"PF2E.MKS.UI.Actions.remove": "Çıkar",
 	"PF2E.MKS.UI.Actions.ok": "Tamam",
 	"PF2E.MKS.UI.Actions.cancel": "İptal",
 	"PF2E.MKS.UI.Actions.submit": "Uygula",

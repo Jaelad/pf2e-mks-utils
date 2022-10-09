@@ -84,6 +84,49 @@ export default class Dialogs  {
 		})
 	}
 
+	static selectItem(tokenOrActor, filter, title = 'PF2E.MKS.Dialog.SelectOne.Title') {
+		const actor = tokenOrActor?.actor ?? tokenOrActor
+		const items = actor.items.filter(filter)
+
+		const dialogContent = `
+			<ol class="directory-list">
+				${items.map((item) =>
+				`<li class="directory-item document actor selectable-item" onclick="$(this).children(':first').prop('checked', true)">
+					<input type="radio" name="selectedItem" value="${item.id}">
+					<img class="thumbnail" title="${item.name}" src="${item.img}">
+					<h4 class="document-name">
+						<a>${item.name}</a>
+						<span class="actor-level">Level ${item.level}</span>
+					</h4>
+				</li>`
+				).join('')}
+			</ol>
+		`
+		return new Promise((resolve) => {
+			new Dialog({
+				title: i18n.$(title),
+				content: dialogContent,
+				buttons: {
+					no: {
+						icon: '<i class="fas fa-times"></i>',
+						label: i18n.uiAction('remove'),
+						callback: () => resolve(null),
+					},
+					yes: {
+						icon: '<i class="fas fa-check-circle"></i>',
+						label: i18n.uiAction('ok'),
+						callback: ($html) => {
+							const selectedValue = $html[0].querySelector("input:checked")?.value
+							resolve(items.find(i=>i.id === selectedValue))
+						},
+					},
+				},
+				default: 'yes',
+				close: () => resolve(undefined)
+			}, {width: 300}).render(true)
+		})
+	}
+
 	static multipleButtons(elems, label, title = 'PF2E.MKS.Dialog.MultipleButtons.Title') {
 		const dialogContent = `
 		<form>

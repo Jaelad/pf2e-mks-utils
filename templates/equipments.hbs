@@ -1,6 +1,6 @@
 <div class="equipments">
 	{{#each equipments as |eqp slot|}}
-	<div class="eq-slot slot-{{slot}}" slot-title="{{eqp.name}}" style="background-image: url('{{eqp.img}}');">
+	<div class="eq-slot slot-{{slot}}" slot-title="{{eqp.name}}" style="background-image: url('{{eqp.img}}');" data-item="{{eqp.id}}" data-slot="{{slot}}">
 		<a title="{{localize 'PF2E.MKS.UI.EquipmentsPanel.Unequip'}}" data-action="unequip" data-item="{{eqp.id}}" data-slot="{{slot}}">
 			<i class="fas fa-sign-out-alt"></i>
 		</a>
@@ -22,6 +22,6 @@
 		</a>
 	</div>
 	<div class="eq-slot slot-token-name">
-		<h1 data-token="{{token.id}}">{{token.name}}</h1>
+		<h1 style="white-space: nowrap;" data-token="{{token.id}}">{{token.name}}</h1>
 	</div>
 </div>

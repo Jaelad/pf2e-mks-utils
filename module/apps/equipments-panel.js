@@ -3,6 +3,8 @@ import {SYSTEM} from "../constants.js"
 import BasePanel from "./base-panel.js"
 import $$strings from "../../utils/strings.js"
 import CommonUtils from "../helpers/common-utils.js"
+import Dialogs from "./dialogs.js"
+import SLOT_USAGES from "../inventory-manager.js"
 
 export default class EquipmentsPanel extends BasePanel {
 	
@@ -27,6 +29,8 @@ export default class EquipmentsPanel extends BasePanel {
 		super.activateListeners(html)
 		
 		html.find("a[data-action][data-item]").click((event) => this._takeAction(event))
+		html.find("div[data-slot][data-item]").click((event) => this._slotLeftClick(event))
+		html.find("div[data-slot][data-item]").contextmenu((event) => this._slotRightClick(event))
 		html.find("a[data-action=refresh]").click((event) => {
 			game.MKS.inventoryManager.equipments(this.token).then(() => {
 				EquipmentsPanel.rerender()
@@ -35,12 +39,40 @@ export default class EquipmentsPanel extends BasePanel {
 		})
 		html.find("[data-token]").click((event) =>	game.MKS.inventoryManager.openCharacterSheet(this.token, 'inventory'))
 	}
+
+	async _slotRightClick(event) {
+		const {item, slot} = event?.currentTarget?.dataset
+
+		const pf2eSlots = []
+		for (const [pf2eSlot, value] of Object.entries(SLOT_USAGES)) {
+			if (Array.isArray(value.slot) ? value.slot.includes(slot) : value.slot === slot)
+				pf2eSlots.push(pf2eSlot)
+		}
+
+		const selectedItem = await Dialogs.selectItem(this.token, (item) => {
+			if (!['weapon', 'equipment', 'armor'].includes(item.type))
+				return false
+			const usageType = item.system.usage.type
+			if (slot === 'hand1' || slot === 'hand2')
+				return usageType === 'held'
+			else
+				return pf2eSlots.includes(item.system.usage.where)
+		})
+
+		console.log(selectedItem)
+	}
+
+	_slotLeftClick(event) {
+		const {item, slot} = event?.currentTarget?.dataset
+		console.log("Left : " + item + " " + slot)
+	}
 	
 	_takeAction(event) {
 		const dataset = event?.currentTarget?.dataset
 		const itemId = dataset?.item, action = dataset?.action, slot = dataset?.slot
 		if (!itemId || !action || !this.token) return
-		
+
+		event.stopPropagation()
 		game.MKS.inventoryManager[action](this.token, itemId, slot).then()
 	}
 	

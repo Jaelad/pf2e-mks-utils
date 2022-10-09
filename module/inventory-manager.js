@@ -5,6 +5,7 @@ import EquipmentsPanel from "./apps/equipments-panel.js"
 import $$lang from "../utils/lang.js"
 
 const SLOT_USAGES = {
+	'armor': {exclusive: true, slot: 'armor'},
 	'circlet': {exclusive: false, slot: 'head'},
 	'crown': {exclusive: false, slot: 'head'},
 	'headwear': {exclusive: false, slot: 'head'},
@@ -86,7 +87,7 @@ export default class InventoryManager {
 			}
 		}))
 	}
-	
+
 	async unequip(tokenOrActor, itemId, slot) {
 		const actor = tokenOrActor?.actor ?? tokenOrActor
 		
