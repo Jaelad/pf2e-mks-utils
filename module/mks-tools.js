@@ -35,27 +35,30 @@ import {
 	ActionCoerce,
 	ActionCommandAnAnimal,
 	ActionConcealAnObject,
-	ActionCoverTracks,
+	ActionCoverTracks, ActionCreateForgery,
 	ActionDecipherWriting,
 	ActionDisableADevice,
 	ActionFeint,
-	ActionForceOpen,
+	ActionForceOpen, ActionGatherInformation,
 	ActionGrabAnEdge,
-	ActionHighJump,
+	ActionHighJump, ActionIdentifyAlchemy, ActionIdentifyMagic, ActionImpersonate, ActionLearnASpell,
 	ActionLie,
-	ActionLongJump,
+	ActionLongJump, ActionMakeAnImpression,
 	ActionPalmAnObject,
 	ActionPerform,
 	ActionPickALock,
-	ActionRequest,
-	ActionSenseMotive,
-	ActionSteal,
-	ActionSwim,
+	ActionRequest, ActionSenseDirection,
+	ActionSenseMotive, ActionSqueeze,
+	ActionSteal, ActionSubsist,
+	ActionSwim, ActionTrack,
 	ActionTumbleThrough
 } from "./actions/simple-actions.js"
 import ActionRepair from "./actions/repair.js"
 import ActionTreatWounds from "./actions/treat-wounds.js"
 import ActionCraft from "./actions/craft.js"
+import ActionLongTermRest from "./actions/long-term-rest.js"
+import ActionEarnIncome from "./actions/earn-income.js"
+import ActionTreatDisease from "./actions/treat-disease.js"
 
 export default class MksTools {
 
@@ -128,9 +131,23 @@ export default class MksTools {
 			coerce: new ActionCoerce(this),
 			coverTracks: new ActionCoverTracks(this),
 			decipherWriting: new ActionDecipherWriting(this),
-			repair: new ActionRepair(this),
+			gatherInformation: new ActionGatherInformation(this),
+			identifyAlchemy: new ActionIdentifyAlchemy(this),
+			identifyMagic: new ActionIdentifyMagic(this),
+			impersonate: new ActionImpersonate(this),
+			learnASpell: new ActionLearnASpell(this),
+			makeAnImpression: new ActionMakeAnImpression(this),
+			senseDirection: new ActionSenseDirection(this),
+			squeeze: new ActionSqueeze(this),
+			track: new ActionTrack(this),
 			treatWounds: new ActionTreatWounds(this),
+			repair: new ActionRepair(this),
+			createForgery: new ActionCreateForgery(this),
+			subsist: new ActionSubsist(this),
 			craft: new ActionCraft(this),
+			longTermRest: new ActionLongTermRest(this),
+			earnIncome: new ActionEarnIncome(this),
+			treatDisease: new ActionTreatDisease(this),
 		}
 		this.rudimentaryActions = RUDIMENTARY_ACTIONS
 

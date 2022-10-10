@@ -103,6 +103,8 @@
 	"PF2E.Actions.CoverTracks.Title": "İzleri Sakla",
 	"PF2E.Actions.DecipherWriting.Title": "Yazıyı Çöz",
 	"PF2E.Actions.Retraining.Title": "Kendini Eğit",
+	"PF2E.Actions.Craft.DropItemDialog.Title": "İmal edilecek Nesneyi Seçiniz",
+	"PF2E.Actions.Craft.Error.ItemReferenceMismatch": "Seçilen fiziksel bir nesne olmalıdır!",
 
 	"PF2E.ConditionTypeGrabbed": "Zaptedilmiş",
 	"PF2E.ConditionTypeProne": "Yere Düşmüş",
@@ -221,6 +223,5 @@
 	"PF2E.MKS.Dialog.Repair.SelectItem": "Tamir edilecek Nesneyi Seçiniz",
 	"PF2E.MKS.Dialog.SelectItem.NoItemFound": "Uygun nesne bulunamadı!",
 	"PF2E.MKS.Dialog.Equipment.SelectItem": "'{slot}' için bir Nesne Seçiniz",
-	"PF2E.Actions.Craft.SelectItemDialog.Title": "İmal edilecek Nesneyi Seçiniz",
-	"PF2E.Actions.Craft.SelectItemDialog.DropItemZoneLabel": "Nesneyi buraya sürükleyin..."
+	"PF2E.MKS.Dialog.DropItem.DropItemZoneLabel": "Nesneyi buraya sürükleyin..."
 }

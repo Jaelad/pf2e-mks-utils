@@ -23,7 +23,8 @@ export default class ActionCraft extends Action {
 			filteredOutWarning: "PF2E.Actions.Craft.Error.ItemReferenceMismatch"
 		})
 		
-		game.pf2e.actions.craft({item, free: false})
+		if (item)
+			game.pf2e.actions.craft({item, free: false})
 	}
 
 	methods(onlyApplicable) {

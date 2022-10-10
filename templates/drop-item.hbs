@@ -4,14 +4,14 @@
 	<span>{{item.name}}</span>
 	{{else}}
 	<img src="systems/pf2e/icons/actions/craft/unknown-item.webp" class="item-icon">
-	<span>{{localize "PF2E.Actions.Craft.DropItemDialog.DropItemZoneLabel"}}</span>
+	<span>{{localize "PF2E.MKS.Dialog.DropItem.DropItemZoneLabel"}}</span>
 	{{/if}}
 </div>
 <div class="button-panel">
-	<button type="button" data-event-handler="select" {{disabled (not item)}}>
+	<button type="button" data-action="select" {{disabled (not item)}}>
 		<i class="fas fa-ok"></i> {{localize "PF2E.MKS.UI.Actions.ok"}}
 	</button>
-	<button type="button" data-event-handler="cancel">
+	<button type="button" data-action="cancel">
 		<i class="fas fa-times"></i> {{localize "PF2E.MKS.UI.Actions.cancel"}}
 	</button>
 </div>

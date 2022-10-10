@@ -4,15 +4,39 @@ import LocalStorage from "../../utils/local-storage.js"
 export default class SelectItemDialog extends Application {
 	constructor(resolve, {items, title, classes = [], filteredOutWarning}) {
 		super({
-			template: "modules/pf2e-tools-mks/templates/select-item.hbs",
 			classes,
 			title,
-			width: 270,
-			height: 'auto'
 		})
 		this.resolve = resolve
 		this.items = items
 		this.filteredOutWarning = filteredOutWarning
+	}
+	
+	static get defaultOptions() {
+		return foundry.utils.mergeObject(super.defaultOptions, {
+			id: "select-item-dialog",
+			template: "modules/pf2e-tools-mks/templates/select-item.hbs",
+			width: 270,
+			height: 'auto',
+			resizable: false
+		})
+	}
+	
+	async _render(force=false, options={}) {
+		await super._render(force, options)
+		setTimeout(() => {
+				super.element.css('height', 'auto')
+				super.bringToTop()
+			}
+			, 100)
+	}
+	
+	setPosition({left, top, width, height, scale}={}) {
+		super.setPosition({left, top, width, height, scale})
+		setTimeout(() => {
+				super.element.css('height', 'auto')
+			}
+			, 100)
 	}
 	
 	async getData(options = {}) {

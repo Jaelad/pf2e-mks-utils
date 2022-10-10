@@ -38,11 +38,11 @@ export default class DropItemDialog extends Application {
 			}
 		})
 		
-		$html.find("[data-event-handler=select]").on("click", () => {
+		$html.find("[data-action=select]").on("click", () => {
 			this.close()
 		})
 		
-		$html.find("[data-event-handler=cancel]").on("click", () => {
+		$html.find("[data-action=cancel]").on("click", () => {
 			this.item = null
 			this.close()
 		})

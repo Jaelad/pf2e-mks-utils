@@ -70,8 +70,16 @@
 	"PF2E.Actions.Coerce.Title": "Coerce",
 	"PF2E.Actions.CoverTracks.Title": "Cover Tracks",
 	"PF2E.Actions.DecipherWriting.Title": "Decipher Writing",
+	"PF2E.Actions.IdentifyMagic.Title": "Identify Magic",
+	"PF2E.Actions.LearnASpell.Title": "Learn a Spell",
 	"PF2E.Actions.Retraining.Title": "Retraining",
-
+	"PF2E.Actions.Craft.DropItemDialog.Title": "Select Item to Craft",
+	"PF2E.Actions.Craft.Error.ItemReferenceMismatch": "A Physical Item must be selected!",
+	"PF2E.Actions.EarnIncome.Title": "Earn Income",
+	"PF2E.Actions.LongTermRest.Title": "Long-Term Rest",
+	"PF2E.Actions.Subsist.Title": "Subsist",
+	"PF2E.Actions.CreateForgery.Title": "Create Forgery",
+	
 	"PF2E.ActionTag.situational": "Situational",
 	"PF2E.ActionTag.combat": "Combat",
 	"PF2E.ActionTag.hostile": "Hostile",
@@ -83,12 +91,12 @@
 	"PF2E.ActionTag.rudimentary": "Rudimentary",
 	"PF2E.MKS.ActionsPanel.ShowApplicable": "Show Applicable",
 	"PF2E.MKS.ActionsPanel.InCombatTurn": "In Combat Turn",
-
+	
 	"PF2E.MKS.SC.arcane": "Esrar - Arcane Büyü",
 	"PF2E.MKS.SC.occult": "Kült - Occult Büyü",
 	"PF2E.MKS.SC.primal": "Özsel - Primal Büyü",
 	"PF2E.MKS.SC.divine": "Kutsal - Divine Büyü",
-
+	
 	"PF2E.MKS.Modifier.partially-disarmed": "Loose Grip",
 	
 	"PF2E.MKS.Chat.HealthLost": "Has lost {healthLost} HP",
@@ -107,7 +115,7 @@
 	"PF2E.MKS.EquipmentSlot.gloves": "Gloves",
 	"PF2E.MKS.EquipmentSlot.bracers": "Bracers",
 	"PF2E.MKS.EquipmentSlot.cloak": "Cloak",
-
+	
 	"PF2E.MKS.UI.Actions.cancel": "Cancel",
 	"PF2E.MKS.UI.Actions.ok": "OK",
 	"PF2E.MKS.UI.Actions.add": "Add",
@@ -148,7 +156,7 @@
 	"PF2E.MKS.Dialog.seek.type.object": "Search an object around",
 	"PF2E.MKS.Dialog.disarm.title": "Disarm",
 	"PF2E.MKS.Dialog.disarm.select": "Select Weapon or Item",
-    "PF2E.MKS.Dialog.SelectSkill": "Select Skill",
+	"PF2E.MKS.Dialog.SelectSkill": "Select Skill",
 	"PF2E.MKS.Dialog.Escape.SelectCondition": "Select condition",
 	"PF2E.MKS.Dialog.Escape.SelectSkill": "Select how you escape",
 	"PF2E.MKS.Dialog.RecallKnowledge.SelectSkill": "Select how you recall",
@@ -159,6 +167,5 @@
 	"PF2E.MKS.Dialog.Repair.SelectItem": "Select Item to Repair",
 	"PF2E.MKS.Dialog.SelectItem.NoItemFound": "No Item Found!",
 	"PF2E.MKS.Dialog.Equipment.SelectItem": "Select Item for '{slot}' Slot",
-	"PF2E.Actions.Craft.SelectItemDialog.Title": "Select Item to Craft",
-	"PF2E.Actions.Craft.SelectItemDialog.DropItemZoneLabel": "Drag item here..."
+	"PF2E.MKS.Dialog.DropItem.DropItemZoneLabel": "Drag item here..."
 }

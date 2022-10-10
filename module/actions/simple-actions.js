@@ -467,7 +467,7 @@ export class ActionCreateForgery extends SimpleAction {
 			traits: ['downtime', 'secret'],
 			checkType: 'skill[society]',
 			icon: "systems/pf2e/icons/spells/crusade.webp",
-			tags: ['social'],
+			tags: ['situational'],
 			actionGlyph: '',
 			mode: 'downtime'
 		})
@@ -480,7 +480,7 @@ export class ActionSubsist extends SimpleAction {
 			traits: ['downtime'],
 			checkType: 'skill[society,survival]',
 			icon: "systems/pf2e/icons/spells/curse-of-lost-time.webp",
-			tags: ['social'],
+			tags: ['situational'],
 			actionGlyph: '',
 			mode: 'downtime'
 		})
