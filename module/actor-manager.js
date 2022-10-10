@@ -7,6 +7,19 @@ export default class ActorManager {
 		this._ = MKS
 	}
 	
+	openCharacterSheet(token, tab) {
+		const sheet = token.actor.sheet
+		if ( sheet.rendered ) {
+			sheet.maximize()
+			sheet.bringToTop()
+		}
+		else
+			sheet.render(true, {token: token.document})
+		
+		if (tab)
+			setTimeout(() => sheet.activateTab(tab), 200)
+	}
+	
 	hasLostHP(tokenOrActor) {
 		const actor = tokenOrActor?.actor ?? tokenOrActor
 		return actor.system.attributes.hp.max > actor.system.attributes.hp.value

@@ -71,6 +71,10 @@ export default class PF2EI18N {
 	static uiAction(action) {
 		return PF2EI18N.$(`PF2E.MKS.UI.Actions.${action}`)
 	}
+	
+	static equipmentSlot(slot) {
+		return PF2EI18N.$(`PF2E.MKS.EquipmentSlot.${slot}`)
+	}
 
 	static actionNote(action, degreeOfSuccess) {
 		let toTranslete = `PF2E.Actions.${$$strings.camelize(action)}.Notes.${DEGREE_OF_SUCCESS_STRINGS[degreeOfSuccess]}`

@@ -154,6 +154,21 @@
 	"PF2E.MKS.ActionsPanel.InCombatTurn":   "Savaşta Sıradaki",
 	
 	"PF2E.MKS.Chat.HealthLost": "{healthLost} can kaybedildi.",
+	
+	"PF2E.MKS.EquipmentSlot.armor": "Zırh",
+	"PF2E.MKS.EquipmentSlot.hand1": "Sağ El",
+	"PF2E.MKS.EquipmentSlot.hand2": "Sol El",
+	"PF2E.MKS.EquipmentSlot.head": "Başlık",
+	"PF2E.MKS.EquipmentSlot.legs": "Pantolon",
+	"PF2E.MKS.EquipmentSlot.shoulders": "Omuzluk",
+	"PF2E.MKS.EquipmentSlot.belt": "Kemer",
+	"PF2E.MKS.EquipmentSlot.ring1": "Yüzük 1",
+	"PF2E.MKS.EquipmentSlot.ring2": "Yüzük 2",
+	"PF2E.MKS.EquipmentSlot.necklace": "Kolye",
+	"PF2E.MKS.EquipmentSlot.feet": "Ayakkabı",
+	"PF2E.MKS.EquipmentSlot.gloves": "Eldiven",
+	"PF2E.MKS.EquipmentSlot.bracers": "Kolçak",
+	"PF2E.MKS.EquipmentSlot.cloak": "Pelerin",
 
 	"PF2E.MKS.UI.Actions.add": "Ekle",
 	"PF2E.MKS.UI.Actions.remove": "Çıkar",
@@ -205,6 +220,7 @@
 	"PF2E.MKS.Dialog.AddModifier.Label": "",
 	"PF2E.MKS.Dialog.Repair.SelectItem": "Tamir edilecek Nesneyi Seçiniz",
 	"PF2E.MKS.Dialog.SelectItem.NoItemFound": "Uygun nesne bulunamadı!",
+	"PF2E.MKS.Dialog.Equipment.SelectItem": "'{slot}' için bir Nesne Seçiniz",
 	"PF2E.Actions.Craft.SelectItemDialog.Title": "İmal edilecek Nesneyi Seçiniz",
 	"PF2E.Actions.Craft.SelectItemDialog.DropItemZoneLabel": "Nesneyi buraya sürükleyin..."
 }

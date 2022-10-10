@@ -28,19 +28,6 @@ export default class InventoryManager {
 		this._ = MKS
 	}
 	
-	openCharacterSheet(token, tab) {
-		const sheet = token.actor.sheet
-		if ( sheet.rendered ) {
-			sheet.maximize()
-			sheet.bringToTop()
-		}
-		else
-			sheet.render(true, {token: token.document})
-		
-		if (tab)
-			setTimeout(() => sheet.activateTab(tab), 200)
-	}
-
 	heldItems(tokenOrActor) {
 		const actor = tokenOrActor?.actor ?? tokenOrActor
 		return Array.from(actor.items.values()).filter((i) => i.isHeld)
@@ -104,7 +91,8 @@ export default class InventoryManager {
 		if (slot) {
 			const equipments = {}
 			equipments[slot] = item.id
-			actor.setFlag(SYSTEM.moduleId, "equipments", equipments).then(() => EquipmentsPanel.rerender())
+			await actor.setFlag(SYSTEM.moduleId, "equipments", equipments)
+			EquipmentsPanel.rerender()
 		}
 	}
 
@@ -127,7 +115,8 @@ export default class InventoryManager {
 		if (slot) {
 			const equipments = {}
 			equipments[slot] = null
-			actor.setFlag(SYSTEM.moduleId, "equipments", equipments).then(() => EquipmentsPanel.rerender())
+			await actor.setFlag(SYSTEM.moduleId, "equipments", equipments)
+			EquipmentsPanel.rerender()
 		}
 	}
 	
@@ -212,6 +201,10 @@ export default class InventoryManager {
 			cloak: slots.cloak ?? null, belt: slots.belt ?? null, necklace: slots.necklace ?? null, shoulders: slots.shoulders ?? null,
 			ring1: slots.ring1 ?? null, ring2: slots.ring2 ?? null
 		}
+		if (equipments.hand1 === equipments.hand2)
+			equipments.hand2 = null
+		if (equipments.ring1 === equipments.ring2)
+			equipments.ring2 = null
 		await actor.setFlag(SYSTEM.moduleId, "equipments", equipments)
 		return equipments
 	}

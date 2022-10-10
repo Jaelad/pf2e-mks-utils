@@ -260,7 +260,8 @@ export default class MksTools {
 
 	sheetToChat(tokenOrActor, sheet, rollMode = ROLL_MODE.PUBLIC) {
 		let actor = tokenOrActor?.actor ?? tokenOrActor
-		if (sheet?.document?.actor)
+		if (!sheet) return
+		if (sheet.document?.actor)
 			sheet.document.toChat().then()
 		else {
 			actor = actor ?? new Actor({ name: game.user.name, type: "character" })

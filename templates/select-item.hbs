@@ -1,17 +1,50 @@
-<div class="drop-item-zone">
-	{{#if item}}
-	<img src="{{item.img}}" class="item-icon">
-	<span>{{item.name}}</span>
-	{{else}}
-	<img src="systems/pf2e/icons/actions/craft/unknown-item.webp" class="item-icon">
-	<span>{{localize "PF2E.Actions.Craft.SelectItemDialog.DropItemZoneLabel"}}</span>
+<form>
+	{{#if containers}}
+	<ol class="mks-list">
+		{{#each containers as |container|}}
+		<li class="mks-list__item">
+			{{#if (ne container.id '_')}}
+			<header class="flexrow">
+				<label class="mks-list__collapse">{{container.name}}
+					<i class="mks-list__collapse-icon fa fa-angle-{{#if container.expanded}}down{{else}}up{{/if}}"></i>
+				</label>
+			</header>
+			{{/if}}
+			<ol class="directory-list mks-list__collapsible{{#unless container.expanded}} mks-list__collapsible--collapsed{{/unless}} mks-list" id="{{container.id}}">
+				{{#each container.items as |item|}}
+				<li class="directory-item document actor selectable-item">
+					<img class="thumbnail" title="{{item.name}}" src="{{item.img}}">
+					<h4 class="document-name" data-item="{{item.id}}">
+						<a>{{item.name}}</a>
+						<span class="actor-level">Level {{item.level}}</span>
+					</h4>
+				</li>
+				{{/each}}
+			</ol>
+		</li>
+		{{/each}}
+	</ol>
 	{{/if}}
-</div>
-<div class="button-panel">
-	<button type="button" data-event-handler="select" {{disabled (not item)}}>
-		<i class="fas fa-ok"></i> {{localize "PF2E.MKS.UI.Actions.ok"}}
-	</button>
-	<button type="button" data-event-handler="cancel">
-		<i class="fas fa-times"></i> {{localize "PF2E.MKS.UI.Actions.cancel"}}
-	</button>
-</div>
+	{{#if items}}
+	<ol class="directory-list">
+		{{#each items as |item|}}
+		<li class="directory-item document actor selectable-item">
+			<img class="thumbnail" title="{{item.name}}" src="{{item.img}}">
+			<h4 class="document-name" data-item="{{item.id}}">
+				<a>{{item.name}}</a>
+				<span class="actor-level">Level {{item.level}}</span>
+			</h4>
+		</li>
+		{{/each}}
+	</ol>
+	{{/if}}
+
+	<footer class="form-footer form-group">
+		<button type="button" data-action="remove">
+			<i class="fas fa-eject"></i> {{localize "PF2E.MKS.UI.Actions.remove"}}
+		</button>
+		<button type="button" data-action="cancel">
+			<i class="fas fa-times"></i> {{localize "PF2E.MKS.UI.Actions.cancel"}}
+		</button>
+	</footer>
+</form>

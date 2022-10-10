@@ -153,7 +153,6 @@ export default class ActionsPanel extends BasePanel {
 		allTagsArr.sort(sort)
 		data.actions = allTagsArr
 		
-		console.log(data)
 		return data
 	}
 }

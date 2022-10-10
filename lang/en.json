@@ -92,6 +92,21 @@
 	"PF2E.MKS.Modifier.partially-disarmed": "Loose Grip",
 	
 	"PF2E.MKS.Chat.HealthLost": "Has lost {healthLost} HP",
+	
+	"PF2E.MKS.EquipmentSlot.armor": "Armor",
+	"PF2E.MKS.EquipmentSlot.hand1": "Hand 1",
+	"PF2E.MKS.EquipmentSlot.hand2": "Hand 2",
+	"PF2E.MKS.EquipmentSlot.head": "Headwear",
+	"PF2E.MKS.EquipmentSlot.legs": "Leggings",
+	"PF2E.MKS.EquipmentSlot.shoulders": "Shoulders",
+	"PF2E.MKS.EquipmentSlot.belt": "Belt",
+	"PF2E.MKS.EquipmentSlot.ring1": "Ring 1",
+	"PF2E.MKS.EquipmentSlot.ring2": "Ring 2",
+	"PF2E.MKS.EquipmentSlot.necklace": "Necklace",
+	"PF2E.MKS.EquipmentSlot.feet": "Feet",
+	"PF2E.MKS.EquipmentSlot.gloves": "Gloves",
+	"PF2E.MKS.EquipmentSlot.bracers": "Bracers",
+	"PF2E.MKS.EquipmentSlot.cloak": "Cloak",
 
 	"PF2E.MKS.UI.Actions.cancel": "Cancel",
 	"PF2E.MKS.UI.Actions.ok": "OK",
@@ -143,6 +158,7 @@
 	"PF2E.MKS.Dialog.AddModifier.Label": "",
 	"PF2E.MKS.Dialog.Repair.SelectItem": "Select Item to Repair",
 	"PF2E.MKS.Dialog.SelectItem.NoItemFound": "No Item Found!",
+	"PF2E.MKS.Dialog.Equipment.SelectItem": "Select Item for '{slot}' Slot",
 	"PF2E.Actions.Craft.SelectItemDialog.Title": "Select Item to Craft",
 	"PF2E.Actions.Craft.SelectItemDialog.DropItemZoneLabel": "Drag item here..."
 }
