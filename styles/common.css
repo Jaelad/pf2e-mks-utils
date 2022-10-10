@@ -155,7 +155,9 @@
 
 .selectable-item > img {
 	width: 32px;
-	height: 32px";
+	height: 32px;
 }
 
-
+.selectable-item > h4 {
+	margin: 0;
+}

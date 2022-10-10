@@ -89,8 +89,30 @@ export default class InventoryManager {
 		}))
 	}
 
+	async equip(tokenOrActor, item, slot) {
+		const actor = tokenOrActor?.actor ?? tokenOrActor
+
+		if (!$$lang.instanceOf(item, 'PhysicalItemPF2e')) return
+		
+		if (item.system.usage.type === 'held')
+			await item.update({"system.equipped.carryType": 'held', "system.equipped.handsHeld": item.system.usage.hands})
+		else if (item.system.usage.type === 'worn' && item.system.usage.where)
+			await item.update({"system.equipped.inSlot": true})
+		else if (item.system.usage.type === 'worn')
+			return
+		
+		if (slot) {
+			const equipments = {}
+			equipments[slot] = item.id
+			actor.setFlag(SYSTEM.moduleId, "equipments", equipments).then(() => EquipmentsPanel.rerender())
+		}
+	}
+
 	async unequip(tokenOrActor, itemId, slot) {
 		const actor = tokenOrActor?.actor ?? tokenOrActor
+
+		if (!itemId)
+			itemId = actor.flags[SYSTEM.moduleId]?.equipments?.[slot]
 		
 		const item = actor?.items.find(i => i.id === itemId)
 		if (!item || !item.isEquipped) return
@@ -102,9 +124,11 @@ export default class InventoryManager {
 		else if (item.system.usage.type === 'worn')
 			;
 		
-		const equipments = {}
-		equipments[slot] = null
-		actor.setFlag(SYSTEM.moduleId, "equipments", equipments).then(() => EquipmentsPanel.rerender())
+		if (slot) {
+			const equipments = {}
+			equipments[slot] = null
+			actor.setFlag(SYSTEM.moduleId, "equipments", equipments).then(() => EquipmentsPanel.rerender())
+		}
 	}
 	
 	async toggleInvested(tokenOrActor, itemId) {
@@ -114,11 +138,9 @@ export default class InventoryManager {
 		if (!item || !item.isEquipped) return
 		
 		if (item.system.equipped.invested === false)
-			await item.update({"system.equipped.invested": true})
+			await item.update({"system.equipped.invested": true}).then(() => EquipmentsPanel.rerender())
 		else if (item.system.equipped.invested === true)
-			await item.update({"system.equipped.invested": false})
-		
-		EquipmentsPanel.rerender()
+			await item.update({"system.equipped.invested": false}).then(() => EquipmentsPanel.rerender())
 	}
 	
 	async equipments(tokenOrActor) {

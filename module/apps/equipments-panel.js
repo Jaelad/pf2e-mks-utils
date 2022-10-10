@@ -63,10 +63,10 @@ export default class EquipmentsPanel extends BasePanel {
 		event.stopPropagation()
 		const {item, slot} = event?.currentTarget?.dataset
 
-		this._slotItemSelect(slot)
+		this._slotItemSelect(slot, item)
 	}
 
-	async _slotItemSelect(slot) {
+	async _slotItemSelect(slot, itemId) {
 		const pf2eSlots = []
 		for (const [key, value] of Object.entries(SLOT_USAGES)) {
 			if (Array.isArray(value.slot) ? value.slot.includes(slot) : value.slot === slot)
@@ -83,7 +83,10 @@ export default class EquipmentsPanel extends BasePanel {
 				return pf2eSlots.includes(item.system.usage.where)
 		})
 
-		console.log(selectedItem)
+		if (selectedItem === null)
+			game.MKS.inventoryManager.unequip(this.token, itemId, slot).then()
+		else if (selectedItem)
+			game.MKS.inventoryManager.equip(this.token, selectedItem, slot).then()
 	}
 
 	_slotLeftClick(event) {

@@ -104,7 +104,7 @@ export default class Dialogs  {
 		`
 		return new Promise((resolve) => {
 			if (items.length === 0) {
-				ui.notifications.warn(i18n.$("PF2E.MKS.Dialog.SelectItem.NoItemFound"))
+				ui.notifications.info(i18n.$("PF2E.MKS.Dialog.SelectItem.NoItemFound"))
 				resolve(undefined)
 				return
 			}
