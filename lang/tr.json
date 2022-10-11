@@ -154,6 +154,7 @@
 	
 	"PF2E.MKS.ActionsPanel.ShowApplicable": "Uygun Olanlar",
 	"PF2E.MKS.ActionsPanel.InCombatTurn":   "Savaşta Sıradaki",
+	"PF2E.MKS.ActionsPanel.Filter": "Filtre",
 	
 	"PF2E.MKS.Chat.HealthLost": "{healthLost} can kaybedildi.",
 	

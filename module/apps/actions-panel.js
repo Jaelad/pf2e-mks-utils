@@ -1,4 +1,5 @@
 import {default as i18n} from "../../lang/pf2e-i18n.js"
+import $$arrays from "../../utils/arrays.js"
 import LocalStorage from "../../utils/local-storage.js"
 import {SYSTEM} from "../constants.js"
 import BasePanel from "./base-panel.js"
@@ -7,14 +8,6 @@ export default class ActionsPanel extends BasePanel {
 	
 	constructor(dialogData = {}, options = {}) {
 		super(dialogData, options)
-		this.settingsElements = []
-		this.presetSelect = undefined
-		this.deletePresetButton = undefined
-		this.fileInput = undefined
-		this.userSelect = undefined
-		this.lastSearch = undefined
-		this.lastResults = []
-		this.effects = []
 	}
 	
 	/** @override */
@@ -51,6 +44,23 @@ export default class ActionsPanel extends BasePanel {
 		
 		html.find(".mks-checkbox").click((event) => this._toggleChecked(event))
 		html.find("a[data-action][data-method]").click((event) => this._runActionMethod(event))
+		html.find("input[type=search][name=filter]").on('input', (event) => this._filterChanged(event))
+		html.find("input[type=search][name=filter]").keyup( (event) => {
+			if(event.keyCode == 13) {
+				this._filterAccepted(event.currentTarget.value)
+			}
+		})
+	}
+
+	_filterChanged(event) {
+		const value = event.currentTarget.value
+		if (this.filter?.length > 0 && value === '')
+			this._filterAccepted(value)
+	}
+
+	_filterAccepted(filter) {
+		this.filter = filter
+		ActionsPanel.rerender()
 	}
 	
 	_runActionMethod(event) {
@@ -104,6 +114,7 @@ export default class ActionsPanel extends BasePanel {
 	/** @override */
 	getData() {
 		let data = super.getData()
+		data.filter = this.filter
 		data.userIsGM = game.user.isGM
 		const localSettings = LocalStorage.load("actions.panel.settings")
 		data.showApplicable = localSettings?.showApplicable ?? true
@@ -127,7 +138,6 @@ export default class ActionsPanel extends BasePanel {
 			})
 		}
 		
-		
 		allTags.rudimentary = {
 			expanded: localSettings?.expanded?.["rudimentary"] ?? false,
 			label: i18n.actionTag("rudimentary"),
@@ -143,16 +153,29 @@ export default class ActionsPanel extends BasePanel {
 					action: definition.compendium,
 				})
 		}
-		
-		const allTagsArr = [], sort = (a, b) => a.label.localeCompare(b.label)
-		for (let tag in allTags) {
-			allTags[tag].tag = tag
-			allTags[tag].methods.sort(sort)
-			allTagsArr.push(allTags[tag])
+
+		const sort = (a, b) => a.label.localeCompare(b.label)
+		if (this?.filter?.length > 1) {
+			const filtered = []
+			for (let tag in allTags) {
+				const filteredMethods = allTags[tag].methods.filter(m => {
+					return m.label.toLowerCase().includes(this.filter.toLowerCase())
+				})
+				$$arrays.pushAll(filtered, filteredMethods, true)
+			}
+			filtered.sort(sort)
+			data.filteredActions = filtered
 		}
-		allTagsArr.sort(sort)
-		data.actions = allTagsArr
-		
+		else {
+			const allTagsArr = []
+			for (let tag in allTags) {
+				allTags[tag].tag = tag
+				allTags[tag].methods.sort(sort)
+				allTagsArr.push(allTags[tag])
+			}
+			allTagsArr.sort(sort)
+			data.actions = allTagsArr
+		}
 		return data
 	}
 }

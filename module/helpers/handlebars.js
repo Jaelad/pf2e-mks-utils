@@ -31,6 +31,9 @@ export function registerHandlebarsHelpers() {
 	})
 	
 	Handlebars.registerPartial('actions-list', `
+		<div class="entry-filter form-group">
+			<input name="filter" type="search" placeholder="{{localize "PF2E.MKS.ActionsPanel.Filter"}}" value="{{filter}}">
+		</div>
 		<ol class="mks-list">
 			{{#each actions as |tag|}}
 			<li class="mks-list__item">
@@ -51,6 +54,16 @@ export function registerHandlebarsHelpers() {
 					</li>
 					{{/each}}
 				</ol>
+			</li>
+			{{/each}}
+			{{#each filteredActions as |method|}}
+			<li class="mks-list__item mks-noborder">
+				<header class="flexrow">
+					{{#if method.icon}}
+					<img class="mks-list__icon" width="24" height="24" src="{{method.icon}}" alt="{{method.label}}">
+					{{/if}}
+					<a data-action="{{method.action}}" data-method="{{method.method}}" class="mks-list__link">{{method.label}} {{#unless (startsWith method.action 'Compendium')}}<i class="fas fa-caret-right"></i>{{/unless}}</a>
+				</header>
 			</li>
 			{{/each}}
 		</ol>
