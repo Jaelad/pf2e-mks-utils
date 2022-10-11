@@ -1,2 +1,2 @@
 # pf2e-utils-mks
-Foundry VTT Utility Module for PF2E system
+Foundry VTT Tools and Shortcuts for PF2E system
