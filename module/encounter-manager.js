@@ -59,8 +59,8 @@ export default class EncounterManager {
 	}
 	
 	async applyCover(combatant, targetCombatant, cover) {
-		const coverTaken = this._.effectManager.hasEffect(targetCombatant.actor, "cover-taken")
-		const coverState = coverTaken ? cover === 2 ? 4 : 2 : cover
+		const coverTaken = this._.effectManager.hasEffect(targetCombatant.actor, "effect-cover-taken")
+		const coverState = cover === 2 ? (coverTaken ? 3 : 2) : cover
 		if (coverState > 0)
 			await this._.effectManager.setEffect(targetCombatant.actor, Compendium.EFFECT_COVER, {badgeMod: {value: coverState}})
 		else

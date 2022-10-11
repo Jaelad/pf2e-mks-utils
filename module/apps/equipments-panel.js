@@ -44,6 +44,7 @@ export default class EquipmentsPanel extends BasePanel {
 
 	_mainRightClick(event) {
 		event.stopPropagation()
+		event.preventDefault()
 		const x = event.pageX - $(event?.currentTarget).offset().left
 		const y = event.pageY - $(event?.currentTarget).offset().top
 
@@ -59,6 +60,7 @@ export default class EquipmentsPanel extends BasePanel {
 
 	_slotRightClick(event) {
 		event.stopPropagation()
+		event.preventDefault()
 		const {item, slot} = event?.currentTarget?.dataset
 
 		this._slotItemSelect(slot, item)
