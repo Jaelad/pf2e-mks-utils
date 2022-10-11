@@ -92,14 +92,15 @@ export default class ActionAdministerFirstAid extends SimpleAction {
 	}
 
 	applies(selected, targeted) {
-		const healersTools = !!selected && selected.actor.itemTypes.equipment.find(e => e.slug === 'healers-tools' && ['held', 'worn'].includes(e.carryType))
-		const healersToolsOk = healersTools && (healersTools.carryType === 'held' || this._.inventoryManager.handsFree(selected) > 0)
+		const handsFree = this._.inventoryManager.handsFree(selected)
+		const healersTools = !!selected && selected.actor.itemTypes.equipment.find(e => (e.slug === 'healers-tools' || e.slug === 'healers-tools-expanded')
+			&& ((e.carryType === 'worn' && handsFree > 0) || e.handsHeld === 2))
 		const dyingCond = this.effectManager.getCondition(targeted, 'dying')
 		const bleedingEffect = this.effectManager.getEffect(targeted, 'persistent-damage-bleed')
 		const poisonEffect = this.effectManager.getEffect(targeted, 'persistent-damage-poison')
 
 		const distance = this._.distanceTo(selected, targeted)
 		return selected.actor.alliance === targeted.actor.alliance && distance < 10
-			&& (dyingCond?.badge?.value > 0 || !!bleedingEffect || !!poisonEffect) && healersToolsOk
+			&& (dyingCond?.badge?.value > 0 || !!bleedingEffect || !!poisonEffect) && !!healersTools
 	}
 }

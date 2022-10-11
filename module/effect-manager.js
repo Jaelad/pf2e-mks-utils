@@ -104,27 +104,29 @@ export default class EffectManager {
 			//condition = await game.pf2e.ConditionManager.addConditionToActor(conditionSlug, actor)
 		}
 
-		condition = await this.setBadge(condition, badgeMod)
-		condition = await this.setConditionFlags(condition, flags)
+		condition = await this.setBadge(actor, condition, badgeMod)
+		condition = await this.setConditionFlags(actor, condition, flags)
 		return condition
 	}
 
-	async setBadge(condition, badgeMod) {
+	async setBadge(tokenOrActor, condition, badgeMod) {
+		const actor = tokenOrActor?.actor ?? tokenOrActor
 		if (condition?.badge?.value > 0 && badgeMod) {
 			const newBadgeValue = badgeMod.value ? badgeMod.value : (badgeMod.increment ? badgeMod.increment + condition.badge.value : null)
 			if (newBadgeValue >= 0)
-				await game.pf2e.ConditionManager.updateConditionValue(condition.id, condition.actor, newBadgeValue)
+				await game.pf2e.ConditionManager.updateConditionValue(condition.id, actor, newBadgeValue)
 		}
 		return condition
 	}
 
-	async setConditionFlags(condition, flags) {
+	async setConditionFlags(tokenOrActor, condition, flags) {
+		const actor = tokenOrActor?.actor ?? tokenOrActor
 		if (condition && flags) {
-			const updates = {_id: condition.id}
+			const updates = {_id: condition._id}
 			for (let flagKey in flags) {
 				updates["flags." + flagKey] = flags[flagKey]
 			}
-			return await condition.actor.updateEmbeddedDocuments("Item", [updates])
+			return await actor.updateEmbeddedDocuments("Item", [updates])
 		}
 		return condition
 	}

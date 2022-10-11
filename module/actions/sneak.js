@@ -1,5 +1,6 @@
 import {SimpleAction} from "../action.js"
-import {SYSTEM} from "../constants.js"
+import {ROLL_MODE, SYSTEM} from "../constants.js"
+import Compendium from "../compendium.js"
 
 export default class ActionSneak extends SimpleAction {
 	constructor(MKS) {
@@ -10,13 +11,11 @@ export default class ActionSneak extends SimpleAction {
 			tags: ['combat', 'stealth'],
 			actionGlyph: 'A',
 			targetCount: 2,
-			requiresEncounter: true,
-			dc: t => t.actor.perception.dc.value,
+			requiresEncounter: true
 		})
 	}
 	
 	resultHandler(roll, selected, targets, options) {
-		super.resultHandler(roll, selected, targets, options)
 		const relativeData = game.combat?.flags?.[SYSTEM.moduleId]?.relative
 		if (!relativeData) return
 		
@@ -28,6 +27,7 @@ export default class ActionSneak extends SimpleAction {
 				relative[selected.id].awareness = dc <= roll.total ? 1 : dc > roll.total + 10 ? 3 : 2
 		}
 		game.combat.setFlag(SYSTEM.moduleId, 'relative', relativeData).then()
+		game.MKS.compendiumToChat(selected, Compendium.ACTION_SNEAK, ROLL_MODE.BLIND, true)
 	}
 	
 	applies(selected, targets) {

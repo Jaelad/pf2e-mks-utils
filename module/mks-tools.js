@@ -207,7 +207,7 @@ export default class MksTools {
 		}
 	}
 
-	ensureAtLeastOneTarget(player, warn = true) {
+	ensureAtLeastOneTarget(warn = true, player = null) {
 		let tokens
 		if (player)
 			tokens = game.users.players.find(p => p.name === player).targets

@@ -30,7 +30,7 @@ export default class InventoryManager {
 	
 	heldItems(tokenOrActor) {
 		const actor = tokenOrActor?.actor ?? tokenOrActor
-		return Array.from(actor.items.values()).filter((i) => i.isHeld)
+		return actor.inventory.filter((i) => i.isHeld)
 	}
 
 	// {carryType: dropped/worn/held, handsHeld: 0/1/2, invested:null, true, false}
@@ -51,10 +51,14 @@ export default class InventoryManager {
 
 	handsFree(tokenOrActor) {
 		const actor = tokenOrActor?.actor ?? tokenOrActor
-		const handsFree = actor.system.attributes.handsFree
+		const heldItems = actor.inventory.filter((i) => i.system.consumableType?.value === 'ammo' ? false : i.isHeld)
+		const handsFree = heldItems.reduce((count, item) => {
+			const handsOccupied = item.traits.has("free-hand") ? 0 : item.handsHeld
+			return Math.max(count - handsOccupied, 0)
+		}, 2)
 		const grabbing = this._.effectManager.hasEffect(tokenOrActor, Compendium.EFFECT_GRABBING)
 
-		return Math.max(0, handsFree - (grabbing ? 1 : 0))
+		return Math.max(0, Math.max(handsFree - (grabbing ? 1 : 0), 0))
 	}
 
 	wieldsWeaponWithTraits(tokenOrActor, traits, all = true) {

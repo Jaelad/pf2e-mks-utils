@@ -27,7 +27,7 @@ export default class ActionGrapple extends Action {
 								icon: '<i class="far fa-hand-receiving"></i>',
 								label: i18n.$("PF2E.ConditionTypeGrabbed"),
 								callback: () => {
-									this.onGrappleSuccess(grappler, willBeGrabbed)
+									this.onGrappleSuccess(grappler, willBeGrabbed).then()
 								}
 							},
 							yes: {
@@ -42,17 +42,15 @@ export default class ActionGrapple extends Action {
 					}).render(true)
 				}
 				case 1: {
-					// TODO Maybe some other actor grappled it
-					this.effectManager.removeCondition(willBeGrabbed.actor, 'grabbed')?.then()
-					this.effectManager.removeCondition(willBeGrabbed.actor, 'restrained')?.then()
+					this.onGrappleFailure(willBeGrabbed, grappler).then()
 					break
 				}
 				case 2: {
-					this.onGrappleSuccess(willBeGrabbed, grappler)
+					this.onGrappleSuccess(willBeGrabbed, grappler).then()
 					break
 				}
 				case 3: {
-					this.onGrappleSuccess(willBeGrabbed, grappler, true)
+					this.onGrappleSuccess(willBeGrabbed, grappler, true).then()
 					break
 				}
 			}
@@ -69,22 +67,29 @@ export default class ActionGrapple extends Action {
 		})
 		check.roll(grappler, willBeGrabbed).then(rollCallback)
 	}
+	
+	async onGrappleFailure(tokenGrabbed, tokenGrappler) {
+		// TODO Maybe some other actor grappled it
+		await this.effectManager.removeCondition(tokenGrabbed, 'grabbed')
+		await this.effectManager.removeCondition(tokenGrabbed, 'restrained')
+		await this.effectManager.removeEffect(tokenGrappler, Compendium.EFFECT_GRABBING)
+	}
 
-	onGrappleSuccess(tokenGrabbed, tokenGrappler, isRestrained = false) {
+	async onGrappleSuccess(tokenGrabbed, tokenGrappler, isRestrained = false) {
 		LOG.info(`Setting Grabbing Success : ${tokenGrappler.name} -> ${tokenGrabbed.name}`)
 		const condition = this.effectManager.getCondition(tokenGrabbed, isRestrained ? 'restrained' : 'grabbed')
 		const grapplers = $$arrays.pushAll(condition?.flags?.mks?.grapple?.grapplers ?? [], tokenGrappler.id, true)
-		this.effectManager.setCondition(tokenGrabbed, isRestrained ? 'restrained' : 'grabbed', {flags: {"mks.grapple": {grapplers}}}).then()
+		await this.effectManager.setCondition(tokenGrabbed, isRestrained ? 'restrained' : 'grabbed', {flags: {"mks.grapple": {grapplers}}})
 
-		this.effectManager.setEffect(tokenGrappler, Compendium.EFFECT_GRABBING, {flags: {"mks.grapple": {grabbed: tokenGrabbed.id}}}).then()
+		await this.effectManager.setEffect(tokenGrappler, Compendium.EFFECT_GRABBING, {flags: {"mks.grapple": {grabbed: tokenGrabbed.id}}})
 	}
 
-	onGrabbingExpired(grabbedTokenId) {
+	async onGrabbingExpired(grabbedTokenId) {
 		// TODO Maybe some other actor also grappled it
 		LOG.info("Grabbing Expired : " + grabbedTokenId)
 		const token = CommonUtils.getTokenById(grabbedTokenId)
-		this.effectManager.removeCondition(token, 'grabbed')?.then()
-		this.effectManager.removeCondition(token, 'restrained')?.then()
+		await this.effectManager.removeCondition(token, 'grabbed')
+		await this.effectManager.removeCondition(token, 'restrained')
 	}
 
 	methods(onlyApplicable) {
@@ -109,7 +114,7 @@ export default class ActionGrapple extends Action {
 		const sizeDiff = this._.getSizeDifference(grappler.actor, willBeGrabbed.actor)
 		const grabbed = this.effectManager.hasCondition(willBeGrabbed, 'grabbed')
 		const distance = this._.distanceTo(grappler, willBeGrabbed)
-		const reqMet = (handsFree > 0 || grabbed) && sizeDiff < 2 && grappler.actor.alliance !== willBeGrabbed.actor.alliance
+		const reqMet = (handsFree > 0 || grabbed) && sizeDiff > -2 && grappler.actor.alliance !== willBeGrabbed.actor.alliance
 			&& distance < (this._.inventoryManager.wieldsWeaponWithTraits(grappler, ['reach', 'grapple']) ? 15 : 10)
 
 		return {applicable: reqMet, selected: grappler, targeted: willBeGrabbed}

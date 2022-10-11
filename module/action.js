@@ -122,7 +122,7 @@ export class SimpleAction extends Action {
 			return {applicable: this.applies(selected, targeted), selected, targeted}
 		}
 		else if (this.targetCount > 1) {
-			const targets = this._.ensureAtLeastOneTarget(null, warn)
+			const targets = this._.ensureAtLeastOneTarget(warn, null)
 			if (!targets || targets.find(t => t.id === selected.id)) return {applicable: false}
 			return {applicable: this.applies(selected, targets), selected, targets}
 		}
