@@ -11,11 +11,10 @@ export default class ActionProne extends Action {
 			return
 
 		const actor = selected?.actor ?? selected
-		const prone = this.effectManager.getCondition(selected, 'prone')
-		if (prone)
-			await game.pf2e.ConditionManager.removeConditionFromActor(prone.id, actor)
+		if (!this.effectManager.hasCondition(actor, 'prone'))
+			await this.effectManager.setCondition(actor, 'prone')
 		else
-			await game.pf2e.ConditionManager.addConditionToActor('prone', actor)
+			await this.effectManager.removeCondition(actor, 'prone')
 	}
 
 	methods(onlyApplicable) {
@@ -32,7 +31,6 @@ export default class ActionProne extends Action {
 
 	isApplicable(method= null, warn= false) {
 		let selected = this._.ensureOneSelected(warn)
-
 		return {applicable: !!selected, selected}
 	}
 }
