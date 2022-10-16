@@ -46,10 +46,10 @@ export default class TemplateManager {
 	}
 
 	getEncompassingTokens(template, filter) {
-		const positions = canvas.grid.highlightLayers["Template." + template.id]?.positions
+		const positions = Object.values(canvas.grid.highlightLayers).find(h => h.name.endsWith(template.id))?.positions
 		if (!positions) {
 			LOG.warn(`Cannot locate highlight positions for template ${template.id}!`)
-			return
+			return []
 		}
 
 		const tokens = []

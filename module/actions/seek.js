@@ -19,6 +19,7 @@ export default class ActionSeek extends Action {
 	seekTargets(seeker, targets, user = game.user) {
 		const rollCallback = ({roll, actor, target}) => {
 			const step = roll.data.degreeOfSuccess - 1
+			console.log(step)
 			if (step <= 0)
 				return
 
@@ -69,7 +70,7 @@ export default class ActionSeek extends Action {
 				else
 					return !token.owner && (token.data.hidden || this.effectManager.hasCondition(token, 'hidden'))
 			})
-			if (template.author.isGM)
+			if (template.user.isGM)
 				this._.templateManager.deleteTemplate(template.id)
 			else
 				setTimeout(() => this._.templateManager.deleteTemplate(template.id), 5000)
