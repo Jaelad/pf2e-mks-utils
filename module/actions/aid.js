@@ -67,7 +67,7 @@ export default class ActionAid extends Action {
 			}
 		}
 
-		const aid = effect.data.flags?.mks?.aid
+		const aid = effect.flags?.mks?.aid
 		const aidTokens = Object.keys(aid)
 
 		if (aidTokens.length === 1) {
@@ -82,7 +82,7 @@ export default class ActionAid extends Action {
 				let degreeOfSuccess = roll.data.degreeOfSuccess
 				let bonus = degreeOfSuccess === 3 ? Math.max(2, proficiency.rank) : degreeOfSuccess - 1
 				if (bonus !== 0)
-					this.effectManager.setEffect(selected, Compendium.EFFECT_AIDED, {changes: {"data.rules[0].value": bonus}}).then()
+					this.effectManager.setEffect(selected, Compendium.EFFECT_AIDED, {changes: {"system.rules[0].value": bonus}}).then()
 			}
 			this.effectManager.removeEffect(selected, Compendium.EFFECT_AID_READY).then()
 		}
@@ -124,7 +124,7 @@ export default class ActionAid extends Action {
 				}
 
 				if (bonus !== 0)
-					this.effectManager.setEffect(selected, Compendium.EFFECT_AIDED, {changes:{"data.rules[0].value": bonus}}).then()
+					this.effectManager.setEffect(selected, Compendium.EFFECT_AIDED, {changes:{"system.rules[0].value": bonus}}).then()
 			}
 
 			new Dialog({

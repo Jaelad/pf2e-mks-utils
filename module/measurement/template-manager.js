@@ -12,8 +12,8 @@ export default class TemplateManager {
 	//Template.v78LKhfJ6B2gKUuW.... positions
 	draw(token, callback = null, {
 		wheelSnap = 9,
-		x = (token) => token.data.x + canvas.grid.grid.w / 2,
-		y = (token) => token.data.y + canvas.grid.grid.h / 2,
+		x = (token) => token.document.x + canvas.grid.grid.w / 2,
+		y = (token) => token.document.y + canvas.grid.grid.h / 2,
 		user = (token) => game.user.id,
 		color = (token) => game.user.color,
 		preset

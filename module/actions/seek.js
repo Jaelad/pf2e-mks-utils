@@ -33,13 +33,13 @@ export default class ActionSeek extends Action {
 					this.effectManager.removeCondition(target, 'hidden')
 				})
 			}
-			else if (undetected || target.data.hidden) {
+			else if (undetected || target.document.hidden) {
 				this.effectManager.setCondition(target, step > 1 ? 'observed' : 'hidden').then(() => {
 					this.effectManager.removeCondition(target, 'undetected')
 				})
 			}
 
-			if (target.data.hidden)
+			if (target.document.hidden)
 				target.document.update({ _id : target.id, hidden : false })
 		}
 
@@ -68,7 +68,7 @@ export default class ActionSeek extends Action {
 				if (game.user.isGM)
 					return ['character', 'familiar'].includes(token.actor.type) && this.effectManager.hasCondition(token, ['undetected', 'hidden'])
 				else
-					return !token.owner && (token.data.hidden || this.effectManager.hasCondition(token, 'hidden'))
+					return !token.owner && (token.document.hidden || this.effectManager.hasCondition(token, 'hidden'))
 			})
 			if (template.user.isGM)
 				this._.templateManager.deleteTemplate(template.id)

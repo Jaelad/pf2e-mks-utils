@@ -45,7 +45,7 @@ export default class Check {
 	}
 
 	static statisticToModifier(statistic) {
-		const domains = statistic.data.domains
+		const domains = statistic.check.domains
 		const rollOptions = statistic.createRollOptions(domains)
 		return new game.pf2e.StatisticModifier(statistic.label, statistic.modifiers, rollOptions)
 	}
