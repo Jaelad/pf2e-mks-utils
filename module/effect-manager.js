@@ -1,4 +1,6 @@
 import {default as LOG} from "../utils/logging.js"
+import Condition from "./model/condition.js"
+import PersistentDamage from "./model/persistent-damage.js"
 
 export default class EffectManager {
 	constructor(MKS) {
@@ -137,28 +139,48 @@ export default class EffectManager {
 		if (conditions.length > 0) {
 			const ids = conditions.map(c => c.id)
 			//return game.pf2e.ConditionManager.removeConditionFromActor(ids, actor)
-			return actor.deleteEmbeddedDocuments("Item", ids);
+			return actor.deleteEmbeddedDocuments("Item", ids)
 		}
 	}
+	
+	removeConditions(tokenOrActor, ids) {
+		const actor = tokenOrActor?.actor ?? tokenOrActor
+		return actor.deleteEmbeddedDocuments("Item", ids)
+	}
 
-	test() {
+	async test() {
 		const token = this._.ensureOneSelected()
-
-		this.setCondition(token, 'prone').then(condition => {
-			LOG.info(condition)
-		})
-
-		this.setCondition(token, 'grabbed', {flags: {"mks.grapple": {test: 1}}}).then((condition) => {
-			LOG.info(condition)
-		})
-
-		this.setCondition(token, 'frightened', {badgeMod: {value: 2}, flags: {"mks.grapple": {test: 1}}}).then(condition => {
-			LOG.info(condition)
-		})
-
-		this.setCondition(token, 'clumsy', {badgeMod: {value: 3}}).then(condition => {
-			LOG.info(condition)
-		})
+		
+		let poison = new PersistentDamage(token, 'poison')
+		await poison.ensure("1d6", 15)
+		await poison.setFlag("test", {test: 1}).then()
+		
+		// let condition = new Condition(token, 'dying')
+		// await condition.ensure().then(() => {
+		// 	setTimeout(()=>{
+		// 		//condition.purge().then()
+		// 	}, 1000)
+		// })
+		//
+		// await condition.setValue(2, true).then()
+		// await condition.setFlag("test", {test: 1}).then()
+		
+		
+		// this.setCondition(token, 'prone').then(condition => {
+		// 	LOG.info(condition)
+		// })
+		//
+		// this.setCondition(token, 'grabbed', {flags: {"mks.grapple": {test: 1}}}).then((condition) => {
+		// 	LOG.info(condition)
+		// })
+		//
+		// this.setCondition(token, 'frightened', {badgeMod: {value: 2}, flags: {"mks.grapple": {test: 1}}}).then(condition => {
+		// 	LOG.info(condition)
+		// })
+		//
+		// this.setCondition(token, 'clumsy', {badgeMod: {value: 3}}).then(condition => {
+		// 	LOG.info(condition)
+		// })
 	}
 
 }

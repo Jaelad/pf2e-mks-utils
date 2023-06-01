@@ -32,7 +32,7 @@ Hooks.on("init", () => {
 	})
 
 	Hooks.on("combatStart", (combat) => {
-		if (game.user.isGM)
+		if (game.user.isGM && combat.combatant)
 			MKS.encounterManager.onStartTurn(combat.combatant).then()
 	})
 	
