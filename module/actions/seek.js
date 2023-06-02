@@ -4,6 +4,7 @@ import Action from "../action.js"
 import Check from "../check.js"
 import CommonUtils from "../helpers/common-utils.js"
 import {ROLL_MODE} from "../constants.js"
+import Condition, {Awareness} from "../model/condition.js"
 
 export default class ActionSeek extends Action {
 
@@ -18,29 +19,25 @@ export default class ActionSeek extends Action {
 
 	seekTargets(seeker, targets, user = game.user) {
 		const rollCallback = ({roll, actor, target}) => {
-			const step = roll.data.degreeOfSuccess - 1
-			console.log(step)
+			const step = roll.degreeOfSuccess - 1
 			if (step <= 0)
 				return
 
-			const seekerType = seeker.actor.type, targetType = target.actor.type
+			//const seekerType = seeker.actor.type, targetType = target.actor.type
 
-			const undetected = this.effectManager.getCondition(target, 'undetected')
-			const hidden = this.effectManager.getCondition(target, 'hidden')
-
-			if (hidden) {
-				this.effectManager.setCondition(target, 'observed').then(() => {
-					this.effectManager.removeCondition(target, 'hidden')
-				})
-			}
-			else if (undetected || target.document.hidden) {
-				this.effectManager.setCondition(target, step > 1 ? 'observed' : 'hidden').then(() => {
-					this.effectManager.removeCondition(target, 'undetected')
-				})
-			}
-
-			if (target.document.hidden)
-				target.document.update({ _id : target.id, hidden : false })
+			const invisible = new Condition(target, 'invisible')
+			const awareness = new Awareness(target)
+			const awarenessState = awareness.state
+			
+			let promise
+			if (awarenessState === 'hidden' || step > 1)
+				promise = awareness.setState(invisible.exists ? 'hidden' : 'observed')
+			else if (awarenessState === 'unnoticed' || awarenessState === 'undetected')
+				promise = awareness.setState('hidden')
+			
+			promise?.then(() => {
+				this._.encounterManager.syncRelativeConds(seeker.combatant).then()
+			})
 		}
 
 		const check = new Check({
@@ -51,7 +48,7 @@ export default class ActionSeek extends Action {
 			checkType: "perception",
 			rollMode: ROLL_MODE.BLIND,
 			secret: true,
-			skipDialog: true,
+			skipDialog: false,
 			difficultyClassStatistic: (target) => target.skills.stealth
 		})
 
@@ -65,10 +62,11 @@ export default class ActionSeek extends Action {
 
 		const templateCallback = (template) => {
 			const tokens = this._.templateManager.getEncompassingTokens(template, (token) => {
-				if (game.user.isGM)
-					return ['character', 'familiar'].includes(token.actor.type) && this.effectManager.hasCondition(token, ['undetected', 'hidden'])
+				if (game.user.isGM) {
+					return ['character', 'familiar'].includes(token.actor.type) && Condition.hasAny(token, ['unnoticed', 'undetected', 'hidden'])
+				}
 				else
-					return !token.owner && (token.document.hidden || this.effectManager.hasCondition(token, 'hidden'))
+					return !token.owner && Condition.hasAny(token, ['unnoticed', 'undetected', 'hidden'])
 			})
 			if (template.user.isGM)
 				this._.templateManager.deleteTemplate(template.id)

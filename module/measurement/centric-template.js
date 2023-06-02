@@ -16,8 +16,8 @@ export default class CentricTemplate extends GhostTemplate {
 			event.preventDefault()
 			event.stopPropagation()
 			const snap = (this.wheelSnap ?? 9) * (event.shiftKey ? 3 : event.altKey ? (1/3) : 1)
-			this.data._source.direction += snap * Math.sign(event.deltaY)
-			this.data.direction += snap * Math.sign(event.deltaY)
+			this.document._source.direction += snap * Math.sign(event.deltaY)
+			this.document.direction += snap * Math.sign(event.deltaY)
 			this.refresh()
 		}
 	}

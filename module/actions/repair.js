@@ -36,11 +36,11 @@ export default class ActionRepair extends SimpleAction {
 		const rank = selected.actor.skills.crafting.rank
 		let hpValue = item.system.hp.value
 		
-		if (roll?.data.degreeOfSuccess === 3)
+		if (roll.degreeOfSuccess === 3)
 			hpValue += 10 * (rank + 1)
-		else if (roll?.data.degreeOfSuccess === 2)
+		else if (roll.degreeOfSuccess === 2)
 			hpValue += 5 * (rank + 1)
-		else if (roll?.data.degreeOfSuccess === 0)
+		else if (roll.degreeOfSuccess === 0)
 			hpValue -= new Roll("2d6").roll({async: false}) - item.system.hardness
 		hpValue = Math.clamped(hpValue, 0, item.system.hp.max)
 		

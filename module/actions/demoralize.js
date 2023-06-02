@@ -32,9 +32,9 @@ export default class ActionDemoralize extends SimpleAction {
 		else
 			this.effectManager.setEffect(targeted, Compendium.EFFECT_IMMUNE_TO_DEMORALIZE, {flags: {"mks.actors": previousActors}}).then()
 
-		if (roll?.data.degreeOfSuccess === 2)
+		if (roll.degreeOfSuccess === 2)
 			this.effectManager.setCondition(selected, 'frightened').then()
-		else if (roll?.data.degreeOfSuccess === 3)
+		else if (roll.degreeOfSuccess === 3)
 			this.effectManager.setCondition(targeted, 'frightened', {badgeMod: {increment: 1}}).then()
 	}
 }

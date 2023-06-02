@@ -98,7 +98,7 @@ export class SimpleAction extends Action {
 
 	resultHandler(roll, selected, targets, options) {
 		if (!roll) return
-		this.resultToChat(selected, this.action, roll?.data.degreeOfSuccess, this.actionGlyph)
+		this.resultToChat(selected, this.action, roll.degreeOfSuccess, this.actionGlyph)
 	}
 
 	methods(onlyApplicable) {

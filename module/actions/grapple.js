@@ -17,7 +17,7 @@ export default class ActionGrapple extends Action {
 		const grappler = selected, willBeGrabbed = targeted
 
 		const rollCallback = ({roll, actor}) => {
-			switch(roll.data.degreeOfSuccess) {
+			switch(roll.degreeOfSuccess) {
 				case 0: {
 					new Dialog({
 						title: i18n.$("PF2E.MKS.Dialog.grapple.grabbedorprone.title"),

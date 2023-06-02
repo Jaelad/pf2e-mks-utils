@@ -12,7 +12,7 @@ export default class ActionTrip extends Action {
 		if (!applicable) return
 
 		const rollCallback = ({roll, actor}) => {
-			let degreeOfSuccess = roll?.data.degreeOfSuccess;
+			let degreeOfSuccess = roll.degreeOfSuccess;
 			if (degreeOfSuccess === 0)
 				this.effectManager.setCondition(selected, 'prone').then()
 			else if (degreeOfSuccess > 1)

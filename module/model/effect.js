@@ -4,14 +4,14 @@ import disarm from "../actions/disarm.js"
 export default class Effect extends Item {
 	constructor(tokenOrActor, effect) {
 		const actor = tokenOrActor?.actor ?? tokenOrActor
-		const cond = actor.itemTypes.condition.find((c) => "effect-" + effect === c.slug)
-		super(actor, cond)
-		this.slug = effect
+		const eff = actor.itemTypes.effect.find((c) => "effect-" + effect === c.slug)
+		super(actor, eff)
+		this.effect = effect
 	}
 	
 	async ensure(changes) {
 		if (!this.exists) {
-			const effectData = await fromUuid(Effect.EFFECTS[this.slug]).toObject()
+			const effectData = await fromUuid(Effect.EFFECTS[this.effect]).toObject()
 			
 			for (let change in changes) {
 				const val = changes[change]
@@ -26,11 +26,11 @@ export default class Effect extends Item {
 	}
 	
 	get badgeValue() {
-		return this.pf2e?.system.badge?.value
+		return this.item?.system.badge?.value
 	}
 	
 	get duration() {
-		return this.pf2e?.system.duration
+		return this.item?.system.duration
 	}
 	
 	async setBadgeValue(value, modType) {
@@ -71,5 +71,10 @@ export default class Effect extends Item {
 		"immune-to-demoralize": "Compendium.pf2e-tools-mks.core-effects.0mPMeOFZfos07cut",
 		"poison-treated": "Compendium.pf2e-tools-mks.core-effects.9CucVXo0BT77gw2h",
 		"disease-treated": "Compendium.pf2e-tools-mks.core-effects.VhUYetlOZu2PQGQZ"
+	}
+	
+	static collect(tokenOrActor, effectSlugs = []) {
+		const actor = tokenOrActor?.actor ?? tokenOrActor
+		return effectSlugs.map(slug => new Effect(actor, slug))
 	}
 }

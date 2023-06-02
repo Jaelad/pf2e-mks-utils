@@ -1,7 +1,7 @@
 <form id="relative-cond-panel" class="dialog-content" onsubmit="event.preventDefault();" autocomplete="off">
 	{{#with (token referenceTokenId)}}
 	<div class="index">
-		<img style="vertical-align: text-bottom; border: none" alt="{{name}}" width="40" height="40" src="{{document.texture.src}}">
+		<img style="vertical-align: text-bottom; border: none" alt="{{name}}" width="40" height="40" src="{{document.texture.src}}" data-action="sync">
 		<label style="font-size: 1.25em;"> {{name}} </label>
 	</div>
 	{{/with}}

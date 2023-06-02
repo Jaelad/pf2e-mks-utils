@@ -36,7 +36,7 @@ export default class ActionEscape extends Action {
 			.then((co) => checkType = co)
 
 		const rollCallback = ({roll, actor}) => {
-			if (roll?.data.degreeOfSuccess > 1)
+			if (roll.degreeOfSuccess > 1)
 				this._.effectManager.removeCondition(selected, conditionSlug)
 			if (roll?.data?.degreeOfSuccess >= 0)
 				this._.compendiumToChat(selected, Compendium.ACTION_ESCAPE, ROLL_MODE.BLIND, true)

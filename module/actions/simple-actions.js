@@ -150,9 +150,9 @@ export class ActionFeint extends SimpleAction {
 
 	resultHandler(roll, selected, targeted) {
 		super.resultHandler(roll, selected, targeted)
-		if (roll?.data.degreeOfSuccess > 1)
+		if (roll.degreeOfSuccess > 1)
 			this.effectManager.setCondition(targeted, 'flat-footed').then()
-		else if (roll?.data.degreeOfSuccess < 1)
+		else if (roll.degreeOfSuccess < 1)
 			this.effectManager.setCondition(selected, 'flat-footed').then()
 	}
 }

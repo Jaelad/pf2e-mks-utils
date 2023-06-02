@@ -10,11 +10,11 @@ export default class ActionDisarm extends Action {
 
 	disarmItem(selected, targeted, item) {
 		const rollCallback = ({roll}) => {
-			if (roll?.data.degreeOfSuccess === 0)
+			if (roll.degreeOfSuccess === 0)
 				this.effectManager.setCondition(selected, 'flat-footed', {flags: {"mks.duration": {type: 'start', turn: 0}}}).then()
-			else if (roll?.data.degreeOfSuccess === 2)
+			else if (roll.degreeOfSuccess === 2)
 				this.effectManager.setEffect(targeted, Compendium.EFFECT_DISARM_SUCCESS).then()
-			else if (roll?.data.degreeOfSuccess === 3)
+			else if (roll.degreeOfSuccess === 3)
 				this._.inventoryManager.dropItem(item).then()
 		}
 

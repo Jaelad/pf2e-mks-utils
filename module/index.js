@@ -32,8 +32,8 @@ Hooks.on("init", () => {
 	})
 
 	Hooks.on("combatStart", (combat) => {
-		if (game.user.isGM && combat.combatant)
-			MKS.encounterManager.onStartTurn(combat.combatant).then()
+		if (game.user.isGM)
+			MKS.encounterManager.onEncounterStart(combat).then()
 	})
 	
 	Hooks.on("preDeleteCombat", (combat) => {
@@ -59,7 +59,8 @@ Hooks.on("getSceneControlButtons", (controls) => {
 		button: true,
 		visible: true,
 		onClick: () => {
-			ActionsPanel.show({ inFocus: true, tab: "encounter" })
+			if (game.combat?.combatant || canvas.tokens.controlled.length === 1)
+				ActionsPanel.show({ inFocus: true, tab: "encounter" })
 		}
 	}
 	const relativeCondPanelLink = {
@@ -67,9 +68,10 @@ Hooks.on("getSceneControlButtons", (controls) => {
 		name: "relativecondpanel",
 		title: game.i18n.localize("PF2E.MKS.UI.RelativeCondPanel.Label"),
 		button: true,
-		visible: true,
+		visible: game.user.isGM,
 		onClick: () => {
-			RelativeCondPanel.show({ inFocus: true})
+			if (game.combat?.combatant)
+				RelativeCondPanel.show({ inFocus: true})
 		}
 	}
 	
@@ -80,14 +82,15 @@ Hooks.on("getSceneControlButtons", (controls) => {
 		button: true,
 		visible: true,
 		onClick: () => {
-			EquipmentsPanel.show({ inFocus: true})
+			if (game.combat?.combatant || canvas.tokens.controlled.length === 1)
+				EquipmentsPanel.show({ inFocus: true})
 		}
 	}
 
 	const bar = controls.find(c => c.name === "token")
 	bar.tools.push(actionsPanelLink)
-	bar.tools.push(relativeCondPanelLink)
 	bar.tools.push(equipmentsPanelLink)
+	bar.tools.push(relativeCondPanelLink)
 })
 
 Hooks.on("targetToken", (user, token) => {

@@ -79,7 +79,7 @@ export default class ActionAid extends Action {
 				const {roll} = await check.roll(helperToken)
 				if (!roll) return
 				const proficiency = await Check.getProficiency(helperToken, config.checkType)
-				let degreeOfSuccess = roll.data.degreeOfSuccess
+				let degreeOfSuccess = roll.degreeOfSuccess
 				let bonus = degreeOfSuccess === 3 ? Math.max(2, proficiency.rank) : degreeOfSuccess - 1
 				if (bonus !== 0)
 					this.effectManager.setEffect(selected, Compendium.EFFECT_AIDED, {changes: {"system.rules[0].value": bonus}}).then()

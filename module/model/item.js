@@ -7,12 +7,12 @@ export default class Item {
 		this.item = pf2eItem
 	}
 	
-	get pf2e() {
-		return this.item
-	}
-	
 	get exists() {
 		return !!this.item
+	}
+	
+	get slug() {
+		return this.item?.slug
 	}
 	
 	getFlag(flag) {

@@ -13,9 +13,9 @@ export default class ActionShove extends Action {
 			return
 
 		const rollCallback = ({roll, actor}) => {
-			if (roll?.data.degreeOfSuccess === 0)
+			if (roll.degreeOfSuccess === 0)
 				this.effectManager.setCondition(selected, 'prone').then()
-			else if (roll?.data.degreeOfSuccess > 1)
+			else if (roll.degreeOfSuccess > 1)
 				this._.compendiumToChat(selected, Compendium.ACTION_SHOVE, ROLL_MODE.BLIND)
 		}
 

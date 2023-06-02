@@ -16,7 +16,7 @@ export default class ActionRecallKnowledge extends Action {
 			return
 
 		const rollCallback = ({roll, actor}) => {
-			this.resultToChat(selected,'recallKnowledge', roll?.data.degreeOfSuccess)
+			this.resultToChat(selected,'recallKnowledge', roll.degreeOfSuccess)
 		}
 
 		let dc = 15, possibleSkills = []

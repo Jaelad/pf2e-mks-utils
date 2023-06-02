@@ -1,6 +1,8 @@
 import Compendium from "./compendium.js"
 import {default as LOG} from "../utils/logging.js"
 import {ATTITUDES, AWARENESS, SYSTEM} from "./constants.js"
+import Condition, {Attitude, Awareness} from "./model/condition.js"
+import Effect from "./model/effect.js"
 
 export default class EncounterManager {
 	constructor(MKS) {
@@ -26,7 +28,7 @@ export default class EncounterManager {
 
 	async onCreateEffect(effect, options, userId) {
 	}
-
+	
 	async onStartTurn(combatant) {
 		await this._.effectManager.removeEffect(combatant.actor, Compendium.EFFECT_MULTIPLE_ATTACK)
 		
@@ -48,6 +50,34 @@ export default class EncounterManager {
 				}
 			}
 		})
+	}
+	
+	async onEncounterStart(encounter) {
+		await this.syncRelativeConds(encounter)
+	}
+	
+	async syncRelativeConds(encounterOrCombatant) {
+		const relativeData = {}
+		const encounter = encounterOrCombatant.combatants ? encounterOrCombatant : encounterOrCombatant.parent
+		const combatants = encounterOrCombatant.combatants ? Array.from(encounterOrCombatant.combatants) : [encounterOrCombatant]
+		for (const ref of combatants) {
+			const rel = {}
+			
+			for (const other of encounter.combatants) {
+				if (ref.actor.alliance === other.actor.alliance) continue
+				const conds = {}
+				rel[other.token.id] = conds
+				
+				conds.awareness = new Awareness(other.actor).stateIndex
+				conds.attitude = new Attitude(other.actor).stateIndex
+				
+				const cover = new Effect(ref.actor, 'cover')
+				conds.cover = cover.badgeValue ?? 0
+			}
+			relativeData[ref.token.id] = rel
+		}
+		
+		await encounter.setFlag(SYSTEM.moduleId, "relative", relativeData)
 	}
 	
 	async onEncounterEnd(encounter) {
@@ -82,56 +112,28 @@ export default class EncounterManager {
 	async applyRelativeConditions(combatant) {
 		const encounter = combatant.parent
 		let relativeData = encounter.flags?.[SYSTEM.moduleId]?.relative ?? {}
-		let actorRelativeConds = relativeData?.[combatant.token.id], flagUpdate = false
-		if (!actorRelativeConds) {
-			actorRelativeConds = {}
-			relativeData[combatant.token.id] = actorRelativeConds
-			flagUpdate = true
-		}
+		let actorRelativeConds = relativeData?.[combatant.token.id]
 		
 		const combatants = Array.from(encounter.combatants)
 		for (let i = 0; i < combatants.length; i++) {
 			const c = combatants[i], tokenId = c.token.id
-			await this._.effectManager.removeEffect(c.actor, Compendium.EFFECT_COVER)
-			await this._.effectManager.removeCondition(c.actor, AWARENESS.concat(ATTITUDES))
-			
 			if (c.actor.alliance === combatant.actor.alliance) continue
 			
-			if (!actorRelativeConds[tokenId])
-				actorRelativeConds[tokenId] = {}
-			const relativeConds = actorRelativeConds[tokenId]
+			const relativeConds = actorRelativeConds[tokenId] ?? {cover: 0, awareness: 3, attitude: 2}
 			
-			if (relativeConds.cover > -1) {
-				const coverTaken = this._.effectManager.hasEffect(c.actor, "cover-taken")
-				const coverState = coverTaken ? relativeConds.cover === 2 ? 4 : 2 : relativeConds.cover
-				if (coverState > 0)
-					await this._.effectManager.setEffect(c.actor, Compendium.EFFECT_COVER, {badgeMod: {value: coverState}})
-			}
-			else {
-				relativeConds.cover = 0
-				flagUpdate = true
-			}
+			const cover = new Effect(c.actor, 'cover-taken')
+			const coverTaken = new Effect(c.actor, 'cover')
+			const awareness = new Awareness(c.actor)
+			const attitude = new Attitude(c.actor)
 			
-			if (relativeConds.awareness > -1) {
-				if (relativeConds.awareness !== 3)
-					await this._.effectManager.setCondition(c.actor, AWARENESS[relativeConds.awareness])
-			}
-			else {
-				relativeConds.awareness = c.token.hidden ? 1 : 3
-				flagUpdate = true
-			}
+			const coverState = coverTaken.exists ? relativeConds.cover === 2 ? 4 : 2 : relativeConds.cover
+			if (coverState > 0)
+				cover.ensure().then(() => {
+					cover.badgeValue = coverState
+				})
 			
-			if (relativeConds.attitude > -1) {
-				if (relativeConds.attitude !== 2)
-					await this._.effectManager.setCondition(c.actor, ATTITUDES[relativeConds.attitude])
-			}
-			else {
-				relativeConds.attitude = 2
-				flagUpdate = true
-			}
+			awareness.setState(relativeConds.awareness).then()
+			attitude.setState(relativeConds.attitude).then()
 		}
-		
-		if (flagUpdate)
-			await encounter.setFlag(SYSTEM.moduleId, "relative", relativeData)
 	}
 }

@@ -64,7 +64,7 @@ export default class ActionAdministerFirstAid extends SimpleAction {
 	resultHandler(roll, selected, targeted, options) {
 		super.resultHandler(roll, selected, targeted, options)
 		
-		const degreeOfSuccess = roll.data.degreeOfSuccess
+		const degreeOfSuccess = roll.degreeOfSuccess
 		if (options.affliction === 'dying') {
 			if (degreeOfSuccess > 1) {
 				this.effectManager.removeCondition(targeted, 'dying').then(() => {
