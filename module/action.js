@@ -54,6 +54,32 @@ export default class Action {
 		else
 			this._.socketHandler.emit('GmChatMessage', chatData, true)
 	}
+
+	messageToChat(token, action, message, glyph = 'A', priv = false, rollMode = ROLL_MODE.PUBLIC) {
+		const actionName = i18n.action(action)
+
+		const chatMessage =	`
+		<div class="pf2e chat-card action-card">
+            <header class="card-header flexrow">
+                <img src="${ACTION_GLYPH[glyph].img}" title="${actionName}" width="36" height="36">
+                <h3>${actionName}</h3>
+            </header>
+    		<p>${message}</p>
+		</div>
+		`
+		const chatData = {
+			speaker: {
+				actor: token.actor.id,
+				token: token.id,
+				scene: canvas.scene.id,
+				alias: token.name
+			},
+			content: chatMessage
+		}
+		if (priv)
+			chatData.whisper = game.user.id
+		ChatMessage.create(chatData, {rollMode})
+	}
 }
 
 export class SimpleAction extends Action {
@@ -90,7 +116,7 @@ export class SimpleAction extends Action {
 			difficultyClass: overrideDC > 0 ? overrideDC : $$lang.isFunction(this.dc) ? this.targetCount > 1 ? DCHelper.getMaxDC(targets, this.dc) : this.dc?.(targeted) : null,
 			askGmForDC: {
 				action: this.action,
-				defaultDC: typeof this.dc === 'number' ? this.dc : 20
+				defaultDC: typeof this.dc === 'number' ? this.dc : null
 			}
 		})
 		check.roll(selected).then(rollCallback)

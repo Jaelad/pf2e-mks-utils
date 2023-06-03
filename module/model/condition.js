@@ -1,6 +1,11 @@
 import Item from "./item.js"
 import {ATTITUDES, AWARENESS} from "../constants.js"
 
+export const UUID_UNNOTICED = "Compendium.pf2e.conditionitems.9evPzg9E6muFcoSk"
+export const UUID_UNDETECTED = "Compendium.pf2e.conditionitems.VRSef5y1LmL2Hkjf"
+export const UUID_HIDDEN = "Compendium.pf2e.conditionitems.iU0fEDdBp3rXpTMC"
+export const UUID_OBSERVED = "Compendium.pf2e.conditionitems.1wQY3JYyhMYeeV2G"
+
 export default class Condition extends Item {
 	constructor(tokenOrActor, condition, filter = ((c) => condition === c.slug)) {
 		const actor = tokenOrActor?.actor ?? tokenOrActor
@@ -108,10 +113,30 @@ export class Awareness extends ExclusiveConditions {
 	constructor(tokenOrActor) {
 		super(tokenOrActor, AWARENESS, 'observed')
 	}
+
+	async setState(slug) {
+		super.setState(slug).then(() => {
+			game.MKS.encounterManager.syncRelativeConds(this.actor.combatant)
+		})
+	}
+
+	async setStateAsync(slug) {
+		super.setState(slug)
+	}
 }
 
 export class Attitude extends ExclusiveConditions {
 	constructor(tokenOrActor) {
 		super(tokenOrActor, ATTITUDES, 'indifferent')
+	}
+
+	async setState(slug) {
+		super.setState(slug).then(() => {
+			game.MKS.encounterManager.syncRelativeConds(this.actor.combatant)
+		})
+	}
+
+	async setStateAsync(slug) {
+		super.setState(slug)
 	}
 }

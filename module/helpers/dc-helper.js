@@ -21,6 +21,32 @@ const simpleDCs = [
 ]
 
 export default class DCHelper {
+
+	static calculateDegreeOfSuccess(die, rollTotal, dc) {
+        if (rollTotal - dc >= 10) {
+            return DCHelper.adjustDegreeByDieValue(3, die);
+        }
+		else if (dc - rollTotal >= 10) {
+            return DCHelper.adjustDegreeByDieValue(0, die);
+        }
+		else if (rollTotal >= dc) {
+            return DCHelper.adjustDegreeByDieValue(2);
+        }
+
+        return DCHelper.adjustDegreeByDieValue(1);
+    }
+
+	static adjustDegreeByDieValue(degree, dieResult) {
+        if (dieResult === 20) {
+            return Math.clamped(degree + 1, 0, 3)
+        }
+		else if (this.dieResult === 1) {
+            return Math.clamped(degree - 1, 0, 3)
+        }
+
+        return degree;
+    }
+
 	static dcByLevel(level) {
 		return level < 20 ? Math.floor(level / 3) + 14 + level : level * 2
 	}
@@ -64,7 +90,7 @@ export default class DCHelper {
 		return tokens.reduce((p,v)=> {
 			const dc = dcFunc(v)
 			return p > dc ? p : dc
-		})
+		}, 0)
 	}
 
 	static setDC(action, defaultDC = 20, title, challenger) { //"PF2E.MKS.Dialog.SetDC.Title"

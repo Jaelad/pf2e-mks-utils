@@ -32,7 +32,6 @@ export default class Item {
 			LOG.info("Purging [" + this.item.id + "] ...")
 			return this.actor.deleteEmbeddedDocuments("Item", [this.item.id]).then(() => {
 				this.item = null
-				LOG.info("Purged!")
 			})
 		}
 	}

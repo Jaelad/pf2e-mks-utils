@@ -11,13 +11,13 @@ export default class Effect extends Item {
 	
 	async ensure(changes) {
 		if (!this.exists) {
-			const effectData = await fromUuid(Effect.EFFECTS[this.effect]).toObject()
+			const effectData = (await fromUuid(Effect.EFFECTS[this.effect])).toObject()
 			
 			for (let change in changes) {
 				const val = changes[change]
 				eval("effectData." + change + "=" + val)
 			}
-			this.item = await actor.createEmbeddedDocuments("Item", [effectData])
+			this.item = await this.actor.createEmbeddedDocuments("Item", [effectData])
 		}
 	}
 	
@@ -34,28 +34,29 @@ export default class Effect extends Item {
 	}
 	
 	async setBadgeValue(value, modType) {
-		if (this.exists) {
-			const updates = {_id: this.item.id}
-			
-			switch (modType) {
-				case "inc": {
-					if (this.hasBadge)
-						updates["system.badge.value"] = this.badgeValue + value
-					break
-				}
-				case "multiply": {
-					if (this.hasBadge)
-						updates["system.badge.value"] = this.badgeValue * value
-					break
-				}
-				default: {
-					if (this.hasBadge)
-						updates["system.badge.value"] = value
-					else
-						updates["system.badge"] = {type: "counter", value: value}
-				}
+		if (!this.exists)
+			await this.ensure()
+		const updates = {_id: this.item.id}
+		
+		switch (modType) {
+			case "inc": {
+				if (this.hasBadge)
+					updates["system.badge.value"] = this.badgeValue + value
+				break
+			}
+			case "multiply": {
+				if (this.hasBadge)
+					updates["system.badge.value"] = this.badgeValue * value
+				break
+			}
+			default: {
+				if (this.hasBadge)
+					updates["system.badge.value"] = value
+				else
+					updates["system.badge"] = {type: "counter", value: value}
 			}
 		}
+		return this.actor.updateEmbeddedDocuments("Item", [updates])
 	}
 	
 	static EFFECTS = {
@@ -72,9 +73,46 @@ export default class Effect extends Item {
 		"poison-treated": "Compendium.pf2e-tools-mks.core-effects.9CucVXo0BT77gw2h",
 		"disease-treated": "Compendium.pf2e-tools-mks.core-effects.VhUYetlOZu2PQGQZ"
 	}
+
+	static EFFECT_MAP = "multiple-attack-penalty"
+	static EFFECT_AID_READY = "aid-ready"
+	static EFFECT_AIDED = "aided"
+	static EFFECT_GRABBING = "grabbing"
+	static EFFECT_COVER = "cover"
+	static EFFECT_COVER_TAKEN = "cover-taken"
+	static EFFECT_RAISE_A_SHIELD = "raise-a-shield"
+	static EFFECT_DISARM_SUCCESS = "disarm-success"
+	static EFFECT_RESIST_A_DIVERSION = "resist-a-diversion"
+	static EFFECT_IMMUNE_TO_DEMORALIZE = "immune-to-demoralize"
+	static EFFECT_POISON_TREATED = "poison-treated"
+	static EFFECT_DISEASE_TREATED = "disease-treated"
 	
 	static collect(tokenOrActor, effectSlugs = []) {
 		const actor = tokenOrActor?.actor ?? tokenOrActor
 		return effectSlugs.map(slug => new Effect(actor, slug))
+	}
+}
+
+export class RelativeEffect extends Effect {
+	constructor(tokenOrActor, effect) {
+		super(tokenOrActor, effect)
+	}
+
+	async ensure(changes) {
+		super.ensure(changes).then(() => {
+			game.MKS.encounterManager.syncRelativeConds(this.actor.combatant)
+		})
+	}
+
+	async purge() {
+		super.purge().then(() => {
+			game.MKS.encounterManager.syncRelativeConds(this.actor.combatant)
+		})
+	}
+
+	async setBadgeValue(value, modType) {
+		super.setBadgeValue(value, modType).then(() => {
+			game.MKS.encounterManager.syncRelativeConds(this.actor.combatant)
+		})
 	}
 }

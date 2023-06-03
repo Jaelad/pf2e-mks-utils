@@ -174,7 +174,7 @@ export default class Check {
 				return Promise.resolve({actor, target})
 			difficultyClass = dcObject?.dc
 		}
-		else if (["character", "npc", "familiar"].includes(target.actor.type)) {
+		else if (["character", "npc", "familiar"].includes(target?.actor?.type)) {
 			const dcStat = this.context.difficultyClassStatistic?.(target.actor)
 			if (dcStat) {
 				const extraRollOptions = finalOptions.concat(targetOptions)

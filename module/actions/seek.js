@@ -29,15 +29,10 @@ export default class ActionSeek extends Action {
 			const awareness = new Awareness(target)
 			const awarenessState = awareness.state
 			
-			let promise
 			if (awarenessState === 'hidden' || step > 1)
-				promise = awareness.setState(invisible.exists ? 'hidden' : 'observed')
+				return awareness.setState(invisible.exists ? 'hidden' : 'observed')
 			else if (awarenessState === 'unnoticed' || awarenessState === 'undetected')
-				promise = awareness.setState('hidden')
-			
-			promise?.then(() => {
-				this._.encounterManager.syncRelativeConds(seeker.combatant).then()
-			})
+				return awareness.setState('hidden')
 		}
 
 		const check = new Check({

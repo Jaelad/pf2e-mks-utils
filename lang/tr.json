@@ -106,6 +106,9 @@
 	"PF2E.Actions.Craft.DropItemDialog.Title": "İmal edilecek Nesneyi Seçiniz",
 	"PF2E.Actions.Craft.Error.ItemReferenceMismatch": "Seçilen fiziksel bir nesne olmalıdır!",
 
+	"PF2E.Actions.Hide.FailureAgainst": "{target}'dan saklanmayı başaramadı!",
+	"PF2E.Actions.Hide.SuccessAgainst": "{target}'dan saklanmayı @UUID[Compendium.pf2e.conditionitems.iU0fEDdBp3rXpTMC] başardı!",
+
 	"PF2E.ConditionTypeGrabbed": "Zaptedilmiş",
 	"PF2E.ConditionTypeProne": "Yere Düşmüş",
 	"PF2E.ConditionTypeHidden": "Saklanmış",
@@ -155,6 +158,9 @@
 	"PF2E.MKS.ActionsPanel.ShowApplicable": "Uygun Olanlar",
 	"PF2E.MKS.ActionsPanel.InCombatTurn":   "Savaşta Sıradaki",
 	"PF2E.MKS.ActionsPanel.Filter": "Filtre",
+
+	"PF2E.MKS.Relative.ISeeThem.Title": "Görüyorum",
+	"PF2E.MKS.Relative.TheySeeMe.Title": "İzleniyorum",
 	
 	"PF2E.MKS.Chat.HealthLost": "{healthLost} can kaybedildi.",
 	

@@ -1,19 +1,20 @@
 <form id="relative-cond-panel" class="dialog-content" onsubmit="event.preventDefault();" autocomplete="off">
-	{{#with (token referenceTokenId)}}
+	{{#with (token relative.token.id)}}
 	<div class="index">
 		<img style="vertical-align: text-bottom; border: none" alt="{{name}}" width="40" height="40" src="{{document.texture.src}}" data-action="sync">
 		<label style="font-size: 1.25em;"> {{name}} </label>
 	</div>
 	{{/with}}
+
 	<header class="table-header flexrow">
-		<label class="index">{{localize "FOUNDRY.Concept.Actor"}}</label>
+		<label class="index">{{localize "PF2E.MKS.Relative.ISeeThem.Title"}}</label>
 		<label>{{localize "PF2E.Concept.Cover.Title"}}</label>
 		<label>{{localize "PF2E.Concept.Awareness.Title"}}</label>
 		<label>{{localize "PF2E.Concept.Attitude.Title"}}</label>
 	</header>
 
 	<ul class="permissions-list">
-		{{#each relative as |conds tokenId|}}
+		{{#each relative.iseethem as |conds tokenId|}}
 		<li class="permission form-group">
 			{{#with (token tokenId)}}
 			<div class="index">
@@ -23,13 +24,44 @@
 			{{/with}}
 			<div class="form-fields">
 				<div style="text-align: center">
-					<a {{#if @root.editable}}data-action="cover"{{/if}} data-reference="{{@root.referenceTokenId}}" data-target="{{tokenId}}">{{lookup @root.labels.cover conds.cover}}</a>
+					<a {{#if @root.editable}}data-action="cover"{{/if}} data-reference="{{@root.relative.token.id}}" data-target="{{tokenId}}" data-apply="true">{{lookup @root.labels.cover conds.cover}}</a>
 				</div>
 				<div style="text-align: center">
-					<a {{#if @root.editable}}data-action="awareness"{{/if}} data-reference="{{@root.referenceTokenId}}" data-target="{{tokenId}}">{{lookup @root.labels.awareness conds.awareness}}</a>
+					<a {{#if @root.editable}}data-action="awareness"{{/if}} data-reference="{{@root.relative.token.id}}" data-target="{{tokenId}}" data-apply="true">{{lookup @root.labels.awareness conds.awareness}}</a>
 				</div>
 				<div style="text-align: center">
-					<a {{#if @root.editable}}data-action="attitude"{{/if}} data-reference="{{@root.referenceTokenId}}" data-target="{{tokenId}}">{{lookup @root.labels.attitude conds.attitude}}</a>
+					<a {{#if @root.editable}}data-action="attitude"{{/if}} data-reference="{{@root.relative.token.id}}" data-target="{{tokenId}}" data-apply="true">{{lookup @root.labels.attitude conds.attitude}}</a>
+				</div>
+			</div>
+		</li>
+		{{/each}}
+	</ul>
+
+	<header class="table-header flexrow">
+		<label class="index">{{localize "PF2E.MKS.Relative.TheySeeMe.Title"}}</label>
+		<label>{{localize "PF2E.Concept.Cover.Title"}}</label>
+		<label>{{localize "PF2E.Concept.Awareness.Title"}}</label>
+		<label>{{localize "PF2E.Concept.Attitude.Title"}}</label>
+	</header>
+
+	<ul class="permissions-list">
+		{{#each relative.theyseeme as |conds tokenId|}}
+		<li class="permission form-group">
+			{{#with (token tokenId)}}
+			<div class="index">
+				<img style="vertical-align: bottom; border: none" alt="{{name}}" width="32" height="32" src="{{document.texture.src}}">
+				<label> {{name}} </label>
+			</div>
+			{{/with}}
+			<div class="form-fields">
+				<div style="text-align: center">
+					<a {{#if @root.editable}}data-action="cover"{{/if}} data-target="{{@root.relative.token.id}}" data-reference="{{tokenId}}">{{lookup @root.labels.cover conds.cover}}</a>
+				</div>
+				<div style="text-align: center">
+					<a {{#if @root.editable}}data-action="awareness"{{/if}} data-target="{{@root.relative.token.id}}" data-reference="{{tokenId}}">{{lookup @root.labels.awareness conds.awareness}}</a>
+				</div>
+				<div style="text-align: center">
+					<a {{#if @root.editable}}data-action="attitude"{{/if}} data-target="{{@root.relative.token.id}}" data-reference="{{tokenId}}">{{lookup @root.labels.attitude conds.attitude}}</a>
 				</div>
 			</div>
 		</li>

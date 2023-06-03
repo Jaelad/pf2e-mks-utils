@@ -1,6 +1,8 @@
 import {SimpleAction} from "../action.js"
-import {ROLL_MODE, SYSTEM} from "../constants.js"
-import Compendium from "../compendium.js"
+import RelativeConditions from "../model/relative-conditions.js"
+import { UUID_HIDDEN, UUID_OBSERVED, UUID_UNDETECTED } from "../model/condition.js"
+import DCHelper from "../helpers/dc-helper.js"
+import {default as i18n} from "../../lang/pf2e-i18n.js"
 
 export default class ActionSneak extends SimpleAction {
 	constructor(MKS) {
@@ -16,22 +18,25 @@ export default class ActionSneak extends SimpleAction {
 	}
 	
 	resultHandler(roll, selected, targets, options) {
-		const relativeData = game.combat?.flags?.[SYSTEM.moduleId]?.relative
-		if (!relativeData) return
-		
-		for (let i=0; i < targets.length; i++) {
-			const t = targets[i], dc = t.actor.perception.dc.value
-			const relative = relativeData[t.id]
-			
-			if (relative?.[selected.id]?.awareness > -1)
-				relative[selected.id].awareness = dc <= roll.total ? 1 : dc > roll.total + 10 ? 3 : 2
+		const relative = new RelativeConditions()
+		if (!relative.isOk) return
+
+		for (const target of targets) {
+			const dc =  target.actor.perception.dc.value, awareness = relative.getAwarenessTowardMe(target)
+
+			if (awareness < 3) {
+				const degree = DCHelper.calculateDegreeOfSuccess(roll.dice[0].total, roll.total, dc)
+				relative.setAwarenessTowardMe(target, degree > 1 ? 1 : (degree == 1 ? 2 : 3))
+				const conditionUuid = degree > 1 ? UUID_UNDETECTED : (degree == 1 ? UUID_HIDDEN : UUID_OBSERVED)
+
+				const message = i18n.$$('PF2E.Actions.Sneak.Result', {target: target.name, conditionRef: "@UUID[" + conditionUuid + "]"})
+				this.messageToChat(selected, this.action, message, this.actionGlyph, true)
+			}
 		}
-		game.combat.setFlag(SYSTEM.moduleId, 'relative', relativeData).then()
-		game.MKS.compendiumToChat(selected, Compendium.ACTION_SNEAK, ROLL_MODE.BLIND, true)
 	}
 	
 	applies(selected, targets) {
 		const opposition = targets?.filter(t => selected.actor.alliance !== t.actor.alliance)
-		return !!selected && !!targets && targets.length === opposition.length
+		return game.user.isGM && !!selected && !!targets && opposition.length === targets.length
 	}
 }

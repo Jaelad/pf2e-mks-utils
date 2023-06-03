@@ -79,6 +79,9 @@
 	"PF2E.Actions.LongTermRest.Title": "Long-Term Rest",
 	"PF2E.Actions.Subsist.Title": "Subsist",
 	"PF2E.Actions.CreateForgery.Title": "Create Forgery",
+
+	"PF2E.Actions.Hide.Result": "Hide action resulted in {conditionRef} from {target}",
+	"PF2E.Actions.Sneak.Result": "Sneak action resulted in {conditionRef} from {target}",
 	
 	"PF2E.ActionTag.situational": "Situational",
 	"PF2E.ActionTag.combat": "Combat",
@@ -92,6 +95,9 @@
 	"PF2E.MKS.ActionsPanel.ShowApplicable": "Show Applicable",
 	"PF2E.MKS.ActionsPanel.InCombatTurn": "In Combat Turn",
 	"PF2E.MKS.ActionsPanel.Filter": "Filter",
+
+	"PF2E.MKS.Relative.ISeeThem.Title": "I See Them",
+	"PF2E.MKS.Relative.TheySeeMe.Title": "They See Me",
 	
 	"PF2E.MKS.SC.arcane": "Esrar - Arcane Büyü",
 	"PF2E.MKS.SC.occult": "Kült - Occult Büyü",

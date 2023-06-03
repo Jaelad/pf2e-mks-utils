@@ -2,6 +2,7 @@ import {default as i18n} from "../../lang/pf2e-i18n.js"
 import {SYSTEM} from "../constants.js"
 import BasePanel from "./base-panel.js"
 import $$strings from "../../utils/strings.js"
+import RelativeConditions from "../model/relative-conditions.js"
 
 export default class RelativeCondPanel extends BasePanel {
 	
@@ -38,7 +39,7 @@ export default class RelativeCondPanel extends BasePanel {
 					console.log("Updated Relative Data")
 				})
 			}
-		}, 10000)
+		}, 2000)
 	}
 	
 	static get defaultOptions() {
@@ -46,7 +47,6 @@ export default class RelativeCondPanel extends BasePanel {
 			id: "relative-cond-panel",
 			title: game.i18n.localize("PF2E.MKS.UI.RelativeCondPanel.Label"),
 			template: `modules/pf2e-tools-mks/templates/relative-cond-panel.hbs`,
-			//template: `modules/pf2e-tools-mks/templates/test.hbs`,
 			classes: ["form"],
 			width: 500,
 			height: "auto",
@@ -60,7 +60,7 @@ export default class RelativeCondPanel extends BasePanel {
 		super.activateListeners(html)
 		
 		html.find("a[data-action]").click((event) => this._conditionChange(event))
-		html.find("img[data-action=sync]").click((event) => game.MKS.encounterManager.syncRelativeConds(game.combat))
+		html.find("img[data-action=sync]").click((event) => game.MKS.encounterManager.syncRelativeConds(game.combat, false))
 	}
 	
 	async _conditionChange(event) {
@@ -75,7 +75,8 @@ export default class RelativeCondPanel extends BasePanel {
 			relativeData.changed = true
 			
 			const targetCombatant = game.combat.combatants.find(c => c.token.id === dataset.target)
-			await game.MKS.encounterManager["apply" + $$strings.camelize(dataset.action)](game.combat.combatant, targetCombatant, relativeValue)
+			if (dataset.apply)
+				await game.MKS.encounterManager["apply" + $$strings.camelize(dataset.action)](game.combat.combatant, targetCombatant, relativeValue)
 			RelativeCondPanel.rerender()
 		}
 	}
@@ -84,12 +85,8 @@ export default class RelativeCondPanel extends BasePanel {
 		let data = super.getData()
 		if (!game.combat)
 			return data
-		
-		const relativeData = game.combat.flags?.[SYSTEM.moduleId]?.relative
-		if (relativeData) {
-			data.referenceTokenId = game.combat.combatant.token.id
-			data.relative = relativeData[data.referenceTokenId]
-		}
+
+		data.relative = new RelativeConditions()
 		data.editable = game.user.isGM
 		data.labels = this.labels
 		return data
