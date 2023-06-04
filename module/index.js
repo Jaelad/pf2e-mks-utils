@@ -1,10 +1,11 @@
 import MksTools from "./mks-tools.js"
 import ActionsPanel from "./apps/actions-panel.js"
 import Action from "./action.js"
-import {ROLL_MODE} from "./constants.js"
+import {ROLL_MODE, SYSTEM} from "./constants.js"
 import RelativeCondPanel from "./apps/relative-cond-panel.js"
 import EquipmentsPanel from "./apps/equipments-panel.js"
 import RelativeConditions from "./model/relative-conditions.js"
+import { SETTINGS } from "./settings-manager.js"
 
 Hooks.on("init", () => {
 	const MKS = new MksTools()
@@ -48,11 +49,21 @@ Hooks.on("init", () => {
 })
 
 Hooks.on("ready", () => {
+	for (const setting in SETTINGS) {
+		game.settings.register(SYSTEM.moduleId, setting, SETTINGS[setting])
+	}
 	MksTools.registerSocketListeners()
 
 	setInterval(() => {
 		RelativeConditions.sync()
-	}, 3000)
+
+		const messageExpiration = game.MKS.settingsManager.get("chatMessageExpiration") ?? 600
+		const now = new Date().getTime()
+		const expiredMessages = game.messages.filter( (message) => {
+			return now - message.timestamp > messageExpiration * 1000
+		})
+		expiredMessages.forEach(m => m.delete())
+	}, 5000)
 })
 
 Hooks.on("getSceneControlButtons", (controls) => {

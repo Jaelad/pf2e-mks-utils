@@ -5,15 +5,10 @@ import ActionsPanel from "./apps/actions-panel.js";
 export default class SettingsManager {
 	constructor(MKS) {
 		this._ = MKS
-		setTimeout(()=> {
-			for (let setting in SETTINGS) {
-				game.settings.register(SYSTEM.moduleId, setting, SETTINGS[setting])
-			}
-		}, 1000)
 	}
 
 	get(setting) {
-		return game.settings.get(SYSTEM.moduleId, setting);
+		return game.settings.get(SYSTEM.moduleId, setting)
 	}
 
 	set(setting, value) {
@@ -33,4 +28,12 @@ export const SETTINGS = {
 			ActionsPanel.rerender()
 		}
 	},
+	chatMessageExpiration: {
+		name: 'Chat Message Expiration',
+		hint: 'Expired messages will be deleted. (Values in seconds)',
+		scope: 'world',     // "world" = sync to db, "client" = local storage
+		config: true,       // false if you dont want it to show in module config
+		type: Number,       // Number, Boolean, String, Object
+		default: 300
+	}
 }
