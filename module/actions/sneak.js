@@ -1,6 +1,6 @@
 import {SimpleAction} from "../action.js"
 import RelativeConditions from "../model/relative-conditions.js"
-import { UUID_HIDDEN, UUID_OBSERVED, UUID_UNDETECTED } from "../model/condition.js"
+import { UUID_CONDITONS } from "../model/condition.js"
 import DCHelper from "../helpers/dc-helper.js"
 import {default as i18n} from "../../lang/pf2e-i18n.js"
 
@@ -10,7 +10,7 @@ export default class ActionSneak extends SimpleAction {
 			traits: ['move', 'secret'],
 			checkType: 'skill[stealth]',
 			icon: "systems/pf2e/icons/spells/undetectable-alignment.webp",
-			tags: ['combat', 'stealth'],
+			tags: ['stealth'],
 			actionGlyph: 'A',
 			targetCount: 2,
 			requiresEncounter: true
@@ -25,11 +25,11 @@ export default class ActionSneak extends SimpleAction {
 			const dc =  target.actor.perception.dc.value, awareness = relative.getAwarenessTowardMe(target)
 
 			if (awareness < 3) {
-				const degree = DCHelper.calculateDegreeOfSuccess(roll.dice[0].total, roll.total, dc)
+				const degree = DCHelper.calculateRollSuccess(roll, dc)
 				relative.setAwarenessTowardMe(target, degree > 1 ? 1 : (degree == 1 ? 2 : 3))
-				const conditionUuid = degree > 1 ? UUID_UNDETECTED : (degree == 1 ? UUID_HIDDEN : UUID_OBSERVED)
+				const conditionUuid = degree > 1 ? UUID_CONDITONS.undetected : (degree == 1 ? UUID_CONDITONS.hidden : UUID_CONDITONS.observed)
 
-				const message = i18n.$$('PF2E.Actions.Sneak.Result', {target: target.name, conditionRef: "@UUID[" + conditionUuid + "]"})
+				const message = i18n.$$('PF2E.Actions.Sneak.Result', {target: target.name, conditionRef: `@UUID[${conditionUuid}]`})
 				this.messageToChat(selected, this.action, message, this.actionGlyph, true)
 			}
 		}

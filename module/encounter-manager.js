@@ -2,7 +2,7 @@ import {default as LOG} from "../utils/logging.js"
 import RelativeCondPanel from "./apps/relative-cond-panel.js"
 import {ATTITUDES, AWARENESS, SYSTEM} from "./constants.js"
 import Condition, {Attitude, Awareness} from "./model/condition.js"
-import Effect from "./model/effect.js"
+import Effect, { EFFECT_AIDED, EFFECT_COVER, EFFECT_COVER_TAKEN, EFFECT_MAP } from "./model/effect.js"
 
 export default class EncounterManager {
 	constructor(MKS) {
@@ -13,7 +13,7 @@ export default class EncounterManager {
 		return token.inCombat && token.combatant.encounter.started && token.combatant.encounter.current.tokenId === token.id
 	}
 
-	onCreateEffect(item) {
+	async onCreateEffect(item) {
 
 	}
 
@@ -22,25 +22,26 @@ export default class EncounterManager {
 		const attackTrait = traits?.find(t => t.name === "attack")
 		if (attackTrait && this.tokensTurnInCombat(token)) {
 			LOG.info(`Applying MAP to ${token.name}`)
-			const map = new Effect(token, Effect.EFFECT_MAP)
-			map.ensure().then(()=> {
-				map.setBadgeValue(1, 'inc')
-			})
+			const map = new Effect(token, EFFECT_MAP)
+			if (map.exists)
+				map.setBadgeValue(1, 'inc').then()
+			else
+				map.ensure().then()
 		}
 
 		const aided = pf2e.modifiers.find(mod => mod.slug === "aided")
 		if (aided)
-			new Effect(token, Effect.EFFECT_AIDED).purge()
+			new Effect(token, EFFECT_AIDED).purge()
 	}
 	
 	async onStartTurn(combatant) {
-		await new Effect(combatant.actor, Effect.EFFECT_MAP).purge()
+		await new Effect(combatant.actor, EFFECT_MAP).purge()
 		
 		await this.applyRelativeConditions(combatant)
 	}
 	
 	async onEndTurn(combatant) {
-		await new Effect(combatant.actor, Effect.EFFECT_MAP).purge()
+		await new Effect(combatant.actor, EFFECT_MAP).purge()
 
 		LOG.info("Round : " +  combatant.encounter.round + " Turn : " + combatant.encounter.turn)
 
@@ -78,7 +79,7 @@ export default class EncounterManager {
 				conds.awareness = new Awareness(other.actor).stateIndex
 				conds.attitude = new Attitude(other.actor).stateIndex
 				
-				const cover = new Effect(ref.actor, Effect.EFFECT_COVER)
+				const cover = new Effect(ref.actor, EFFECT_COVER)
 				conds.cover = cover.badgeValue ?? 0
 			}
 			relativeData[ref.token.id] = rel
@@ -92,15 +93,15 @@ export default class EncounterManager {
 	async onEncounterEnd(encounter) {
 		const combatants = Array.from(encounter.combatants)
 		for (let i = 0; i < combatants.length; i++) {
-			new Effect(combatants[i].actor, Effect.EFFECT_COVER).purge()
+			new Effect(combatants[i].actor, EFFECT_COVER).purge()
 			Condition.purgeAll(combatants[i].actor, AWARENESS.concat(ATTITUDES))
 		}
 	}
 	
 	async applyCover(combatant, targetCombatant, coverValue) {
-		const coverTaken = new Effect(targetCombatant.actor, Effect.EFFECT_COVER_TAKEN)
+		const coverTaken = new Effect(targetCombatant.actor, EFFECT_COVER_TAKEN)
 		const coverState = coverTaken.exists ? coverValue === 2 ? 3 : 2 : coverValue
-		const cover = new Effect(targetCombatant.actor, Effect.EFFECT_COVER)
+		const cover = new Effect(targetCombatant.actor, EFFECT_COVER)
 
 		if (coverState > 0)
 			return cover.ensure().then(() => {
@@ -128,14 +129,14 @@ export default class EncounterManager {
 			const c = combatants[i], tokenId = c.token.id
 			if (c.actor.alliance === combatant.actor.alliance) {
 				await Condition.purgeAll(c.actor, [...ATTITUDES, ...AWARENESS])
-				await new Effect(c.actor, Effect.EFFECT_COVER).purge()
+				await new Effect(c.actor, EFFECT_COVER).purge()
 				continue
 			}
 			
 			const relativeConds = actorRelativeConds[tokenId] ?? {cover: 0, awareness: 3, attitude: 2}
 			
-			const cover = new Effect(c.actor, Effect.EFFECT_COVER)
-			const coverTaken = new Effect(c.actor, Effect.EFFECT_COVER_TAKEN)
+			const cover = new Effect(c.actor, EFFECT_COVER)
+			const coverTaken = new Effect(c.actor, EFFECT_COVER_TAKEN)
 			const awareness = new Awareness(c.actor)
 			const attitude = new Attitude(c.actor)
 			

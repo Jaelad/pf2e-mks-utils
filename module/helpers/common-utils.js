@@ -20,4 +20,8 @@ export default class CommonUtils {
 	static getActorById(actorId) {
 		return game.actors.get(actorId)
 	}
+
+	static findGM() {
+		return game.users.find((u) => u.isGM)
+	}
 }

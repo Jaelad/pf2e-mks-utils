@@ -82,6 +82,7 @@
 
 	"PF2E.Actions.Hide.Result": "Hide action resulted in {conditionRef} from {target}",
 	"PF2E.Actions.Sneak.Result": "Sneak action resulted in {conditionRef} from {target}",
+	"PF2E.Actions.CreateADiversion.Result": "Create A Diversion resulted in {conditionRef} from {target}",
 	
 	"PF2E.ActionTag.situational": "Situational",
 	"PF2E.ActionTag.combat": "Combat",
@@ -91,6 +92,7 @@
 	"PF2E.ActionTag.stealth": "Stealth",
 	"PF2E.ActionTag.preparation": "Prep",
 	"PF2E.ActionTag.learning": "Study",
+	"PF2E.ActionTag.inspection": "Inspection",
 	"PF2E.ActionTag.rudimentary": "Rudimentary",
 	"PF2E.MKS.ActionsPanel.ShowApplicable": "Show Applicable",
 	"PF2E.MKS.ActionsPanel.InCombatTurn": "In Combat Turn",

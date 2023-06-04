@@ -1,8 +1,7 @@
 import {SimpleAction} from "../action.js"
 import {default as i18n} from "../../lang/pf2e-i18n.js"
 import RelativeConditions from "../model/relative-conditions.js"
-import Condition, { UUID_HIDDEN, UUID_OBSERVED } from "../model/condition.js"
-import { ROLL_MODE } from "../constants.js"
+import Condition, { UUID_CONDITONS } from "../model/condition.js"
 import DCHelper from "../helpers/dc-helper.js"
 
 export default class ActionHide extends SimpleAction {
@@ -11,7 +10,7 @@ export default class ActionHide extends SimpleAction {
 			traits: ['secret'],
 			checkType: 'skill[stealth]',
 			icon: "systems/pf2e/icons/spells/zealous-conviction.webp",
-			tags: ['combat', 'stealth'],
+			tags: ['stealth'],
 			actionGlyph: 'A',
 			targetCount: 2,
 			requiresEncounter: true,
@@ -28,14 +27,14 @@ export default class ActionHide extends SimpleAction {
 			if (awareness < 3 || (cover < 2 && !concealed))
 				continue
 			const coverBonus = Math.max(0, 2 * (cover-1))
-			const degree = DCHelper.calculateDegreeOfSuccess(roll.dice[0].total, roll.total + coverBonus, dc)
+			const degree = DCHelper.calculateRollSuccess(roll, dc - coverBonus)
 			if (degree < 2) {
-				const message = i18n.$$('PF2E.Actions.Hide.Result', {target: target.name, conditionRef: "@UUID[" + UUID_OBSERVED + "]"})
+				const message = i18n.$$('PF2E.Actions.Hide.Result', {target: target.name, conditionRef: `@UUID[${UUID_CONDITONS.observed}]`})
 				this.messageToChat(selected, this.action, message, this.actionGlyph, true)
 			}
 			else {
 				relative.setAwarenessTowardMe(target, Math.min(awareness, 2))
-				const message = i18n.$$('PF2E.Actions.Hide.Result', {target: target.name, conditionRef: "@UUID[" + UUID_HIDDEN + "]"})
+				const message = i18n.$$('PF2E.Actions.Hide.Result', {target: target.name, conditionRef: `@UUID[${UUID_CONDITONS.hidden}]`})
 				this.messageToChat(selected, this.action, message, this.actionGlyph, true)
 			}
 		}

@@ -1,13 +1,13 @@
 import {default as i18n} from "../../lang/pf2e-i18n.js"
 import Action from "../action.js"
-import Effect from "../model/effect.js"
+import Effect, { EFFECT_COVER_TAKEN } from "../model/effect.js"
 
 export default class ActionTakeCover extends Action {
 
 	takeCover(options = {}) {
 		const {applicable, selected} = this.isApplicable('takeCover',true)
 		if (!applicable) return
-		new Effect(selected, Effect.EFFECT_COVER_TAKEN).ensure()
+		new Effect(selected, EFFECT_COVER_TAKEN).ensure()
 	}
 
 	methods(onlyApplicable) {
@@ -18,7 +18,7 @@ export default class ActionTakeCover extends Action {
 			icon: "systems/pf2e/icons/conditions-2/status_acup.webp",
 			action: 'A',
 			mode: "encounter",
-			tags: ['combat', 'stealth']
+			tags: ['stealth']
 		}] : []
 	}
 

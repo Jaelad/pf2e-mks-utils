@@ -30,16 +30,6 @@ export default class RelativeCondPanel extends BasePanel {
 				i18n.$("PF2E.Concept.Attitude.Helpful"),
 			]
 		}
-		
-		setInterval(() => {
-			const relativeData = game.combat?.flags?.[SYSTEM.moduleId]?.relative
-			if (relativeData && relativeData.changed) {
-				relativeData.changed = false
-				game.combat.setFlag(SYSTEM.moduleId, "relative", relativeData).then(() => {
-					console.log("Updated Relative Data")
-				})
-			}
-		}, 2000)
 	}
 	
 	static get defaultOptions() {
@@ -60,7 +50,7 @@ export default class RelativeCondPanel extends BasePanel {
 		super.activateListeners(html)
 		
 		html.find("a[data-action]").click((event) => this._conditionChange(event))
-		html.find("img[data-action=sync]").click((event) => game.MKS.encounterManager.syncRelativeConds(game.combat, false))
+		html.find("img[data-action=sync]").click((event) => RelativeCondPanel.rerender())
 	}
 	
 	async _conditionChange(event) {

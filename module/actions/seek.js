@@ -123,7 +123,7 @@ export default class ActionSeek extends Action {
 			icon: "systems/pf2e/icons/features/classes/alertness.webp",
 			action: 'A',
 			mode: "encounter",
-			tags: ['situational']
+			tags: ['inspection']
 		}] : []
 	}
 

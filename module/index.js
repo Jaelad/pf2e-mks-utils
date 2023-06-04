@@ -4,6 +4,7 @@ import Action from "./action.js"
 import {ROLL_MODE} from "./constants.js"
 import RelativeCondPanel from "./apps/relative-cond-panel.js"
 import EquipmentsPanel from "./apps/equipments-panel.js"
+import RelativeConditions from "./model/relative-conditions.js"
 
 Hooks.on("init", () => {
 	const MKS = new MksTools()
@@ -48,6 +49,10 @@ Hooks.on("init", () => {
 
 Hooks.on("ready", () => {
 	MksTools.registerSocketListeners()
+
+	setInterval(() => {
+		RelativeConditions.sync()
+	}, 3000)
 })
 
 Hooks.on("getSceneControlButtons", (controls) => {

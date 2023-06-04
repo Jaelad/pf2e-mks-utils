@@ -1,10 +1,19 @@
 import Item from "./item.js"
 import {ATTITUDES, AWARENESS} from "../constants.js"
 
+
+
 export const UUID_UNNOTICED = "Compendium.pf2e.conditionitems.9evPzg9E6muFcoSk"
 export const UUID_UNDETECTED = "Compendium.pf2e.conditionitems.VRSef5y1LmL2Hkjf"
 export const UUID_HIDDEN = "Compendium.pf2e.conditionitems.iU0fEDdBp3rXpTMC"
 export const UUID_OBSERVED = "Compendium.pf2e.conditionitems.1wQY3JYyhMYeeV2G"
+
+export const UUID_CONDITONS = {
+	"unnoticed" : "Compendium.pf2e.conditionitems.9evPzg9E6muFcoSk",
+	"undetected" : "Compendium.pf2e.conditionitems.VRSef5y1LmL2Hkjf",
+	"hidden" : "Compendium.pf2e.conditionitems.iU0fEDdBp3rXpTMC",
+	"observed" : "Compendium.pf2e.conditionitems.1wQY3JYyhMYeeV2G",
+}
 
 export default class Condition extends Item {
 	constructor(tokenOrActor, condition, filter = ((c) => condition === c.slug)) {

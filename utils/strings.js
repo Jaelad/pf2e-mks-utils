@@ -19,13 +19,15 @@ export default class $$strings {
 	}
 
 	static camelize(str, initialUpper = true) {
-		return str.replace(/(?:^\w|[A-Z]|\b\w)/g, function(word, index) {
-			return !initialUpper && index === 0  ? word.toLowerCase() : word.toUpperCase()
-		}).replace(/\s+/g, '')
+		return str
+			.replace(/(?:^\w|[A-Z]|\b\w)/g, (word, index) => !initialUpper && index === 0  ? word.toLowerCase() : word.toUpperCase())
+			.replace(/\s+/g, '')
 	}
 
 	static underscored(str, uppercase = true) {
-		const result = str.replace(/\.?([A-Z])/g, function (x,y){return "_" + y.toLowerCase()}).replace(/^_/, "")
+		const result = str
+			.replace(/\.?([A-Z])/g, (x,y) => "_" + y.toLowerCase())
+			.replace(/^_/, "")
 		return uppercase ? result.toUpperCase() : result
 	}
 

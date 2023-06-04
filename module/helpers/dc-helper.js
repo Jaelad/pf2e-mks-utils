@@ -22,6 +22,10 @@ const simpleDCs = [
 
 export default class DCHelper {
 
+	static calculateRollSuccess(roll, dc) {
+		return DCHelper.calculateDegreeOfSuccess(roll.dice[0].total, roll.total, dc)
+	}
+
 	static calculateDegreeOfSuccess(die, rollTotal, dc) {
         if (rollTotal - dc >= 10) {
             return DCHelper.adjustDegreeByDieValue(3, die);

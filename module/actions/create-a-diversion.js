@@ -6,6 +6,9 @@ import Dialogs from "../apps/dialogs.js"
 import DCHelper from "../helpers/dc-helper.js"
 import {ROLL_MODE, SYSTEM} from "../constants.js"
 import seek from "./seek.js"
+import Effect, { EFFECT_RESIST_A_DIVERSION } from "../model/effect.js"
+import RelativeConditions from "../model/relative-conditions.js"
+import { UUID_CONDITONS } from "../model/condition.js"
 
 export default class ActionCreateADiversion extends Action {
 	async act() {
@@ -22,19 +25,27 @@ export default class ActionCreateADiversion extends Action {
 		const traits = type === 'trick-gesture' ? ['mental', 'manipulate'] : ['mental', 'auditory', 'linguistic']
 
 		const rollCallback = ({roll}) => {
-			const relativeData = game.combat?.flags?.[SYSTEM.moduleId]?.relative
-			if (!relativeData) return
-			
-			for (let i=0; i < targets.length; i++) {
-				const t = targets[i], dc = t.actor.perception.dc.value
-				const relative = relativeData[t.id]
-				
-				if (relative?.[selected.id]?.awareness > -1)
-					relative[selected.id].awareness = dc <= roll.total ? 2 : 3
+			const relative = new RelativeConditions()
+			if (!relative.isOk) return
+
+			for (const target of targets) {
+				const awareness = relative.getAwarenessTowardMe(target)
+				if (awareness < 3)
+					continue
+				const resistDiversion = new Effect(target, EFFECT_RESIST_A_DIVERSION)
+				const dc = target.actor.perception.dc.value + (resistDiversion.exists ? 4 : 0)
+
+				const degree = DCHelper.calculateRollSuccess(roll, dc)
+				relative.setAwarenessTowardMe(target, degree > 1 ? 2 : 3)
+				const conditionUuid = degree > 1 ? UUID_CONDITONS.hidden : UUID_CONDITONS.observed
+
+				resistDiversion.ensure()
+
+				const message = i18n.$$('PF2E.Actions.CreateADiversion.Result', {target: target.name, conditionRef: `@UUID[${conditionUuid}]`})
+				this.messageToChat(selected, 'create-a-diversion', message, 'A', true)
 			}
 			
-			game.combat.setFlag(SYSTEM.moduleId, 'relative', relativeData).then()
-			game.MKS.compendiumToChat(selected, Compendium.ACTION_CREATE_A_DIVERSION, ROLL_MODE.BLIND, true)
+			RelativeConditions.sync()
 		}
 
 		const check = new Check({
@@ -55,7 +66,7 @@ export default class ActionCreateADiversion extends Action {
 			icon: "systems/pf2e/icons/spells/lose-the-path.webp",
 			action: 'A',
 			mode: "encounter",
-			tags: ['combat', 'stealth']
+			tags: ['stealth']
 		}] : []
 	}
 

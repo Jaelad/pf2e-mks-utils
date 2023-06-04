@@ -2,6 +2,20 @@ import {SYSTEM} from "../constants.js"
 import CommonUtils from "../helpers/common-utils.js"
 
 export default class RelativeConditions {
+
+	static sync() {
+		const relativeData = game.combat?.flags?.[SYSTEM.moduleId]?.relative
+		if (relativeData && relativeData.changed) {
+			relativeData.changed = false
+			if (game.user.isGM)  
+				game.combat.setFlag(SYSTEM.moduleId, "relative", relativeData).then(() => {
+					console.log("Updated Relative Data")
+				})
+			else
+				game.MKS.socketHandler.emit('UpdateRelativeConditions', relativeData)
+		}
+	}
+
 	constructor() {
 		this.token = CommonUtils.getTokenById(game.combat?.combatant?.token.id)
 		this.relative = game.combat?.flags?.[SYSTEM.moduleId]?.relative

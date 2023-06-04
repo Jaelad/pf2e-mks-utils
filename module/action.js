@@ -4,6 +4,7 @@ import Compendium from "./compendium.js"
 import Check from "./check.js"
 import DCHelper from "./helpers/dc-helper.js"
 import $$lang from "../utils/lang.js"
+import CommonUtils from "./helpers/common-utils.js"
 
 export default class Action {
 
@@ -77,7 +78,7 @@ export default class Action {
 			content: chatMessage
 		}
 		if (priv)
-			chatData.whisper = game.user.id
+			chatData.whisper = CommonUtils.findGM().id
 		ChatMessage.create(chatData, {rollMode})
 	}
 }

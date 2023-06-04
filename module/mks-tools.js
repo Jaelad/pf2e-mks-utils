@@ -1,5 +1,5 @@
 import {default as i18n} from "../lang/pf2e-i18n.js"
-import {ROLL_MODE} from "./constants.js"
+import {ROLL_MODE, SYSTEM} from "./constants.js"
 import {registerHandlebarsHelpers} from "./helpers/handlebars.js"
 import DCHelper from "./helpers/dc-helper.js"
 import CommonUtils from "./helpers/common-utils.js"
@@ -75,6 +75,11 @@ export default class MksTools {
 		game.MKS.socketHandler.on('GmChatMessage', (chatData) => {
 			chatData.whisper = [game.user.id]
 			ChatMessage.create(chatData, {rollMode: ROLL_MODE.BLIND})
+		}, true)
+		game.MKS.socketHandler.on('UpdateRelativeConditions', (relativeData) => {
+			game.combat?.setFlag(SYSTEM.moduleId, "relative", relativeData).then(() => {
+				console.log("Updated Relative Data")
+			})
 		}, true)
 	}
 

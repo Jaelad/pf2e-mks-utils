@@ -55,7 +55,7 @@ export default class ActionRecallKnowledge extends Action {
 			icon: "systems/pf2e/icons/spells/daydreamers-curse.webp",
 			action: 'A',
 			mode: "encounter",
-			tags: ['basic']
+			tags: ['inspection']
 		}] : []
 	}
 
