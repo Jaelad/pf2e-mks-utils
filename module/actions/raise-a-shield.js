@@ -1,7 +1,6 @@
 import {default as i18n} from "../../lang/pf2e-i18n.js"
-import {default as LOG} from "../../utils/logging.js"
 import Action from "../action.js"
-import Compendium from "../compendium.js"
+import Effect, { EFFECT_RAISE_A_SHIELD } from "../model/effect.js"
 
 export default class ActionRaiseAShield extends Action {
 
@@ -10,11 +9,11 @@ export default class ActionRaiseAShield extends Action {
 		if (!applicable)
 			return
 
-		const existingEffect = this.effectManager.getEffect(selected, Compendium.EFFECT_RAISE_A_SHIELD)
-		if (existingEffect)
-			await existingEffect.delete()
+		const raiseAShield = new Effect(selected, EFFECT_RAISE_A_SHIELD)
+		if (raiseAShield.exists)
+			await raiseAShield.purge()
 		else {
-			await this.effectManager.setEffect(selected, Compendium.EFFECT_RAISE_A_SHIELD)
+			await raiseAShield.ensure()
 			selected.actor.heldShield.toChat().then()
 		}
 	}

@@ -1,9 +1,9 @@
 import {default as i18n} from "../../lang/pf2e-i18n.js"
 import Action from "../action.js"
-import Compendium from "../compendium.js"
 import Check from "../check.js"
 import $$strings from "../../utils/strings.js"
 import CommonUtils from "../helpers/common-utils.js"
+import Effect, { EFFECT_AIDED, EFFECT_AID_READY } from "../model/effect.js"
 
 export default class ActionAid extends Action {
 	
@@ -42,7 +42,10 @@ export default class ActionAid extends Action {
 						const checkType = $html[0].querySelector('[name="checkType"]').value
 						const mksFlagData = {}
 						mksFlagData[selected.id] = {checkType}
-						this.effectManager.setEffect(targeted, Compendium.EFFECT_AID_READY, {flags: {"mks.aid": mksFlagData}}).then()
+						const aidReady = new Effect(targeted, EFFECT_AID_READY)
+						aidReady.ensure().then( () => {
+							aidReady.setFlag("aid", mksFlagData)
+						})
 					},
 				},
 			},
@@ -53,7 +56,7 @@ export default class ActionAid extends Action {
 	async receiveAid() {
 		const {applicable, selected} = this.isApplicable('receiveAid', true)
 		if (!applicable) return
-		const effect = this.effectManager.getEffect(selected, Compendium.EFFECT_AID_READY)
+		const aidReady = new Effect(selected, EFFECT_AID_READY)
 
 		const checkContext = {
 			actionGlyph: "R",
@@ -67,7 +70,7 @@ export default class ActionAid extends Action {
 			}
 		}
 
-		const aid = effect.flags?.mks?.aid
+		const aid = aidReady.getFlag("aid")
 		const aidTokens = Object.keys(aid)
 
 		if (aidTokens.length === 1) {
@@ -82,9 +85,9 @@ export default class ActionAid extends Action {
 				let degreeOfSuccess = roll.degreeOfSuccess
 				let bonus = degreeOfSuccess === 3 ? Math.max(2, proficiency.rank) : degreeOfSuccess - 1
 				if (bonus !== 0)
-					this.effectManager.setEffect(selected, Compendium.EFFECT_AIDED, {changes: {"system.rules[0].value": bonus}}).then()
+					new Effect(selected, EFFECT_AIDED).ensure({"system.rules[0].value": bonus}).then()
 			}
-			this.effectManager.removeEffect(selected, Compendium.EFFECT_AID_READY).then()
+			aidReady.purge().then()
 		}
 		else if (aidTokens.length > 1) {
 			const dialogContent = `
@@ -124,7 +127,7 @@ export default class ActionAid extends Action {
 				}
 
 				if (bonus !== 0)
-					this.effectManager.setEffect(selected, Compendium.EFFECT_AIDED, {changes:{"system.rules[0].value": bonus}}).then()
+					new Effect(selected, EFFECT_AIDED).ensure({"system.rules[0].value": bonus}).then()
 			}
 
 			new Dialog({
@@ -168,7 +171,7 @@ export default class ActionAid extends Action {
 
 	isApplicable(method, warn = false) {
 		const selected = this._.ensureOneSelected(warn)
-		const aidReadied = !!selected && this.effectManager.hasEffect(selected, Compendium.EFFECT_AID_READY)
+		const aidReadied = !!selected && new Effect(selected, EFFECT_AID_READY).exists
 
 		if (method === 'readyAid') {
 			const targeted = this._.ensureOneTarget(null, warn)

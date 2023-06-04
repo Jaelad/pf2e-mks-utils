@@ -47,6 +47,7 @@ export default class Effect extends Item {
 			}
 			this.item = await this.actor.createEmbeddedDocuments("Item", [effectData])
 		}
+		return this
 	}
 	
 	get hasBadge() {

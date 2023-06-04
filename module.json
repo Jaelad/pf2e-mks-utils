@@ -20,13 +20,6 @@
         "type": "system",
         "compatibility": {}
       }
-    ],
-    "requires": [
-      {
-        "id": "pf2e-persistent-damage",
-        "type": "module",
-        "compatibility": {}
-      }
     ]
   },
   "esmodules": [

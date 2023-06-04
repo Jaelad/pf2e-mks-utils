@@ -3,6 +3,10 @@ import Compendium from "../compendium.js"
 import Dialogs from "../apps/dialogs.js"
 import {default as i18n} from "../../lang/pf2e-i18n.js"
 import CommonUtils from "../helpers/common-utils.js"
+import Condition, { CONDITION_DYING } from "../model/condition.js"
+import PersistentDamage, { PERSISTENT_BLEED, PERSISTENT_POISON } from "../model/persistent-damage.js"
+import Equipments, { EQU_HEALERS_TOOLS, EQU_HEALERS_TOOLS_EXPANDED } from "../model/equipments.js"
+import Effect, { EFFECT_POISON_TREATED } from "../model/effect.js"
 
 export default class ActionAdministerFirstAid extends SimpleAction {
 	constructor(MKS) {
@@ -17,72 +21,72 @@ export default class ActionAdministerFirstAid extends SimpleAction {
 	}
 	
 	async act({overrideDC}) {
-		const {applicable, selected, targeted} = this.isApplicable(null,true)
-		if (!applicable) return
+		const healersTools = new Equipments(selected).hasEquippedAny([EQU_HEALERS_TOOLS, EQU_HEALERS_TOOLS_EXPANDED])
+		
+		const dying = new Condition(targeted, CONDITION_DYING)
+		const bleeding = new PersistentDamage(PERSISTENT_BLEED)
+		const poisoned = new PersistentDamage(PERSISTENT_POISON)
+		
+		const ok = (dying.value > 0 || bleeding.exists || poisoned.exists) && healersTools.length > 0
+		if (!ok)
+			return
 
 		const buttons = []
-		const dyingCond = this.effectManager.getCondition(targeted, 'dying')
-		const persistentDamages = this.effectManager.getConditions(targeted, 'persistent-damage')
-		const bleedingCond = persistentDamages.find(pd => pd.system.persistent.damageType === 'bleed')
-		const poisonedCond = persistentDamages.find(pd => pd.system.persistent.damageType === 'poison')
 		
-		if (dyingCond)
+		if (dying.value > 0)
 			buttons.push({ value: 'dying', name: 'PF2E.Actions.AdministerFirstAid.Dying'})
-		if (bleedingCond)
+		if (bleeding.exists)
 			buttons.push({ value: 'bleeding', name: 'PF2E.Actions.AdministerFirstAid.Bleeding'})
-		if (poisonedCond)
+		if (poisoned.exists)
 			buttons.push({ value: 'poisoned', name: 'PF2E.Actions.AdministerFirstAid.Poisoned'})
 
 		let dc, affliction, formula, id
 		if (buttons.length > 1)
 			affliction = await Dialogs.multipleButtons(buttons, "PF2E.MKS.Dialog.AdministerFirstAid.SelectType") ?? 'dying'
-		else if (dyingCond)
+		else if (dying.value > 0)
 			affliction = 'dying'
-		else if (bleedingCond)
+		else if (bleeding.exists)
 			affliction = 'bleeding'
-		else if (poisonedCond)
+		else if (poisoned.exists)
 			affliction = 'poisoned'
 
 		if (affliction === 'dying') {
-			dc = dyingCond.badge.value + 15
-			id = dyingCond.id
+			dc = dying.value + 15
+			id = dying.item.id
 		}
 		else if (affliction === 'bleeding') {
-			dc = bleedingCond.system.persistent.dc
-			formula = bleedingCond.system.persistent.formula
-			id = bleedingCond.id
+			dc = bleeding.dc
+			formula = bleeding.formula
+			id = bleeding.item.id
 		}
 		else if (affliction === 'poisoned') {
-			dc = poisonedCond.system.persistent.dc
-			formula = poisonedCond.system.persistent.formula
-			id = poisonedCond.id
+			dc = poisoned.dc
+			formula = poisoned.formula
+			id = poisoned.item.id
 		}
 
 		await super.act({overrideDC: dc, affliction, formula, conditionId: id})
 	}
 
 	resultHandler(roll, selected, targeted, options) {
-		super.resultHandler(roll, selected, targeted, options)
-		
 		const degreeOfSuccess = roll.degreeOfSuccess
 		if (options.affliction === 'dying') {
+			const dying = new Condition(targeted, CONDITION_DYING)
 			if (degreeOfSuccess > 1) {
-				this.effectManager.removeCondition(targeted, 'dying').then(() => {
-					this.effectManager.setCondition(targeted, 'unconscious').then()
-				})
+				dying.purge()
 			}
 			else if (degreeOfSuccess === 0) {
-				const dyingCond = this.effectManager.getCondition(targeted, 'dying')
-				this.effectManager.setBadge(dyingCond, {increment: 1}).then()
+				dying.setValue(1, true)
 			}
 		}
 		else if (options.affliction === 'bleeding') {
+			const bleeding = new PersistentDamage(PERSISTENT_BLEED)
 			if (degreeOfSuccess > 1) {
 				const flatCheckRoll = new Roll('1d20').roll({async: false})
 				CommonUtils.chat(targeted, i18n.$$("PF2E.Actions.AdministerFirstAid.BleedingFlatCheck", {roll: flatCheckRoll.result}))
 				
 				if (flatCheckRoll.result >= 15) {
-					this.effectManager.removeConditions(targeted, [options.conditionId]).then()
+					bleeding.purge()
 				}
 			}
 			else if (degreeOfSuccess === 0) {
@@ -94,21 +98,18 @@ export default class ActionAdministerFirstAid extends SimpleAction {
 		}
 		else if (options.affliction === 'poisoned') {
 			const bonus = degreeOfSuccess === 2 ? 2 : degreeOfSuccess === 3 ? 4 : degreeOfSuccess === 0 ? -2 : 0
-			if (bonus !== 0)
-				this.effectManager.setEffect(targeted, Compendium.EFFECT_POISON_TREATED, {flags: {"mks.treatPoisonBonus": bonus}}).then()
+			if (bonus !== 0) {
+				const poisonTreated = new Effect(targeted, EFFECT_POISON_TREATED)
+				poisonTreated.ensure().then(() => {
+					poisonTreated.setFlag("treatPoisonBonus", bonus)
+				})
+			}
 		}
 	}
 
 	applies(selected, targeted) {
-		const handsFree = this._.inventoryManager.handsFree(selected)
-		const healersTools = !!selected && selected.actor.itemTypes.equipment.find(e => (e.slug === 'healers-tools' || e.slug === 'healers-tools-expanded')
-			&& ((e.carryType === 'worn' && handsFree > 0) || e.handsHeld === 2))
-		const dyingCond = this.effectManager.getCondition(targeted, 'dying')
-		const bleedingEffect = this.effectManager.getCondition(targeted, 'persistent-damage-bleed')
-		const poisonEffect = this.effectManager.getCondition(targeted, 'persistent-damage-poison')
-
 		const distance = this._.distanceTo(selected, targeted)
 		return selected.actor.alliance === targeted.actor.alliance && distance < 10
-			&& (dyingCond?.badge?.value > 0 || !!bleedingEffect || !!poisonEffect) && !!healersTools
+			&& (Condition.hasAny(targeted, CONDITION_DYING) || PersistentDamage.hasAny(targeted, [PERSISTENT_BLEED, PERSISTENT_POISON]))
 	}
 }

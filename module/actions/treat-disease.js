@@ -1,5 +1,6 @@
 import Action, {SimpleAction} from "../action.js"
-import Compendium from "../compendium.js"
+import Effect from "../model/effect.js"
+import Equipments, { EQU_HEALERS_TOOLS, EQU_HEALERS_TOOLS_EXPANDED } from "../model/equipments.js"
 
 export default class ActionTreatDisease extends SimpleAction {
 	
@@ -16,18 +17,22 @@ export default class ActionTreatDisease extends SimpleAction {
 	}
 	
 	async resultHandler(roll, selected, targeted, options) {
+		const hasHealersTools = new Equipments(selected).hasAny([EQU_HEALERS_TOOLS, EQU_HEALERS_TOOLS_EXPANDED])
+		if (!hasHealersTools)
+			return
 		super.resultHandler(roll, selected, targeted, options)
 		
 		const degreeOfSuccess = roll.degreeOfSuccess
-		const bonus = degreeOfSuccess === 2 ? 2 : degreeOfSuccess === 3 ? 4 : degreeOfSuccess === 0 ? -2 : 0
-		if (bonus !== 0)
-			this.effectManager.setEffect(targeted, Compendium.EFFECT_DISEASE_TREATED, {flags: {"mks.treatDiseaseBonus": bonus}}).then()
+		const bonus = degreeOfSuccess == 2 ? 2 : degreeOfSuccess == 3 ? 4 : degreeOfSuccess == 0 ? -2 : 0
+		if (bonus !== 0) {
+			const diseaseTreated = new Effect(targeted, EFFECT_DISEASE_TREATED)
+			diseaseTreated.ensure().then(() => {
+				diseaseTreated.setFlag("treatDiseaseBonus", bonus)
+			})
+		}
 	}
 	
 	applies(selected, targeted) {
-		const healersTools = !!selected && selected.actor.itemTypes.equipment.find(e => e.slug === 'healers-tools' && ['held', 'worn'].includes(e.carryType))
-		const healersToolsOk = healersTools && (healersTools.carryType === 'held' || this._.inventoryManager.handsFree(selected) > 0)
-		
-		return selected.actor.alliance === targeted.actor.alliance && healersToolsOk
+		return selected.actor.alliance === targeted.actor.alliance
 	}
 }

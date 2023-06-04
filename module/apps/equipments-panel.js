@@ -131,6 +131,7 @@ export default class EquipmentsPanel extends BasePanel {
 			const itemId = equipments[slot]
 			if (!itemId) return
 			const item = selected.actor.items.find(i => i.id === itemId)
+			if (!item) return
 			const investable = item.system.traits.value.includes('invested')
 			data.equipments[slot] = {img: item.img, name: item.name, id: itemId, invested: investable ? !!item.system.equipped.invested : null}
 		})
