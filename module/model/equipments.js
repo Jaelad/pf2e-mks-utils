@@ -131,5 +131,22 @@ export default class Equipments {
 		})
 	}
 	
+	wieldsWeaponWithTraits(traits, all = true) {
+		return this.actor.itemTypes.weapon.find((w => {
+			const wTraits = w.system.traits.value
+			if (all) {
+				for (let i = 0; i < traits.length; i++) {
+					if (!wTraits.includes(traits[i]))
+						return false
+				}
+			}
+			else {
+				for (let i = 0; i < traits.length; i++) {
+					if (wTraits.includes(traits[i]))
+						return true
+				}
+			}
+		}))
+	}
 	
 }

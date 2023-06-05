@@ -5,12 +5,12 @@ import Check from "./check.js"
 import DCHelper from "./helpers/dc-helper.js"
 import $$lang from "../utils/lang.js"
 import CommonUtils from "./helpers/common-utils.js"
+import {Engagement, Engagements} from "./model/engagement.js"
 
 export default class Action {
 
 	constructor(MKS, mode = 'encounter') {
 		this._ = MKS
-		this.effectManager = MKS.effectManager
 		this.mode = mode
 	}
 
@@ -22,7 +22,7 @@ export default class Action {
 	}
 
 	isApplicable(method = null, warn= false) {
-		// return {applicable, selected, targeted}
+		// return {applicable, engagement}
 	}
 
 	resultToChat(token, action, degreeOfSuccess, glyph = 'A') {
@@ -99,14 +99,14 @@ export class SimpleAction extends Action {
 
 	async act({overrideDC}) {
 		const options = arguments[0]
-		const {applicable, selected, targeted, targets} = this.isApplicable(null,true)
+		const {applicable, engagement} = this.isApplicable(null,true)
 		if (!applicable)
 			return
 
 		const rollCallback = ({roll, actor}) => {
-			this.resultHandler(roll, selected, targets ?? targeted, options)
+			this.resultHandler(roll, engagement, options)
 		}
-
+		
 		const check = new Check({
 			action: this.action,
 			actionGlyph: this.actionGlyph,
@@ -114,18 +114,18 @@ export class SimpleAction extends Action {
 			extraOptions: ["action:" + game.pf2e.system.sluggify(this.action)],
 			traits: this.traits,
 			checkType: this.checkType,
-			difficultyClass: overrideDC > 0 ? overrideDC : $$lang.isFunction(this.dc) ? this.targetCount > 1 ? DCHelper.getMaxDC(targets, this.dc) : this.dc?.(targeted) : null,
+			difficultyClass: overrideDC > 0 ? overrideDC : $$lang.isFunction(this.dc) ? engagement.getTargetDC(this.dc) : null,
 			askGmForDC: {
 				action: this.action,
 				defaultDC: typeof this.dc === 'number' ? this.dc : null
 			}
 		})
-		check.roll(selected).then(rollCallback)
+		check.roll(engagement.selected).then(rollCallback)
 	}
 
-	resultHandler(roll, selected, targets, options) {
+	resultHandler(roll, engagement, options) {
 		if (!roll) return
-		this.resultToChat(selected, this.action, roll.degreeOfSuccess, this.actionGlyph)
+		this.resultToChat(engagement.selected, this.action, roll.degreeOfSuccess, this.actionGlyph)
 	}
 
 	methods(onlyApplicable) {
@@ -146,22 +146,26 @@ export class SimpleAction extends Action {
 		if (this.targetCount === 1) {
 			const targeted = this._.ensureOneTarget(null, warn)
 			if (!targeted || targeted.id === selected.id) return {applicable: false}
-			return {applicable: this.applies(selected, targeted), selected, targeted}
+			const engagement = new Engagement(selected, targeted)
+			return {applicable: this.applies(engagement), engagement}
 		}
 		else if (this.targetCount > 1) {
 			const targets = this._.ensureAtLeastOneTarget(warn, null)
 			if (!targets || targets.find(t => t.id === selected.id)) return {applicable: false}
-			return {applicable: this.applies(selected, targets), selected, targets}
+			const engagement = new Engagements(selected, targets)
+			return {applicable: this.applies(engagement), engagement}
 		}
 		else if (this.targetCount === 0) {
-			return {applicable: this.applies(selected), selected}
+			const engagement = new Engagements(selected)
+			return {applicable: this.applies(engagement), engagement}
 		}
 		else
 			return {applicable: false}
 	}
 
-	applies(selected, targets) {
-		return !!selected && (this.targetCount === 0 || !!targets)
+	applies(engagement) {
+		const opponentCount = engagement.opponentCount()
+		return this.targetCount === 1 ? opponentCount === 1 : this.targetCount > 1 ? opponentCount > 1 : true
 	}
 }
 
