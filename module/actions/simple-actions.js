@@ -14,6 +14,10 @@ export class ActionTumbleThrough extends SimpleAction {
 			dc: t => t.actor.saves.reflex.dc.value,
 		})
 	}
+
+	applies(selected, targeted) {
+		return selected.actor.alliance !== targeted.actor.alliance
+	}
 }
 
 export class ActionSenseMotive extends SimpleAction {
