@@ -9,9 +9,10 @@ import {Engagement, Engagements} from "./model/engagement.js"
 
 export default class Action {
 
-	constructor(MKS, mode = 'encounter', applyByGM = true) {
+	constructor(MKS, mode = 'encounter', actByGm = false, applyByGM = true) {
 		this._ = MKS
 		this.mode = mode
+		this.actByGM = actByGm
 		this.appplyByGM = applyByGM
 	}
 
