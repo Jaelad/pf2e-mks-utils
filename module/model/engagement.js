@@ -10,6 +10,10 @@ export class Engagement {
 		this.targeted = targeted && targeted.actor ? targeted : null
 	}
 
+	get serializable() {
+		return {selected: this.selected.id, targeted: this.targeted?.id}
+	}
+
 	get targetExists() {
 		return this.opponentCount > 0
 	}
@@ -57,6 +61,10 @@ export class Engagements extends Engagement {
 		}
 		else
 			this.engagements = []
+	}
+
+	get serializable() {
+		return {selected: this.selected.id, targeted: this.targetedOnes?.map(t => t.id)}
 	}
 
 	get exists() {

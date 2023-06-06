@@ -9,20 +9,27 @@ import {Engagement, Engagements} from "./model/engagement.js"
 
 export default class Action {
 
-	constructor(MKS, mode = 'encounter') {
+	constructor(MKS, mode = 'encounter', applyByGM = true) {
 		this._ = MKS
 		this.mode = mode
+		this.appplyByGM = applyByGM
 	}
 
 	initialize() {
 	}
 
-	methods(onlyApplicable) {
-		return []
+	get properties() {}
+
+	isApplicable() {
+		// return {applicable, engagement}
 	}
 
-	isApplicable(method = null, warn= false) {
-		// return {applicable, engagement}
+	async act(engagement, options) {
+		// simply returns action result object
+	}
+
+	async apply(engagement, result) {
+
 	}
 
 	resultToChat(token, action, degreeOfSuccess, glyph = 'A') {
@@ -86,8 +93,8 @@ export default class Action {
 export class SimpleAction extends Action {
 	constructor(MKS, {action, traits, checkType, dc, icon, tags, mode='encounter', requiresEncounter = false, actionGlyph = 'A', targetCount = 0}) {
 		super(MKS, mode)
-		this.actionGlyph = actionGlyph
 		this.action = action
+		this.actionGlyph = actionGlyph
 		this.traits = traits
 		this.checkType = checkType
 		this.dc = dc
@@ -97,7 +104,36 @@ export class SimpleAction extends Action {
 		this.requiresEncounter = requiresEncounter
 	}
 
-	async act({overrideDC}) {
+	isApplicable() {
+		const selected = this._.ensureOneSelected(false, this.requiresEncounter)
+		if (!selected) return {applicable: false}
+
+		if (this.targetCount === 1) {
+			const targeted = this._.ensureOneTarget(null, false)
+			if (!targeted || targeted.id === selected.id) return {applicable: false}
+			const engagement = new Engagement(selected, targeted)
+			return {applicable: this.applies(engagement), engagement}
+		}
+		else if (this.targetCount > 1) {
+			const targets = this._.ensureAtLeastOneTarget(false, null)
+			if (!targets || targets.find(t => t.id === selected.id)) return {applicable: false}
+			const engagement = new Engagements(selected, targets)
+			return {applicable: this.applies(engagement), engagement}
+		}
+		else if (this.targetCount === 0) {
+			const engagement = new Engagements(selected)
+			return {applicable: this.applies(engagement), engagement}
+		}
+		else
+			return {applicable: false}
+	}
+
+	applies(engagement) {
+		const opponentCount = engagement.opponentCount()
+		return this.targetCount === 1 ? opponentCount === 1 : this.targetCount > 1 ? opponentCount > 1 : true
+	}
+
+	async act(engagement, {overrideDC}) {
 		const options = arguments[0]
 		const {applicable, engagement} = this.isApplicable(null,true)
 		if (!applicable)
@@ -128,44 +164,13 @@ export class SimpleAction extends Action {
 		this.resultToChat(engagement.selected, this.action, roll.degreeOfSuccess, this.actionGlyph)
 	}
 
-	methods(onlyApplicable) {
-		const {applicable} = onlyApplicable ? this.isApplicable() : {applicable: true}
-		return applicable ? [{
-			method: 'act',
+	get properties() {
+		return {
 			label: i18n.action(this.action),
 			icon: this.icon,
 			actionGlyph: this.actionGlyph,
 			tags: this.tags
-		}] : []
-	}
-
-	isApplicable(method=null, warn=false) {
-		const selected = this._.ensureOneSelected(warn, this.requiresEncounter)
-		if (!selected) return {applicable: false}
-
-		if (this.targetCount === 1) {
-			const targeted = this._.ensureOneTarget(null, warn)
-			if (!targeted || targeted.id === selected.id) return {applicable: false}
-			const engagement = new Engagement(selected, targeted)
-			return {applicable: this.applies(engagement), engagement}
 		}
-		else if (this.targetCount > 1) {
-			const targets = this._.ensureAtLeastOneTarget(warn, null)
-			if (!targets || targets.find(t => t.id === selected.id)) return {applicable: false}
-			const engagement = new Engagements(selected, targets)
-			return {applicable: this.applies(engagement), engagement}
-		}
-		else if (this.targetCount === 0) {
-			const engagement = new Engagements(selected)
-			return {applicable: this.applies(engagement), engagement}
-		}
-		else
-			return {applicable: false}
-	}
-
-	applies(engagement) {
-		const opponentCount = engagement.opponentCount()
-		return this.targetCount === 1 ? opponentCount === 1 : this.targetCount > 1 ? opponentCount > 1 : true
 	}
 }
 
