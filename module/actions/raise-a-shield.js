@@ -30,6 +30,8 @@ export default class ActionRaiseAShield extends SimpleAction {
 		}
 		return shieldOk
 	}
+	
+	async act(engagement, options) {}
 
 	async apply(engagement) {
 		const raiseAShield = new Effect(engagement.selected, EFFECT_RAISE_A_SHIELD)

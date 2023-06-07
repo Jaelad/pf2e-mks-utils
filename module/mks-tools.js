@@ -59,6 +59,8 @@ import ActionCraft from "./actions/craft.js"
 import ActionLongTermRest from "./actions/long-term-rest.js"
 import ActionEarnIncome from "./actions/earn-income.js"
 import ActionTreatDisease from "./actions/treat-disease.js"
+import ActionReadyAid from "./actions/ready-aid.js"
+import ActionReceiveAid from "./actions/receive-aid.js"
 
 export default class MksTools {
 
@@ -104,7 +106,8 @@ export default class MksTools {
 		this.commons = CommonUtils
 
 		this.actions = {
-			aid: new ActionAid(this),
+			readyAid: new ActionReadyAid(this),
+			receiveAid: new ActionReceiveAid(this),
 			grapple: new ActionGrapple(this),
 			seek: new ActionSeek(this),
 			raiseAShield: new ActionRaiseAShield(this),

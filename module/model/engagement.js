@@ -2,6 +2,7 @@ import {default as LOG} from "../../utils/logging.js"
 import {SYSTEM} from "../constants.js"
 import CommonUtils from "../helpers/common-utils.js"
 import DCHelper from "../helpers/dc-helper.js"
+import Condition from "./condition.js"
 
 export class Engagement {
 	constructor(selected, targeted) {
@@ -62,10 +63,26 @@ export class Engagement {
 		return this.distance({action: "attack"}) === 0
 	}
 	
+	get isAdjacent() {
+		return this.distance() === 0
+	}
+	
 	getTargetDC(dcFunc) {
 		if (!this.targetExists)
 			return
 		return dcFunc(this.targeted)
+	}
+	
+	isTargetInCondition(condition) {
+		return new Condition(this.targeted, condition).exists
+	}
+	
+	async setConditionOnTarget(condition) {
+		return new Condition(this.targeted, condition).ensure()
+	}
+	
+	async setConditionOnSelected(condition) {
+		return new Condition(this.selected, condition).ensure()
 	}
 }
 
@@ -102,7 +119,11 @@ export class Engagements extends Engagement {
 	}
 
 	get inMeleeRange() {
-		return this.engagements.every( e => e.inMeleeRange())
+		return this.engagements.every( e => e.inMeleeRange)
+	}
+	
+	get isAdjacent() {
+		return this.engagements.every( e => e.isAdjacent)
 	}
 	
 	getTargetDC(dcFunc) {
@@ -110,5 +131,14 @@ export class Engagements extends Engagement {
 			const dc = dcFunc(e.targeted)
 			return p > dc ? p : dc
 		}, 0)
+	}
+	
+	isTargetInCondition(condition) {
+		return this.engagements.every( e => e.isTargetInCondition(condition))
+	}
+	
+	async setConditionOnTarget(condition) {
+		for (const en of this.engagements)
+			await en.setConditionOnTarget(condition)
 	}
 }

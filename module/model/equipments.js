@@ -1,9 +1,11 @@
 import {default as LOG} from "../../utils/logging.js"
 import {SYSTEM} from "../constants.js"
-import { EFFECT_GRABBING } from "./effect.js"
+import Effect, { EFFECT_GRABBING } from "./effect.js"
 
 export const EQU_HEALERS_TOOLS = "healers-tools" 
 export const EQU_HEALERS_TOOLS_EXPANDED = "healers-tools-expanded"
+export const EQU_THVS_TOOLS = "thieves-tools"
+export const EQU_ALCHEMISTS_TOOLS = "alchemists-tools"
 
 export const UUID_EQUIPMENTS = {
 	"healers-tools": "Compendium.pf2e.equipment-srd.s1vB3HdXjMigYAnY",
@@ -124,7 +126,7 @@ export default class Equipments {
 		const handsFree = this.handsFree()
 		const inv = this.hasAny(items)
 		return inv.filter(e => { 
-			if (e.slug === EQU_HEALERS_TOOLS || e.slug === EQU_HEALERS_TOOLS_EXPANDED)
+			if ([EQU_HEALERS_TOOLS, EQU_HEALERS_TOOLS_EXPANDED, EQU_THVS_TOOLS, EQU_ALCHEMISTS_TOOLS].includes(e.slug))
 				return (e.carryType === 'worn' && handsFree > 0) || e.handsHeld === 2
 			
 			return e.isEquipped

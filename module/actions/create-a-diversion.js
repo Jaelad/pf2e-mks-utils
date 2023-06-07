@@ -8,6 +8,19 @@ import RelativeConditions from "../model/relative-conditions.js"
 import { UUID_CONDITONS } from "../model/condition.js"
 
 export default class ActionCreateADiversion extends Action {
+	
+	relevant(warn) {
+		// return engagement
+	}
+	
+	async act(engagement, options) {
+		// simply returns action result object
+	}
+	
+	async apply(engagement, result) {
+	
+	}
+	
 	async act() {
 		const {applicable, selected, targets} = this.isApplicable(null,true)
 		if (!applicable)

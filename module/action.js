@@ -177,14 +177,14 @@ export class SimpleAction extends Action {
 
 		if (this.targetCount === 1) {
 			const targeted = this._.ensureOneTarget(null, false)
-			if (!targeted || targeted.id === selected.id) return {applicable: false}
+			if (!targeted || targeted.id === selected.id) return
 			const engagement = new Engagement(selected, targeted)
 			const ok = this.pertinent(engagement, warn) 
 			return ok ? engagement : undefined
 		}
 		else if (this.targetCount > 1) {
 			const targets = this._.ensureAtLeastOneTarget(false, null)
-			if (!targets || targets.find(t => t.id === selected.id)) return {applicable: false}
+			if (!targets || targets.find(t => t.id === selected.id)) return
 			const engagement = new Engagements(selected, targets)
 			const ok = this.pertinent(engagement, warn) 
 			return ok ? engagement : undefined

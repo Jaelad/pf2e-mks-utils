@@ -7,8 +7,8 @@ import DCHelper from "../helpers/dc-helper.js"
 export default class ActionHide extends SimpleAction {
 	constructor(MKS) {
 		super(MKS, {action: 'hide',
-			traits: ['secret'],
 			checkType: 'skill[stealth]',
+			traits: ['secret'],
 			icon: "systems/pf2e/icons/spells/zealous-conviction.webp",
 			tags: ['stealth'],
 			actionGlyph: 'A',

@@ -1,11 +1,13 @@
 import {SimpleAction} from "../action.js"
+import Condition, {CONDITION_DYING, CONDITION_FLATFOOTED} from "../model/condition.js"
+import Equipments, {EQU_ALCHEMISTS_TOOLS, EQU_THVS_TOOLS, THVS_TOOLS} from "../model/equipments.js"
 
 export class ActionTumbleThrough extends SimpleAction {
 
 	constructor(MKS) {
 		super(MKS, {action: 'tumbleThrough',
-			traits: ['move'],
 			checkType: 'skill[acrobatics]',
+			traits: ['move'],
 			icon: "systems/pf2e/icons/spells/mislead.webp",
 			tags: ['situational'],
 			mode: 'encounter',
@@ -14,17 +16,17 @@ export class ActionTumbleThrough extends SimpleAction {
 			dc: t => t.actor.saves.reflex.dc.value,
 		})
 	}
-
-	applies(selected, targeted) {
-		return selected.actor.alliance !== targeted.actor.alliance
+	
+	pertinent(engagement, warn) {
+		return engagement.isEnemy
 	}
 }
 
 export class ActionSenseMotive extends SimpleAction {
 	constructor(MKS) {
 		super(MKS, {action: 'senseMotive',
-			traits: ["concentrate", "secret"],
 			checkType: 'perception',
+			traits: ["concentrate", "secret"],
 			icon: "systems/pf2e/icons/spells/enhance-senses.webp",
 			tags: ['social'],
 			mode: 'encounter',
@@ -33,19 +35,20 @@ export class ActionSenseMotive extends SimpleAction {
 			dc: t => t.actor.skills.deception.dc.value,
 		})
 	}
-
-	applies(selected, targeted) {
-		return selected.actor.alliance !== targeted.actor.alliance
+	
+	pertinent(engagement, warn) {
+		return engagement.isEnemy
 	}
 }
 
 export class ActionForceOpen extends SimpleAction {
 	constructor(MKS) {
 		super(MKS, {action: 'forceOpen',
-			traits: ['attack'],
 			checkType: 'skill[athletics]',
+			traits: ['attack'],
 			icon: "systems/pf2e/icons/spells/forceful-hand.webp",
-			tags: ['situational']
+			tags: ['situational'],
+			dc: 15
 		})
 	}
 }
@@ -53,10 +56,11 @@ export class ActionForceOpen extends SimpleAction {
 export class ActionBalance extends SimpleAction {
 	constructor(MKS) {
 		super(MKS, {action: 'balance',
-			traits: ['move'],
 			checkType: 'skill[acrobatics]',
+			traits: ['move'],
 			icon: "systems/pf2e/icons/spells/tempest-form.webp",
-			tags: ['situational']
+			tags: ['situational'],
+			dc: 15
 		})
 	}
 }
@@ -64,10 +68,11 @@ export class ActionBalance extends SimpleAction {
 export class ActionClimb extends SimpleAction {
 	constructor(MKS) {
 		super(MKS, {action: 'climb',
-			traits: ['move'],
 			checkType: 'skill[athletics]',
+			traits: ['move'],
 			icon: "systems/pf2e/icons/spells/rope-trick.webp",
-			tags: ['situational']
+			tags: ['situational'],
+			dc: 15
 		})
 	}
 }
@@ -75,11 +80,12 @@ export class ActionClimb extends SimpleAction {
 export class ActionGrabAnEdge extends SimpleAction {
 	constructor(MKS) {
 		super(MKS, {action: 'grabAnEdge',
-			traits: ['manipulate'],
 			checkType: 'reflex',
+			traits: ['manipulate'],
 			icon: "systems/pf2e/icons/spells/object-reading.webp",
 			tags: ['situational'],
 			actionGlyph: 'R',
+			dc: 15
 		})
 	}
 }
@@ -87,11 +93,12 @@ export class ActionGrabAnEdge extends SimpleAction {
 export class ActionHighJump extends SimpleAction {
 	constructor(MKS) {
 		super(MKS, {action: 'highJump',
-			traits: ['move'],
 			checkType: 'skill[athletics]',
+			traits: ['move'],
 			icon: "systems/pf2e/icons/spells/wind-jump.webp",
 			tags: ['situational'],
 			actionGlyph: 'D',
+			dc: 15
 		})
 	}
 }
@@ -99,11 +106,12 @@ export class ActionHighJump extends SimpleAction {
 export class ActionLongJump extends SimpleAction {
 	constructor(MKS) {
 		super(MKS, {action: 'longJump',
-			traits: ['move'],
 			checkType: 'skill[athletics]',
+			traits: ['move'],
 			icon: "systems/pf2e/icons/spells/jump.webp",
 			tags: ['situational'],
 			actionGlyph: 'D',
+			dc: 15
 		})
 	}
 }
@@ -111,10 +119,11 @@ export class ActionLongJump extends SimpleAction {
 export class ActionSwim extends SimpleAction {
 	constructor(MKS) {
 		super(MKS, {action: 'swim',
-			traits: ['move'],
 			checkType: 'skill[athletics]',
+			traits: ['move'],
 			icon: "systems/pf2e/icons/spells/waters-of-prediction.webp",
 			tags: ['situational'],
+			dc: 15
 		})
 	}
 }
@@ -122,8 +131,8 @@ export class ActionSwim extends SimpleAction {
 export class ActionLie extends SimpleAction {
 	constructor(MKS) {
 		super(MKS, {action: 'lie',
-			traits: ['concentrate', 'auditory', 'linguistic', 'mental', 'secret'],
 			checkType: 'skill[deception]',
+			traits: ['concentrate', 'auditory', 'linguistic', 'mental', 'secret'],
 			icon: "systems/pf2e/icons/spells/glibness.webp",
 			tags: ['social'],
 			actionGlyph: 'T',
@@ -136,8 +145,8 @@ export class ActionLie extends SimpleAction {
 export class ActionFeint extends SimpleAction {
 	constructor(MKS) {
 		super(MKS, {action: 'feint',
-			traits: ['mental'],
 			checkType: 'skill[deception]',
+			traits: ['mental'],
 			icon: "systems/pf2e/icons/spells/mislead.webp",
 			tags: ['combat'],
 			actionGlyph: 'A',
@@ -145,31 +154,32 @@ export class ActionFeint extends SimpleAction {
 			dc: t => t.actor.perception.dc.value,
 		})
 	}
-
-	applies(selected, targeted) {
-		let distance = this._.distanceTo(selected, targeted)
-		return selected.actor.alliance !== targeted.actor.alliance
-			&& distance < (this._.inventoryManager.wieldsWeaponWithTraits(selected, ['reach']) ? 15 : 10)
+	
+	pertinent(engagement, warn) {
+		return engagement.isEnemy && engagement.inMeleeRange
 	}
-
-	resultHandler(roll, selected, targeted) {
-		super.resultHandler(roll, selected, targeted)
+	
+	async apply(engagement, result) {
+		await super.apply(engagement, result)
+		
+		const roll = engagement.roll
 		if (roll.degreeOfSuccess > 1)
-			this.effectManager.setCondition(targeted, 'flat-footed').then()
+			return engagement.setConditionOnTarget(CONDITION_FLATFOOTED)
 		else if (roll.degreeOfSuccess < 1)
-			this.effectManager.setCondition(selected, 'flat-footed').then()
+			return engagement.setConditionOnSelected(CONDITION_FLATFOOTED)
 	}
 }
 
 export class ActionRequest extends SimpleAction {
 	constructor(MKS) {
 		super(MKS, {action: 'request',
-			traits: ['mental', 'concentrate', 'auditory', 'linguistic'],
 			checkType: 'skill[diplomacy]',
+			traits: ['mental', 'concentrate', 'auditory', 'linguistic'],
 			icon: "systems/pf2e/icons/spells/miracle.webp",
 			tags: ['social'],
 			actionGlyph: 'A',
-			targetCount: 1
+			targetCount: 1,
+			dc: 15
 		})
 	}
 }
@@ -177,29 +187,31 @@ export class ActionRequest extends SimpleAction {
 export class ActionCommandAnAnimal extends SimpleAction {
 	constructor(MKS) {
 		super(MKS, {action: 'commandAnAnimal',
-			traits: ['concentrate', 'auditory'],
 			checkType: 'skill[nature]',
+			traits: ['concentrate', 'auditory'],
 			icon: "systems/pf2e/icons/spells/awaken-animal.webp",
 			tags: ['social'],
 			actionGlyph: 'A',
-			targetCount: 1
+			targetCount: 1,
+			dc: 15
 		})
 	}
-
-	applies(selected, targeted) {
-		return Array.from(targeted.actor.traits).indexOf('animal') !== -1
+	
+	pertinent(engagement, warn) {
+		return Array.from(engagement?.targeted?.actor?.traits).indexOf('animal') !== -1
 	}
 }
 
 export class ActionPerform extends SimpleAction {
 	constructor(MKS) {
 		super(MKS, {action: 'perform',
-			traits: ['concentrate'],
 			checkType: 'skill[performance]',
+			traits: ['concentrate'],
 			icon: "systems/pf2e/icons/features/classes/magnum-opus.webp",
 			tags: ['social'],
 			actionGlyph: 'A',
-			targetCount: 0
+			targetCount: 0,
+			dc: 15
 		})
 	}
 }
@@ -207,8 +219,8 @@ export class ActionPerform extends SimpleAction {
 export class ActionConcealAnObject extends SimpleAction {
 	constructor(MKS) {
 		super(MKS, {action: 'concealAnObject',
-			traits: ['manipulate', 'secret'],
 			checkType: 'skill[stealth]',
+			traits: ['manipulate', 'secret'],
 			icon: "systems/pf2e/icons/spells/umbral-mindtheft.webp",
 			tags: ['stealth'],
 			actionGlyph: 'A',
@@ -221,8 +233,8 @@ export class ActionConcealAnObject extends SimpleAction {
 export class ActionPalmAnObject extends SimpleAction {
 	constructor(MKS) {
 		super(MKS, {action: 'palmAnObject',
-			traits: ['manipulate'],
 			checkType: 'skill[thievery]',
+			traits: ['manipulate'],
 			icon: "systems/pf2e/icons/spells/quivering-palm.webp",
 			tags: ['stealth'],
 			actionGlyph: 'A',
@@ -235,12 +247,13 @@ export class ActionPalmAnObject extends SimpleAction {
 export class ActionSteal extends SimpleAction {
 	constructor(MKS) {
 		super(MKS, {action: 'steal',
-			traits: ['manipulate'],
 			checkType: 'skill[thievery]',
+			traits: ['manipulate'],
 			icon: "systems/pf2e/icons/spells/mending.webp",
 			tags: ['stealth'],
 			actionGlyph: 'A',
-			targetCount: 1
+			targetCount: 1,
+			dc: 15
 		})
 	}
 }
@@ -248,28 +261,29 @@ export class ActionSteal extends SimpleAction {
 export class ActionPickALock extends SimpleAction {
 	constructor(MKS) {
 		super(MKS, {action: 'pickALock',
-			traits: ['manipulate'],
 			checkType: 'skill[thievery]',
+			traits: ['manipulate'],
 			icon: "systems/pf2e/icons/spells/freedom.webp",
 			tags: ['stealth'],
 			actionGlyph: 'D',
+			dc: 15
 		})
 	}
 	
-	applies(selected, targeted) {
-		const thievesTools = !!selected && selected.actor.itemTypes.equipment.find(e => e.slug === 'thieves-tools' && ['held', 'worn'].includes(e.carryType))
-		return thievesTools && (thievesTools.carryType === 'held' || this._.inventoryManager.handsFree(selected) > 0)
+	pertinent(engagement, warn) {
+		return engagement.hasEquippedAny(EQU_THVS_TOOLS)
 	}
 }
 
 export class ActionDisableADevice extends SimpleAction {
 	constructor(MKS) {
 		super(MKS, {action: 'disableADevice',
-			traits: ['manipulate'],
 			checkType: 'skill[thievery]',
+			traits: ['manipulate'],
 			icon: "systems/pf2e/icons/spells/visions-of-danger.webp",
 			tags: ['stealth'],
 			actionGlyph: 'D',
+			dc: 15
 		})
 	}
 }
@@ -277,12 +291,13 @@ export class ActionDisableADevice extends SimpleAction {
 export class ActionAvoidNotice extends SimpleAction {
 	constructor(MKS) {
 		super(MKS, {action: 'avoidNotice',
-			traits: ['exploration'],
 			checkType: 'skill[stealth]',
+			traits: ['exploration'],
 			icon: "systems/pf2e/icons/spells/pass-without-trace.webp",
 			tags: ['stealth'],
 			actionGlyph: '',
-			mode: 'exploration'
+			mode: 'exploration',
+			dc: 15
 		})
 	}
 }
@@ -290,12 +305,13 @@ export class ActionAvoidNotice extends SimpleAction {
 export class ActionBorrowAnArcaneSpell extends SimpleAction {
 	constructor(MKS) {
 		super(MKS, {action: 'borrowAnArcaneSpell',
-			traits: ['exploration', 'concentrate'],
 			checkType: 'skill[arcana]',
+			traits: ['exploration', 'concentrate'],
 			icon: "systems/pf2e/icons/spells/message.webp",
 			tags: ['preparation'],
 			actionGlyph: '',
-			mode: 'exploration'
+			mode: 'exploration',
+			dc: 15
 		})
 	}
 }
@@ -303,12 +319,13 @@ export class ActionBorrowAnArcaneSpell extends SimpleAction {
 export class ActionCoerce extends SimpleAction {
 	constructor(MKS) {
 		super(MKS, {action: 'coerce',
-			traits: ['exploration', 'concentrate', 'auditory', 'emotion', 'linguistic', 'mental'],
 			checkType: 'skill[intimidation]',
+			traits: ['exploration', 'concentrate', 'auditory', 'emotion', 'linguistic', 'mental'],
 			icon: "systems/pf2e/icons/spells/inveigle.webp",
 			tags: ['social'],
 			actionGlyph: '',
-			mode: 'exploration'
+			mode: 'exploration',
+			dc: 15
 		})
 	}
 }
@@ -317,12 +334,13 @@ export class ActionCoerce extends SimpleAction {
 export class ActionCoverTracks extends SimpleAction {
 	constructor(MKS) {
 		super(MKS, {action: 'coverTracks',
-			traits: ['exploration', 'concentrate', 'move'],
 			checkType: 'skill[survival]',
+			traits: ['exploration', 'concentrate', 'move'],
 			icon: "systems/pf2e/icons/spells/unseen-servant.webp",
 			tags: ['situational'],
 			actionGlyph: '',
-			mode: 'exploration'
+			mode: 'exploration',
+			dc: 15
 		})
 	}
 }
@@ -330,12 +348,13 @@ export class ActionCoverTracks extends SimpleAction {
 export class ActionDecipherWriting extends SimpleAction {
 	constructor(MKS) {
 		super(MKS, {action: 'decipherWriting',
-			traits: ['exploration', 'concentrate', 'secret'],
 			checkType: 'skill',
+			traits: ['exploration', 'concentrate', 'secret'],
 			icon: "systems/pf2e/icons/spells/pact-broker.webp",
 			tags: ['learning'],
 			actionGlyph: '',
-			mode: 'exploration'
+			mode: 'exploration',
+			dc: 15
 		})
 	}
 }
@@ -343,12 +362,13 @@ export class ActionDecipherWriting extends SimpleAction {
 export class ActionGatherInformation extends SimpleAction {
 	constructor(MKS) {
 		super(MKS, {action: 'gatherInformation',
-			traits: ['exploration', 'secret'],
 			checkType: 'skill[diplomacy,society,survival]',
+			traits: ['exploration', 'secret'],
 			icon: "systems/pf2e/icons/spells/resplendent-mansion.webp",
 			tags: ['social'],
 			actionGlyph: '',
-			mode: 'exploration'
+			mode: 'exploration',
+			dc: 15
 		})
 	}
 }
@@ -356,29 +376,31 @@ export class ActionGatherInformation extends SimpleAction {
 export class ActionIdentifyAlchemy extends SimpleAction {
 	constructor(MKS) {
 		super(MKS, {action: 'identifyAlchemy',
-			traits: ['exploration', 'concentrate', 'secret'],
 			checkType: 'skill[crafting]',
+			traits: ['exploration', 'concentrate', 'secret'],
 			icon: "systems/pf2e/icons/spells/sanctified-ground.webp",
 			tags: ['learning'],
 			actionGlyph: '',
-			mode: 'exploration'
+			mode: 'exploration',
+			dc: 15
 		})
 	}
 	
-	applies(selected, targets) {
-		return !!selected && !!selected.actor.itemTypes.equipment.find(e => e.slug === 'alchemists-tools')
+	pertinent(engagement, warn) {
+		return engagement.hasEquippedAny(EQU_ALCHEMISTS_TOOLS)
 	}
 }
 
 export class ActionIdentifyMagic extends SimpleAction {
 	constructor(MKS) {
 		super(MKS, {action: 'identifyMagic',
-			traits: ['exploration', 'concentrate', 'secret'],
 			checkType: 'skill[arcana,nature,occultism,religion]',
+			traits: ['exploration', 'concentrate', 'secret'],
 			icon: "systems/pf2e/icons/spells/unrelenting-observation.webp",
 			tags: ['learning'],
 			actionGlyph: '',
-			mode: 'exploration'
+			mode: 'exploration',
+			dc: 15
 		})
 	}
 }
@@ -386,8 +408,8 @@ export class ActionIdentifyMagic extends SimpleAction {
 export class ActionImpersonate extends SimpleAction {
 	constructor(MKS) {
 		super(MKS, {action: 'impersonate',
-			traits: ['exploration', 'concentrate', 'secret', 'manipulate'],
 			checkType: 'skill[deception]',
+			traits: ['exploration', 'concentrate', 'secret', 'manipulate'],
 			icon: "systems/pf2e/icons/spells/illusory-disguise.webp",
 			tags: ['situational'],
 			actionGlyph: '',
@@ -401,12 +423,13 @@ export class ActionImpersonate extends SimpleAction {
 export class ActionLearnASpell extends SimpleAction {
 	constructor(MKS) {
 		super(MKS, {action: 'learnASpell',
-			traits: ['exploration', 'concentrate'],
 			checkType: 'skill[arcana,nature,occultism,religion]',
+			traits: ['exploration', 'concentrate'],
 			icon: "systems/pf2e/icons/spells/timely-tutor.webp",
 			tags: ['learning'],
 			actionGlyph: '',
-			mode: 'exploration'
+			mode: 'exploration',
+			dc: 15
 		})
 	}
 }
@@ -429,12 +452,13 @@ export class ActionMakeAnImpression extends SimpleAction {
 export class ActionSenseDirection extends SimpleAction {
 	constructor(MKS) {
 		super(MKS, {action: 'senseDirection',
-			traits: ['exploration', 'secret'],
 			checkType: 'skill[survival]',
+			traits: ['exploration', 'secret'],
 			icon: "systems/pf2e/icons/spells/gravity-weapon.webp",
 			tags: ['situational'],
 			actionGlyph: '',
-			mode: 'exploration'
+			mode: 'exploration',
+			dc: 15
 		})
 	}
 }
@@ -442,12 +466,13 @@ export class ActionSenseDirection extends SimpleAction {
 export class ActionSqueeze extends SimpleAction {
 	constructor(MKS) {
 		super(MKS, {action: 'squeeze',
-			traits: ['exploration', 'move'],
 			checkType: 'skill[acrobatics]',
+			traits: ['exploration', 'move'],
 			icon: "systems/pf2e/icons/spells/abundant-step.webp",
 			tags: ['situational'],
 			actionGlyph: '',
-			mode: 'exploration'
+			mode: 'exploration',
+			dc: 15
 		})
 	}
 }
@@ -455,12 +480,13 @@ export class ActionSqueeze extends SimpleAction {
 export class ActionTrack extends SimpleAction {
 	constructor(MKS) {
 		super(MKS, {action: 'track',
-			traits: ['exploration', 'move', 'concentrate'],
 			checkType: 'skill[survival]',
+			traits: ['exploration', 'move', 'concentrate'],
 			icon: "systems/pf2e/icons/spells/locate.webp",
 			tags: ['situational'],
 			actionGlyph: '',
-			mode: 'exploration'
+			mode: 'exploration',
+			dc: 15
 		})
 	}
 }
@@ -468,12 +494,13 @@ export class ActionTrack extends SimpleAction {
 export class ActionCreateForgery extends SimpleAction {
 	constructor(MKS) {
 		super(MKS, {action: 'createForgery',
-			traits: ['downtime', 'secret'],
 			checkType: 'skill[society]',
+			traits: ['downtime', 'secret'],
 			icon: "systems/pf2e/icons/spells/crusade.webp",
 			tags: ['situational'],
 			actionGlyph: '',
-			mode: 'downtime'
+			mode: 'downtime',
+			dc: 15
 		})
 	}
 }
@@ -481,12 +508,13 @@ export class ActionCreateForgery extends SimpleAction {
 export class ActionSubsist extends SimpleAction {
 	constructor(MKS) {
 		super(MKS, {action: 'subsist',
-			traits: ['downtime'],
 			checkType: 'skill[society,survival]',
+			traits: ['downtime'],
 			icon: "systems/pf2e/icons/spells/curse-of-lost-time.webp",
 			tags: ['situational'],
 			actionGlyph: '',
-			mode: 'downtime'
+			mode: 'downtime',
+			dc: 15
 		})
 	}
 }
