@@ -6,13 +6,24 @@ import $$lang from "../../utils/lang.js"
 export default class ActionCraft extends Action {
 	
 	constructor(MKS) {
-		super(MKS, 'downtime')
+		super(MKS, 'downtime', false, false)
 	}
 
-	async craft() {
-		const {applicable, selected} = this.isApplicable(null,true)
-		if (!applicable) return
-		
+	get properties() {
+		return {
+			label: i18n.action("craft"),
+			icon: "systems/pf2e/icons/spells/precious-metals.webp",
+			action: '',
+			tags: ['preparation']
+		}
+	} 
+
+	relevant(warn) {
+		const selected = this._.ensureOneSelected(warn)
+		return selected ? new Engagement(selected) : undefined
+	}
+
+	async act(engagement, options) {
 		const item = await DropItemDialog.getItem({
 			title: "PF2E.Actions.Craft.DropItemDialog.Title",
 			classes: ["select-craft-item-dialog"],
@@ -22,20 +33,5 @@ export default class ActionCraft extends Action {
 		
 		if (item)
 			game.pf2e.actions.craft({item, free: false})
-	}
-
-	methods(onlyApplicable) {
-		return !onlyApplicable || this.isApplicable().applicable ? [{
-			method: "craft",
-			label: i18n.action("craft"),
-			icon: "systems/pf2e/icons/spells/precious-metals.webp",
-			action: '',
-			tags: ['preparation']
-		}] : []
-	}
-
-	isApplicable(method=null, warn=false) {
-		const selected = this._.ensureOneSelected(warn)
-		return {applicable: !!selected, selected}
 	}
 }

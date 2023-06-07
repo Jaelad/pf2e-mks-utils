@@ -16,13 +16,17 @@ export default class ActionHide extends SimpleAction {
 			requiresEncounter: true,
 		})
 	}
-	
-	resultHandler(roll, selected, targets, options) {
-		const concealed = new Condition(selected, 'concealed').exists
+
+	pertinent(engagement, warn) {
+		return engagement.isEnemy
+	}
+
+	async apply(engagement, result) {
+		const concealed = new Condition(engagement.selected, 'concealed').exists
 		const relative = new RelativeConditions()
 		if (!relative.isOk) return
 
-		for (const target of targets) {
+		for (const target of engagement.targets) {
 			const dc =  target.actor.perception.dc.value, awareness = relative.getAwarenessTowardMe(target), cover = relative.getMyCoverFrom(target) ?? 1
 			if (awareness < 3 || (cover < 2 && !concealed))
 				continue
@@ -38,10 +42,5 @@ export default class ActionHide extends SimpleAction {
 				this.messageToChat(selected, this.action, message, this.actionGlyph, true)
 			}
 		}
-	}
-	
-	applies(selected, targets) {
-		const opposition = targets?.filter(t => selected.actor.alliance !== t.actor.alliance)
-		return game.user.isGM && !!selected && !!targets && opposition.length === targets.length
 	}
 }

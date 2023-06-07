@@ -10,7 +10,7 @@ import TemplateManager from "./measurement/template-manager.js"
 import InventoryManager from "./inventory-manager.js"
 import SettingsManager from "./settings-manager.js"
 import SocketHandler from "./socket-handler.js"
-import {RUDIMENTARY_ACTIONS} from "./action.js"
+import {ActionRunner, RUDIMENTARY_ACTIONS} from "./action.js"
 import ActionAdministerFirstAid from "./actions/administer-first-aid.js"
 import ActionAid from "./actions/aid.js"
 import ActionCreateADiversion from "./actions/create-a-diversion.js"
@@ -80,6 +80,14 @@ export default class MksTools {
 			game.combat?.setFlag(SYSTEM.moduleId, "relative", relativeData).then(() => {
 				console.log("Updated Relative Data")
 			})
+		}, true)
+		game.MKS.socketHandler.on('GmTakesAction', (actionRequest) => {
+			const action = this.actions[actionRequest.action]
+			new ActionRunner(action).actByGM(actionRequest)
+		}, true)
+		game.MKS.socketHandler.on('GmAppliesActionResult', (actionResult) => {
+			const action = this.actions[actionResult.action]
+			new ActionRunner(action).applyByGM(actionResult.result)
 		}, true)
 	}
 

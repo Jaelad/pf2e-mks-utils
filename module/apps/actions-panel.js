@@ -1,6 +1,7 @@
 import {default as i18n} from "../../lang/pf2e-i18n.js"
 import $$arrays from "../../utils/arrays.js"
 import LocalStorage from "../../utils/local-storage.js"
+import { ActionRunner } from "../action.js"
 import {SYSTEM} from "../constants.js"
 import BasePanel from "./base-panel.js"
 
@@ -43,7 +44,7 @@ export default class ActionsPanel extends BasePanel {
 		)
 		
 		html.find(".mks-checkbox").click((event) => this._toggleChecked(event))
-		html.find("a[data-action][data-method]").click((event) => this._runActionMethod(event))
+		html.find("a[data-action]").click((event) => this._runAction(event))
 		html.find("input[type=search][name=filter]").on('input', (event) => this._filterChanged(event))
 		html.find("input[type=search][name=filter]").keyup( (event) => {
 			if(event.keyCode == 13) {
@@ -63,13 +64,14 @@ export default class ActionsPanel extends BasePanel {
 		ActionsPanel.rerender()
 	}
 	
-	_runActionMethod(event) {
+	_runAction(event) {
 		const dataset = event?.currentTarget?.dataset
-		if (dataset?.action && dataset?.method) {
+		if (dataset?.action) {
 			if (dataset.action.startsWith("Compendium"))
 				game.MKS.compendiumToChat(null, dataset.action)
-			else
-				game.MKS.actions[dataset.action][dataset.method]({})
+			else {
+				new ActionRunner(game.MKS.actions[dataset.action]).run()
+			}
 		}
 	}
 	
@@ -123,34 +125,36 @@ export default class ActionsPanel extends BasePanel {
 		const allTags = {}, mksActions = game.MKS.actions, mksRudimentaryActions = game.MKS.rudimentaryActions
 		for (let action in mksActions) {
 			if (!mksActions.hasOwnProperty(action) || mksActions[action].mode !== this.activeTab) continue
-			const methods = mksActions[action].methods(data.showApplicable)
-			methods.forEach((m) => {
-				(m.tags ?? []).forEach(tag => {
-					if (!allTags[tag])
-						allTags[tag] = {
-							expanded: localSettings?.expanded?.[tag] ?? false,
-							label: i18n.actionTag(tag),
-							methods: []
-						}
-					allTags[tag].methods.push(m)
-				})
-				m.action = action
+			const actionObj = mksActions[action]
+			if (data.showApplicable && !actionObj.relevant())
+				continue
+			
+			(m.tags ?? []).forEach(tag => {
+				if (!allTags[tag])
+					allTags[tag] = {
+						expanded: localSettings?.expanded?.[tag] ?? false,
+						label: i18n.actionTag(tag),
+						actions: []
+					}
+				const props = actionObj.properties
+				props.action = action
+				allTags[tag].actions.push(props)
 			})
 		}
 		
 		allTags.rudimentary = {
 			expanded: localSettings?.expanded?.["rudimentary"] ?? false,
 			label: i18n.actionTag("rudimentary"),
-			methods: []
+			actions: []
 		}
 		for (let rudimentaryAction in mksRudimentaryActions) {
 			const definition = mksRudimentaryActions[rudimentaryAction]
 			if (definition.mode === this.activeTab)
-				allTags.rudimentary.methods.push({
-					method: rudimentaryAction,
+				allTags.rudimentary.actions.push({
+					action: rudimentaryAction,
 					label: i18n.action(rudimentaryAction),
 					icon: definition.icon,
-					action: definition.compendium,
+					compendium: definition.compendium,
 				})
 		}
 
@@ -158,10 +162,10 @@ export default class ActionsPanel extends BasePanel {
 		if (this?.filter?.length > 1) {
 			const filtered = []
 			for (let tag in allTags) {
-				const filteredMethods = allTags[tag].methods.filter(m => {
-					return m.label.toLowerCase().includes(this.filter.toLowerCase())
+				const filteredActions = allTags[tag].actions.filter(a => {
+					return a.label.toLowerCase().includes(this.filter.toLowerCase())
 				})
-				$$arrays.pushAll(filtered, filteredMethods, true)
+				$$arrays.pushAll(filtered, filteredActions, true)
 			}
 			filtered.sort(sort)
 			data.filteredActions = filtered
@@ -170,7 +174,7 @@ export default class ActionsPanel extends BasePanel {
 			const allTagsArr = []
 			for (let tag in allTags) {
 				allTags[tag].tag = tag
-				allTags[tag].methods.sort(sort)
+				allTags[tag].actions.sort(sort)
 				allTagsArr.push(allTags[tag])
 			}
 			allTagsArr.sort(sort)

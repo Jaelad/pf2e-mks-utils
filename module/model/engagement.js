@@ -1,5 +1,6 @@
 import {default as LOG} from "../../utils/logging.js"
 import {SYSTEM} from "../constants.js"
+import CommonUtils from "../helpers/common-utils.js"
 import DCHelper from "../helpers/dc-helper.js"
 
 export class Engagement {
@@ -10,12 +11,29 @@ export class Engagement {
 		this.targeted = targeted && targeted.actor ? targeted : null
 	}
 
-	get serializable() {
-		return {selected: this.selected.id, targeted: this.targeted?.id}
+	static from(participants) {
+		const selectedToken = CommonUtils.getTokenById(participants.selected)
+		const targetedTokens = participants.targeted.map(tId => CommonUtils.getTokenById(tId))
+
+		if (!selectedToken || targetedTokens. length !== participants.targeted)
+			return
+
+		if (targetedTokens.length < 2)
+			return new Engagement(selectedToken, targetedTokens.length === 1 ? targetedTokens[0] : undefined)
+		else
+			return new Engagements(selectedToken, targetedTokens)
+	}
+
+	get participants() {
+		return {selected: this.selected.id, targeted: this.targeted ? [this.targeted.id] : []}
 	}
 
 	get targetExists() {
 		return this.opponentCount > 0
+	}
+
+	get targets() {
+		return [this.targeted]
 	}
 	
 	get opponentCount() {
@@ -63,11 +81,15 @@ export class Engagements extends Engagement {
 			this.engagements = []
 	}
 
-	get serializable() {
-		return {selected: this.selected.id, targeted: this.targetedOnes?.map(t => t.id)}
+	get participants() {
+		return {selected: this.selected.id, targeted: this.targetedOnes.map(t => t.id)}
 	}
 
-	get exists() {
+	get targets() {
+		return this.engagements?.map(e => e.targeted)
+	}
+
+	get targetExists() {
 		return this.engagements.length > 0
 	}
 	

@@ -9,20 +9,28 @@ import {Engagement, Engagements} from "./model/engagement.js"
 
 export default class Action {
 
-	constructor(MKS, mode = 'encounter', actByGm = false, applyByGM = true) {
+	constructor(MKS, name, mode = 'encounter', gmActs = false, gmApplies = true) {
 		this._ = MKS
+		this.name = name
 		this.mode = mode
-		this.actByGM = actByGm
-		this.appplyByGM = applyByGM
+		this.gmActs = gmActs
+		this.gmApplies = gmApplies
 	}
 
 	initialize() {
 	}
 
-	get properties() {}
+	get properties() {
+		// {
+		// 	label:
+		// 	icon:
+		// 	actionGlyph:
+		// 	tags:
+		// }
+	}
 
-	isApplicable() {
-		// return {applicable, engagement}
+	relevant(warn) {
+		// return engagement
 	}
 
 	async act(engagement, options) {
@@ -31,6 +39,16 @@ export default class Action {
 
 	async apply(engagement, result) {
 
+	}
+
+	createResult(engagement, roll, options) {
+		return {
+			engagement: engagement.participants,
+			roll: {
+				degreeOfSuccess: roll.degreeOfSuccess
+			},
+			options
+		}
 	}
 
 	resultToChat(token, action, degreeOfSuccess, glyph = 'A') {
@@ -91,10 +109,58 @@ export default class Action {
 	}
 }
 
+export class ActionRunner {
+	constructor(action) {
+		this.action = action
+	}
+
+	async run(options, warn = false) {
+		const engagement = this.action.relevant(warn)
+		if (engagement) {
+			if (!this.action.gmActs) {
+				const result = await this.action.act(engagement, options)
+				if (!this.action.gmActs) {
+					this.action.apply(engagement, result)
+				}
+				else {
+					const eventData = {
+						action: this.action.name,
+						result
+					}
+					game.MKS.socketHandler.emit('GmAppliesActionResult', eventData, true)
+				}
+			}
+			else {
+				const eventData = {
+					action: this.action.name,
+					engagement: engagement.participants,
+					options
+				}
+				game.MKS.socketHandler.emit('GmTakesAction', eventData, true)
+			}
+		}
+	}
+
+	async actByGM(request) {
+		const engagement = Engagement.from(request.engagement)
+		if (!engagement)
+			return
+
+		return this.action.act(engagement, request.options)
+	}
+
+	async applyByGM(result) {
+		const engagement = Engagement.from(result.engagement)
+		if (!engagement)
+			return
+
+		return this.action.apply(engagement, result.result)
+	}
+}
+
 export class SimpleAction extends Action {
 	constructor(MKS, {action, traits, checkType, dc, icon, tags, mode='encounter', requiresEncounter = false, actionGlyph = 'A', targetCount = 0}) {
-		super(MKS, mode)
-		this.action = action
+		super(MKS, action, mode)
 		this.actionGlyph = actionGlyph
 		this.traits = traits
 		this.checkType = checkType
@@ -105,69 +171,74 @@ export class SimpleAction extends Action {
 		this.requiresEncounter = requiresEncounter
 	}
 
-	isApplicable() {
-		const selected = this._.ensureOneSelected(false, this.requiresEncounter)
-		if (!selected) return {applicable: false}
+	relevant(warn) {
+		const selected = this._.ensureOneSelected(warn, this.requiresEncounter)
+		if (!selected) return
 
 		if (this.targetCount === 1) {
 			const targeted = this._.ensureOneTarget(null, false)
 			if (!targeted || targeted.id === selected.id) return {applicable: false}
 			const engagement = new Engagement(selected, targeted)
-			return {applicable: this.applies(engagement), engagement}
+			const ok = this.pertinent(engagement, warn) 
+			return ok ? engagement : undefined
 		}
 		else if (this.targetCount > 1) {
 			const targets = this._.ensureAtLeastOneTarget(false, null)
 			if (!targets || targets.find(t => t.id === selected.id)) return {applicable: false}
 			const engagement = new Engagements(selected, targets)
-			return {applicable: this.applies(engagement), engagement}
+			const ok = this.pertinent(engagement, warn) 
+			return ok ? engagement : undefined
 		}
 		else if (this.targetCount === 0) {
-			const engagement = new Engagements(selected)
-			return {applicable: this.applies(engagement), engagement}
+			const engagement = new Engagement(selected)
+			const ok = this.pertinent(engagement, warn) 
+			return ok ? engagement : undefined
 		}
-		else
-			return {applicable: false}
 	}
 
-	applies(engagement) {
+	pertinent(engagement, warn) {
 		const opponentCount = engagement.opponentCount()
 		return this.targetCount === 1 ? opponentCount === 1 : this.targetCount > 1 ? opponentCount > 1 : true
 	}
 
 	async act(engagement, {overrideDC}) {
-		const options = arguments[0]
-		const {applicable, engagement} = this.isApplicable(null,true)
-		if (!applicable)
-			return
+		const options = arguments[1]
 
 		const rollCallback = ({roll, actor}) => {
-			this.resultHandler(roll, engagement, options)
+			//this.resultHandler(roll, engagement, options)
+			return this.createResult(engagement, roll, options)
 		}
 		
 		const check = new Check({
-			action: this.action,
+			action: this.name,
 			actionGlyph: this.actionGlyph,
-			rollOptions: ["action:" + game.pf2e.system.sluggify(this.action)],
-			extraOptions: ["action:" + game.pf2e.system.sluggify(this.action)],
+			rollOptions: ["action:" + game.pf2e.system.sluggify(this.name)],
+			extraOptions: ["action:" + game.pf2e.system.sluggify(this.name)],
 			traits: this.traits,
 			checkType: this.checkType,
 			difficultyClass: overrideDC > 0 ? overrideDC : $$lang.isFunction(this.dc) ? engagement.getTargetDC(this.dc) : null,
 			askGmForDC: {
-				action: this.action,
+				action: this.name,
 				defaultDC: typeof this.dc === 'number' ? this.dc : null
 			}
 		})
-		check.roll(engagement.selected).then(rollCallback)
+		const result = await check.roll(engagement.selected).then(rollCallback)
+		return result
 	}
 
-	resultHandler(roll, engagement, options) {
-		if (!roll) return
-		this.resultToChat(engagement.selected, this.action, roll.degreeOfSuccess, this.actionGlyph)
+	async apply(engagement, result) {
+		if (!result.roll) return
+		this.resultToChat(engagement.selected, this.name, result.roll.degreeOfSuccess, this.actionGlyph)
 	}
+
+	// resultHandler(roll, engagement, options) {
+	// 	if (!roll) return
+	// 	this.resultToChat(engagement.selected, this.name, roll.degreeOfSuccess, this.actionGlyph)
+	// }
 
 	get properties() {
 		return {
-			label: i18n.action(this.action),
+			label: i18n.action(this.name),
 			icon: this.icon,
 			actionGlyph: this.actionGlyph,
 			tags: this.tags

@@ -43,26 +43,26 @@ export function registerHandlebarsHelpers() {
 					</label>
 				</header>
 				<ol class="mks-list__collapsible{{#unless tag.expanded}} mks-list__collapsible--collapsed{{/unless}} mks-list" id="{{tag.tag}}">
-					{{#each tag.methods as |method|}}
+					{{#each tag.actions as |action|}}
 					<li class="mks-list__item mks-noborder">
 						<header class="flexrow">
-							{{#if method.icon}}
-							<img class="mks-list__icon" width="24" height="24" src="{{method.icon}}" alt="{{method.label}}">
+							{{#if action.icon}}
+							<img class="mks-list__icon" width="24" height="24" src="{{action.icon}}" alt="{{action.label}}">
 							{{/if}}
-							<a data-action="{{method.action}}" data-method="{{method.method}}" class="mks-list__link">{{method.label}} {{#unless (startsWith method.action 'Compendium')}}<i class="fas fa-caret-right"></i>{{/unless}}</a>
+							<a data-action="{{action.action}}" class="mks-list__link">{{action.label}} {{#unless (startsWith action.action 'Compendium')}}<i class="fas fa-caret-right"></i>{{/unless}}</a>
 						</header>
 					</li>
 					{{/each}}
 				</ol>
 			</li>
 			{{/each}}
-			{{#each filteredActions as |method|}}
+			{{#each filteredActions as |action|}}
 			<li class="mks-list__item mks-noborder">
 				<header class="flexrow">
-					{{#if method.icon}}
-					<img class="mks-list__icon" width="24" height="24" src="{{method.icon}}" alt="{{method.label}}">
+					{{#if action.icon}}
+					<img class="mks-list__icon" width="24" height="24" src="{{action.icon}}" alt="{{action.label}}">
 					{{/if}}
-					<a data-action="{{method.action}}" data-method="{{method.method}}" class="mks-list__link">{{method.label}} {{#unless (startsWith method.action 'Compendium')}}<i class="fas fa-caret-right"></i>{{/unless}}</a>
+					<a data-action="{{action.action}}" class="mks-list__link">{{action.label}} {{#unless (startsWith action.action 'Compendium')}}<i class="fas fa-caret-right"></i>{{/unless}}</a>
 				</header>
 			</li>
 			{{/each}}
