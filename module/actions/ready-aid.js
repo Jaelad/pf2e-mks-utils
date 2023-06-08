@@ -23,7 +23,7 @@ export default class ActionReadyAid extends SimpleAction {
 	async act(engagement, options) {}
 	
 	async apply(engagement) {
-		const selected = engagement.selected, targeted = engagement.targeted
+		const selected = engagement.initiator, targeted = engagement.targeted
 		const checkTypes = Check.getCheckTypes(selected.actor).filter(ct => ct.indexOf("-lore") === -1)
 		
 		const dialogContent = `

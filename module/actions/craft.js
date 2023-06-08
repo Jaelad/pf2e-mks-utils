@@ -14,7 +14,7 @@ export default class ActionCraft extends Action {
 		return {
 			label: i18n.action("craft"),
 			icon: "systems/pf2e/icons/spells/precious-metals.webp",
-			action: '',
+			actionGlyph: '',
 			tags: ['preparation']
 		}
 	} 

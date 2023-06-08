@@ -1,10 +1,33 @@
 import {default as i18n} from "../../lang/pf2e-i18n.js"
-import Action from "../action.js"
+import { SimpleAction } from "../action.js"
 import Compendium from "../compendium.js"
 import Check from "../check.js"
 import $$strings from "../../utils/strings.js";
+import Equipments from "../model/equipments.js";
+import { CONDITION_GRABBED } from "../model/condition.js";
 
-export default class ActionDisarm extends Action {
+export default class ActionDisarm extends SimpleAction {
+
+	constructor(MKS) {
+		super(MKS, {action: 'demoralize',
+			icon: "systems/pf2e/icons/spells/hand-of-the-apprentice.webp",
+			tags: ['combat'],
+			actionGlyph: 'A',
+			targetCount: 1,
+		})
+	}
+
+	pertinent(engagement, warn) {
+		const equipments = new Equipments(engagement.initiator)
+		const targetEquipments = new Equipments(engagement.targeted)
+		const handsFree = equipments.handsFree
+		const sizeDiff = engagement.sizeDifference
+		const grabbed = engagement.hasInitiatorCondition(CONDITION_GRABBED)
+		const distance = engagement.distance()
+		const heldItems = targetEquipments.heldItems
+		return (handsFree > 0 || grabbed) && sizeDiff < 2 && heldItems.length > 0 && engagement.isEnemy
+			&& distance < (equipments.weaponWieldedWithTraits(['reach', 'disarm']) ? 15 : 10)
+	}
 
 	//Below exports.SetGamePF2e = { // Line:50709: actionHelpers: action_macros_1.ActionMacroHelpers,
 
@@ -40,11 +63,7 @@ export default class ActionDisarm extends Action {
 		check.roll(selected, targeted).then(rollCallback)
 	}
 
-	disarm() {
-		const {applicable, selected, targeted} = this.isApplicable(null,true)
-		if (!applicable)
-			return
-
+	async act(engagement, {overrideDC}) {
 		const heldItems = this._.inventoryManager.heldItems(targeted)
 		let selectedItem = true
 
@@ -82,18 +101,6 @@ export default class ActionDisarm extends Action {
 			},
 			default: 'yes',
 		}).render(true)
-	}
-
-	methods(onlyApplicable) {
-		const {applicable} = this.isApplicable()
-		return !onlyApplicable || applicable ? [{
-			method: "disarm",
-			label: i18n.action("disarm"),
-			icon: "systems/pf2e/icons/spells/hand-of-the-apprentice.webp",
-			action: 'A',
-			mode: "encounter",
-			tags: ['combat']
-		}] : []
 	}
 
 	isApplicable(method=null, warn=false) {

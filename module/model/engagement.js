@@ -1,32 +1,29 @@
-import {default as LOG} from "../../utils/logging.js"
-import {SYSTEM} from "../constants.js"
 import CommonUtils from "../helpers/common-utils.js"
-import DCHelper from "../helpers/dc-helper.js"
 import Condition from "./condition.js"
 
 export class Engagement {
-	constructor(selected, targeted) {
-		this.selected = selected && selected.actor ? selected : null
-		if (!selected)
-			throw new Error("Cannot create an engagement without selected token!")
+	constructor(initiator, targeted) {
+		this.initiator = initiator && initiator.actor ? initiator : null
+		if (!initiator)
+			throw new Error("Cannot create an engagement without initiator token!")
 		this.targeted = targeted && targeted.actor ? targeted : null
 	}
 
 	static from(participants) {
-		const selectedToken = CommonUtils.getTokenById(participants.selected)
+		const initiatorToken = CommonUtils.getTokenById(participants.initiator)
 		const targetedTokens = participants.targeted.map(tId => CommonUtils.getTokenById(tId))
 
-		if (!selectedToken || targetedTokens. length !== participants.targeted)
+		if (!initiatorToken || targetedTokens. length !== participants.targeted)
 			return
 
 		if (targetedTokens.length < 2)
-			return new Engagement(selectedToken, targetedTokens.length === 1 ? targetedTokens[0] : undefined)
+			return new Engagement(initiatorToken, targetedTokens.length === 1 ? targetedTokens[0] : undefined)
 		else
-			return new Engagements(selectedToken, targetedTokens)
+			return new Engagements(initiatorToken, targetedTokens)
 	}
 
 	get participants() {
-		return {selected: this.selected.id, targeted: this.targeted ? [this.targeted.id] : []}
+		return {initiator: this.initiator.id, targeted: this.targeted ? [this.targeted.id] : []}
 	}
 
 	get targetExists() {
@@ -44,7 +41,7 @@ export class Engagement {
 	get isAlly() {
 		if (!this.targetExists)
 			return
-		return this.selected.actor.alliance === this.targeted.actor.alliance
+		return this.initiator.actor.alliance === this.targeted.actor.alliance
 	}
 	
 	get isEnemy() {
@@ -55,8 +52,8 @@ export class Engagement {
 	distance(reachOpts) { // {action: "attack"}
 		if (!this.targetExists)
 			return
-		const reach = this.selected.actor.getReach(reachOpts)
-		return this.selected.distanceTo(this.targeted, {reach})
+		const reach = this.initiator.actor.getReach(reachOpts)
+		return this.initiator.distanceTo(this.targeted, {reach})
 	}
 
 	get inMeleeRange() {
@@ -72,8 +69,12 @@ export class Engagement {
 			return
 		return dcFunc(this.targeted)
 	}
+
+	hasInitiatorCondition(condition) {
+		return new Condition(this.targeted, condition).exists
+	}
 	
-	isTargetInCondition(condition) {
+	hasTargetCondition(condition) {
 		return new Condition(this.targeted, condition).exists
 	}
 	
@@ -81,25 +82,29 @@ export class Engagement {
 		return new Condition(this.targeted, condition).ensure()
 	}
 	
-	async setConditionOnSelected(condition) {
-		return new Condition(this.selected, condition).ensure()
+	async setConditionOnInitiator(condition) {
+		return new Condition(this.initiator, condition).ensure()
+	}
+
+	get sizeDifference() {
+		return this.initiator.actor.system.traits.size.difference(this.targeted.actor.system.traits.size)
 	}
 }
 
 export class Engagements extends Engagement {
-	constructor(selected, targetedOnes) {
-		super(selected)
+	constructor(initiator, targetedOnes) {
+		super(initiator)
 		if (Array.isArray(targetedOnes)) {
 			let valid = true
 			targetedOnes.forEach((t) => {if (!t.actor) valid = false} )
-			this.engagements = valid ? targetedOnes.map(t => new Engagement(selected, t)) : []
+			this.engagements = valid ? targetedOnes.map(t => new Engagement(initiator, t)) : []
 		}
 		else
 			this.engagements = []
 	}
 
 	get participants() {
-		return {selected: this.selected.id, targeted: this.targetedOnes.map(t => t.id)}
+		return {initiator: this.initiator.id, targeted: this.targetedOnes.map(t => t.id)}
 	}
 
 	get targets() {
@@ -140,5 +145,9 @@ export class Engagements extends Engagement {
 	async setConditionOnTarget(condition) {
 		for (const en of this.engagements)
 			await en.setConditionOnTarget(condition)
+	}
+
+	get sizeDifference() {
+		return this.engagements.reduce( (c, v) => Math.min(c, e.sizeDifference))
 	}
 }

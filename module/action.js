@@ -222,18 +222,18 @@ export class SimpleAction extends Action {
 				defaultDC: typeof this.dc === 'number' ? this.dc : null
 			}
 		})
-		const result = await check.roll(engagement.selected).then(rollCallback)
+		const result = await check.roll(engagement.initiator).then(rollCallback)
 		return result
 	}
 
 	async apply(engagement, result) {
 		if (!result.roll) return
-		this.resultToChat(engagement.selected, this.name, result.roll.degreeOfSuccess, this.actionGlyph)
+		this.resultToChat(engagement.initiator, this.name, result.roll.degreeOfSuccess, this.actionGlyph)
 	}
 
 	// resultHandler(roll, engagement, options) {
 	// 	if (!roll) return
-	// 	this.resultToChat(engagement.selected, this.name, roll.degreeOfSuccess, this.actionGlyph)
+	// 	this.resultToChat(engagement.initiator, this.name, roll.degreeOfSuccess, this.actionGlyph)
 	// }
 
 	get properties() {

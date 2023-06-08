@@ -18,7 +18,7 @@ export default class ActionReceiveAid extends SimpleAction {
 	async act(engagement, options) {}
 	
 	async apply(engagement) {
-		const selected = engagement.selected
+		const selected = engagement.initiator
 		
 		const aidReady = new Effect(selected, EFFECT_AID_READY)
 		

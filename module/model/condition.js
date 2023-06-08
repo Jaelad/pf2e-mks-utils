@@ -10,6 +10,7 @@ export const CONDITION_OBSERVED = "observed"
 export const CONDITION_DYING = "dying"
 export const CONDITION_FRIGHTENED = "frightened"
 export const CONDITION_FLATFOOTED = "flat-footed"
+export const CONDITION_GRABBED = "grabbed"
 
 export const UUID_CONDITONS = {
 	"unnoticed" : "Compendium.pf2e.conditionitems.9evPzg9E6muFcoSk",

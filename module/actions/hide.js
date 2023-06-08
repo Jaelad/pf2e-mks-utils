@@ -22,7 +22,7 @@ export default class ActionHide extends SimpleAction {
 	}
 
 	async apply(engagement, result) {
-		const concealed = new Condition(engagement.selected, 'concealed').exists
+		const concealed = new Condition(engagement.initiator, 'concealed').exists
 		const relative = new RelativeConditions()
 		if (!relative.isOk) return
 
@@ -31,7 +31,7 @@ export default class ActionHide extends SimpleAction {
 			if (awareness < 3 || (cover < 2 && !concealed))
 				continue
 			const coverBonus = Math.max(0, 2 * (cover-1))
-			const degree = DCHelper.calculateRollSuccess(roll, dc - coverBonus)
+			const degree = DCHelper.calculateRollSuccess(result.roll, dc - coverBonus)
 			if (degree < 2) {
 				const message = i18n.$$('PF2E.Actions.Hide.Result', {target: target.name, conditionRef: `@UUID[${UUID_CONDITONS.observed}]`})
 				this.messageToChat(selected, this.action, message, this.actionGlyph, true)

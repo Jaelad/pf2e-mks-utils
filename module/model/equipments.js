@@ -107,7 +107,7 @@ export default class Equipments {
 		this.equipments = equipments
 	}
 
-	handsFree() {
+	get handsFree() {
 		const heldItems = this.actor.inventory.filter((i) => i.system.consumableType?.value === 'ammo' ? false : i.isHeld)
 		const handsFree = heldItems.reduce((count, item) => {
 			const handsOccupied = item.traits.has("free-hand") ? 0 : item.handsHeld
@@ -122,6 +122,10 @@ export default class Equipments {
 		return !!this.actor.itemTypes.equipment.find(e => items.includes(e.slug))
 	}
 
+	get heldItems() {
+		return this.actor.inventory.filter((i) => i.isHeld)
+	}
+
 	hasEquippedAny(items) {
 		const handsFree = this.handsFree()
 		const inv = this.hasAny(items)
@@ -133,8 +137,10 @@ export default class Equipments {
 		})
 	}
 	
-	wieldsWeaponWithTraits(traits, all = true) {
+	weaponWieldedWithTraits(traits, all = true) {
 		return this.actor.itemTypes.weapon.find((w => {
+			if (!w.isEquipped)
+				return false
 			const wTraits = w.system.traits.value
 			if (all) {
 				for (let i = 0; i < traits.length; i++) {

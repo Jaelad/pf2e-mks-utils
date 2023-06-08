@@ -5,8 +5,7 @@ import Effect, { EFFECT_RAISE_A_SHIELD } from "../model/effect.js"
 export default class ActionRaiseAShield extends SimpleAction {
 
 	constructor(MKS) {
-		super(MKS, {
-			action: 'raiseAShield',
+		super(MKS, { action: 'raiseAShield',
 			icon: "systems/pf2e/icons/actions/raise-a-shield.webp",
 			tags: ['combat'],
 			actionGlyph: 'A',
@@ -15,7 +14,7 @@ export default class ActionRaiseAShield extends SimpleAction {
 	}
 
 	pertinent(engagement, warn) {
-		const shield = engagement.selected?.actor.heldShield
+		const shield = engagement.initiator?.actor.heldShield
 		let shieldOk = false
 		if (shield?.isBroken === false) {
 			shieldOk = true
@@ -34,12 +33,12 @@ export default class ActionRaiseAShield extends SimpleAction {
 	async act(engagement, options) {}
 
 	async apply(engagement) {
-		const raiseAShield = new Effect(engagement.selected, EFFECT_RAISE_A_SHIELD)
+		const raiseAShield = new Effect(engagement.initiator, EFFECT_RAISE_A_SHIELD)
 		if (raiseAShield.exists)
 			await raiseAShield.purge()
 		else {
 			await raiseAShield.ensure()
-			engagement.selected.actor.heldShield.toChat().then()
+			engagement.initiator.actor.heldShield.toChat().then()
 		}
 	}
 }

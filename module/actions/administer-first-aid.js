@@ -1,5 +1,4 @@
-import Action, {SimpleAction} from "../action.js"
-import Compendium from "../compendium.js"
+import {SimpleAction} from "../action.js"
 import Dialogs from "../apps/dialogs.js"
 import {default as i18n} from "../../lang/pf2e-i18n.js"
 import CommonUtils from "../helpers/common-utils.js"
@@ -27,7 +26,7 @@ export default class ActionAdministerFirstAid extends SimpleAction {
 	
 	async act(engagement, {overrideDC}) {
 		const targeted = engagement.targeted
-		const healersTools = new Equipments(engagement.selected).hasEquippedAny([EQU_HEALERS_TOOLS, EQU_HEALERS_TOOLS_EXPANDED])
+		const healersTools = new Equipments(engagement.initiator).hasEquippedAny([EQU_HEALERS_TOOLS, EQU_HEALERS_TOOLS_EXPANDED])
 		
 		const dying = new Condition(targeted, CONDITION_DYING)
 		const bleeding = new PersistentDamage(targeted, PERSISTENT_BLEED)
