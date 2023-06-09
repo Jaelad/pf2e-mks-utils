@@ -11,6 +11,10 @@ export const CONDITION_DYING = "dying"
 export const CONDITION_FRIGHTENED = "frightened"
 export const CONDITION_FLATFOOTED = "flat-footed"
 export const CONDITION_GRABBED = "grabbed"
+export const CONDITION_IMMOBILIZED = "immobilized"
+export const CONDITION_RESTRAINED = "restrained"
+export const CONDITION_PRONE = "prone"
+export const CONDITION_INVISIBLE = "invisible"
 
 export const UUID_CONDITONS = {
 	"unnoticed" : "Compendium.pf2e.conditionitems.9evPzg9E6muFcoSk",
@@ -54,28 +58,6 @@ export default class Condition extends Item {
 			else
 				return this.purge()
 		}
-	}
-	
-	static async purgeAll(tokenOrActor, conditionSlugs) {
-		const actor = tokenOrActor?.actor ?? tokenOrActor
-		conditionSlugs = Array.isArray(conditionSlugs) ? conditionSlugs : [conditionSlugs]
-		const ids = actor.itemTypes.condition.filter(c => conditionSlugs.includes(c.slug))?.map(c => c.id)
-		if (ids?.length > 0)
-			return actor.deleteEmbeddedDocuments("Item", ids)
-	}
-	
-	static hasAny(tokenOrActor, conditionSlugs) {
-		conditionSlugs = Array.isArray(conditionSlugs) ? conditionSlugs : [conditionSlugs]
-		const actor = tokenOrActor?.actor ?? tokenOrActor
-		return !!actor.itemTypes.condition.find(c => conditionSlugs.includes(c.slug))
-	}
-	
-	static hasAll(tokenOrActor, conditionSlugs) {
-		conditionSlugs = Array.isArray(conditionSlugs) ? conditionSlugs : [conditionSlugs]
-		const actor = tokenOrActor?.actor ?? tokenOrActor
-		
-		const filtered = actor.itemTypes.condition.filter(c => conditionSlugs.includes(c.slug))
-		return filtered.length === conditionSlugs.length
 	}
 	
 	static collect(tokenOrActor, conditionSlugs = []) {

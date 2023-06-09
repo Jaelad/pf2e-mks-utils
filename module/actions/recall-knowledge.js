@@ -3,28 +3,46 @@ import {default as LOG} from "../../utils/logging.js"
 import Action from "../action.js"
 import Compendium from "../compendium.js"
 import Check from "../check.js"
-import {ACTOR_IDENTIFICATION, ROLL_MODE} from "../constants.js"
+import {MONSTER_KNOWLEDGE, ROLL_MODE} from "../constants.js"
 import DCHelper from "../helpers/dc-helper.js"
 import Dialogs from "../apps/dialogs.js"
 import $$arrays from "../../utils/arrays.js"
+import { Engagement } from "../model/engagement.js"
 
 export default class ActionRecallKnowledge extends Action {
 
-	async recallKnowledge(options = {}) {
-		const {applicable, selected, targeted} = this.isApplicable(null,true)
-		if (!applicable)
-			return
+	constructor(MKS) {
+		super(MKS, 'recallKnowledge', 'encounter', true, true)
+	}
 
-		const rollCallback = ({roll, actor}) => {
-			this.resultToChat(selected,'recallKnowledge', roll.degreeOfSuccess)
+	get properties() {
+		return {
+			label: i18n.action("recallKnowledge"),
+			icon: "systems/pf2e/icons/spells/daydreamers-curse.webp",
+			actionGlyph: 'A',
+			tags: ['inspection']
 		}
+	}
 
+	relevant(warn) {
+		const selected = this._.ensureOneSelected(warn)
+		const targeted = this._.ensureOneTarget(null,warn)
+		if (!selected || !targeted)
+			return
+		const engagement = new Engagement(selected, targeted)
+
+		if (['npc', 'hazard', 'character'].includes(targeted.type) && engagement.isEnemy)
+			return engagement
+	}
+
+	async act(engagement, options) {
+		const selected = engagement.initiator, targeted = engagement.targeted
 		let dc = 15, possibleSkills = []
 		Object.keys(selected.actor.skills).filter(s => s.indexOf('lore') > -1).forEach(l => possibleSkills.push('skill[' + l + ']'))
 		dc = DCHelper.calculateDC(targeted.actor.level, targeted.actor.rarity)
 		const traits = Array.from(targeted.actor.traits)
 		traits.forEach(t => {
-			ACTOR_IDENTIFICATION[t]?.forEach(s => possibleSkills.push('skill[' + s + ']'))
+			MONSTER_KNOWLEDGE[t]?.forEach(s => possibleSkills.push('skill[' + s + ']'))
 		})
 
 		possibleSkills = $$arrays.unique(possibleSkills)
@@ -32,11 +50,11 @@ export default class ActionRecallKnowledge extends Action {
 		const checkType = await Dialogs.selectOne(selectSkillDialogData, "PF2E.MKS.Dialog.RecallKnowledge.SelectSkill")
 
 		const check = new Check({
+			checkType,
+			traits: ["secret", "concentrate"],
 			actionGlyph: "A",
 			rollOptions: ["action:recall-knowledge"],
 			extraOptions: ["action:recall-knowledge"],
-			traits: ["secret", "concentrate"],
-			checkType,
 			rollMode: ROLL_MODE.GM,
 			secret: true,
 			askGmForDC: {
@@ -44,25 +62,6 @@ export default class ActionRecallKnowledge extends Action {
 				defaultDC: dc
 			}
 		})
-		check.roll(selected, targeted).then(rollCallback)
-	}
-
-	methods(onlyApplicable) {
-		const {applicable} = this.isApplicable()
-		return !onlyApplicable || applicable ? [{
-			method: "recallKnowledge",
-			label: i18n.action("recallKnowledge"),
-			icon: "systems/pf2e/icons/spells/daydreamers-curse.webp",
-			action: 'A',
-			mode: "encounter",
-			tags: ['inspection']
-		}] : []
-	}
-
-	isApplicable(method=null, warn=false) {
-		const selected = this._.ensureOneSelected(warn)
-		const targeted = this._.ensureOneTarget(null,warn)
-
-		return {applicable: !!selected && !!targeted && ['npc', 'hazard', 'character'].includes(targeted.type) && selected.actor.alliance !== targeted.actor.alliance, selected, targeted}
+		return await check.roll(engagement).then(({roll, actor}) => this.createResult(engagement, roll))
 	}
 }

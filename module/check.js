@@ -104,8 +104,9 @@ export default class Check {
 		return {value: modifier.modifier, proficiency: modifier.slug, rank: PROFICIENCY_RANK_OPTION.indexOf("proficiency:" + modifier.slug)}
 	}
 
-	async roll(tokenOrActor, target) {
-		const actor = tokenOrActor?.actor ?? tokenOrActor
+	async roll(engagement) {
+		const target = engagement.targeted
+		const actor = engagement.initiator?.actor
 		if (!actor)
 			throw new Error("No actor found to roll check!")
 

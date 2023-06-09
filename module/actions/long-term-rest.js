@@ -1,31 +1,31 @@
 import {default as i18n} from "../../lang/pf2e-i18n.js"
 import Action from "../action.js"
+import { Engagement, Engagements } from "../model/engagement.js"
+import ObjectColl from "../model/object-coll.js"
 
 export default class ActionLongTermRest extends Action {
-	
+
 	constructor(MKS) {
-		super(MKS, 'downtime')
+		super(MKS, 'longTermRest', 'downtime', false, false)
 	}
 
-	async longTermRest() {
-		const {applicable, selected} = this.isApplicable(null,true)
-		if (!applicable) return
-		
-		game.pf2e.actions.earnIncome({actors: selected.map(t => t.actor)})
-	}
-
-	methods(onlyApplicable) {
-		return !onlyApplicable || this.isApplicable().applicable ? [{
-			method: "longTermRest",
+	get properties() {
+		return {
 			label: i18n.action("longTermRest"),
 			icon: "systems/pf2e/icons/spells/sleep.webp",
-			action: '',
+			actionGlyph: '',
 			tags: ['preparation']
-		}] : []
+		}
 	}
 
-	isApplicable(method=null, warn=false) {
-		const selected = this._.ensureAtLeastOneSelected(warn)
-		return {applicable: selected?.length > 0, selected}
+	relevant(warn) {
+		const selecteds = this._.ensureAtLeastOneSelected(warn)
+		if (selecteds?.length > 0)
+			return new ObjectColl('token', selecteds)
+	}
+
+	async act(coll, options) {
+		const selecteds = coll.objects
+		game.pf2e.actions.longTermRest({actors: selecteds.map(t => t.actor)})
 	}
 }

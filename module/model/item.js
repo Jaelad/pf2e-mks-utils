@@ -35,4 +35,33 @@ export default class Item {
 			})
 		}
 	}
+
+	async toogle() {
+		if (this.exists)
+			return this.purge()
+		else
+			return this.ensure()
+	}
+
+	static hasAny(tokenOrActor, slugs) {
+		const actor = tokenOrActor?.actor ?? tokenOrActor
+		slugs = Array.isArray(slugs) ? slugs : [slugs]
+		return !!actor.items.find(i => slugs.includes(i.slug))
+	}
+	
+	static hasAll(tokenOrActor, slugs) {
+		const actor = tokenOrActor?.actor ?? tokenOrActor
+		slugs = Array.isArray(slugs) ? slugs : [slugs]
+		
+		const filtered = actor.items.filter(i => slugs.includes(i.slug))
+		return filtered.length === conditionSlugs.length
+	}
+
+	static async purgeAll(tokenOrActor, slugs = []) {
+		const actor = tokenOrActor?.actor ?? tokenOrActor
+		slugs = Array.isArray(slugs) ? slugs : [slugs]
+		const ids = actor.items.filter(i => slugs.includes(i.slug))?.map(i => i.id)
+		if (ids?.length > 0)
+			return actor.deleteEmbeddedDocuments("Item", ids)
+	}
 }

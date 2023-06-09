@@ -7,7 +7,7 @@ import {Engagement} from "../model/engagement.js"
 export default class ActionCraft extends Action {
 	
 	constructor(MKS) {
-		super(MKS, 'downtime', false, false)
+		super(MKS, 'craft', 'downtime', false, false)
 	}
 
 	get properties() {
@@ -18,11 +18,6 @@ export default class ActionCraft extends Action {
 			tags: ['preparation']
 		}
 	} 
-
-	relevant(warn) {
-		const selected = this._.ensureOneSelected(warn)
-		return selected ? new Engagement(selected) : undefined
-	}
 
 	async act(engagement, options) {
 		const item = await DropItemDialog.getItem({

@@ -1,24 +1,36 @@
 import {default as i18n} from "../../lang/pf2e-i18n.js"
-import { SimpleAction } from "../action.js"
 import Compendium from "../compendium.js"
 import Check from "../check.js"
 import $$strings from "../../utils/strings.js";
 import Equipments from "../model/equipments.js";
-import { CONDITION_GRABBED } from "../model/condition.js";
+import { CONDITION_FLATFOOTED, CONDITION_GRABBED } from "../model/condition.js";
+import { EFFECT_DISARM_SUCCESS } from "../model/effect.js";
+import { Engagement } from "../model/engagement.js";
+import Action from "../action.js";
 
-export default class ActionDisarm extends SimpleAction {
-
+export default class ActionDisarm extends Action {
 	constructor(MKS) {
-		super(MKS, {action: 'demoralize',
-			icon: "systems/pf2e/icons/spells/hand-of-the-apprentice.webp",
-			tags: ['combat'],
-			actionGlyph: 'A',
-			targetCount: 1,
-		})
+		super(MKS, 'disarm', 'encounter', false, true)
 	}
 
-	pertinent(engagement, warn) {
-		const equipments = new Equipments(engagement.initiator)
+	get properties() {
+		return {
+			label: i18n.action("disarm"),
+			icon: "systems/pf2e/icons/spells/hand-of-the-apprentice.webp",
+			actionGlyph: 'A',
+			tags: ['combat']
+		}
+	}
+
+	relevant(warn) {
+		const selected = this._.ensureOneSelected(warn)
+		const targeted = this._.ensureOneTarget(null,warn)
+		if (!selected || !targeted)
+			return
+
+		const engagement = new Engagement(selected, targeted)
+		const equipments = new Equipments(selected)
+		
 		const targetEquipments = new Equipments(engagement.targeted)
 		const handsFree = equipments.handsFree
 		const sizeDiff = engagement.sizeDifference
@@ -31,16 +43,48 @@ export default class ActionDisarm extends SimpleAction {
 
 	//Below exports.SetGamePF2e = { // Line:50709: actionHelpers: action_macros_1.ActionMacroHelpers,
 
-	disarmItem(selected, targeted, item) {
-		const rollCallback = ({roll}) => {
-			if (roll.degreeOfSuccess === 0)
-				this.effectManager.setCondition(selected, 'flat-footed', {flags: {"mks.duration": {type: 'start', turn: 0}}}).then()
-			else if (roll.degreeOfSuccess === 2)
-				this.effectManager.setEffect(targeted, Compendium.EFFECT_DISARM_SUCCESS).then()
-			else if (roll.degreeOfSuccess === 3)
-				this._.inventoryManager.dropItem(item).then()
+	async act(engagement, {overrideDC}) {
+		const equipments = new Equipments(engagement.targeted)
+		const heldItems = equipments.heldItems
+		let selectedItem = true
+
+		const dialogContent = `
+		<form>
+		<div class="form-group">
+			<label>${i18n.$("PF2E.MKS.Dialog.disarm.select")}</label>
+			<select name="item">
+				${heldItems.map((heldItem) =>
+					`<option value="${heldItem.id}" ${selectedItem ? 'selected' : ''} ${selectedItem = false}>${$$strings.escapeHtml(heldItem.name)}</option>`
+				).join('')}
+			</select>
+		</div>
+		</form>
+		`
+
+		const dialogCallback = ($html) => {
+			const itemId = $html[0].querySelector('[name="item"]').value
+			return this.disarmItem(engagement, heldItems.find((i)=>i.id === itemId))
 		}
 
+		return new Dialog({
+			title: i18n.$("PF2E.MKS.Dialog.disarm.title"),
+			content: dialogContent,
+			buttons: {
+				no: {
+					icon: '<i class="fas fa-times"></i>',
+					label: i18n.$("PF2E.MKS.UI.Actions.cancel"),
+				},
+				yes: {
+					icon: '<i class="fas fa-hands-helping"></i>',
+					label: i18n.action('disarm'),
+					callback: dialogCallback
+				},
+			},
+			default: 'yes',
+		}).render(true)
+	}
+
+	async disarmItem(engagement, item) {
 		const modifiers = []
 		if (this.effectManager.hasEffect(targeted, Compendium.EFFECT_DISARM_SUCCESS))
 			modifiers.push(new game.pf2e.Modifier({
@@ -60,63 +104,16 @@ export default class ActionDisarm extends SimpleAction {
 			modifiers: modifiers,
 			difficultyClassStatistic: (target) => target.saves.reflex
 		})
-		check.roll(selected, targeted).then(rollCallback)
+		return await check.roll(engagement).then(({roll, actor}) => this.createResult(engagement, roll, {itemId: item.id}))
 	}
 
-	async act(engagement, {overrideDC}) {
-		const heldItems = this._.inventoryManager.heldItems(targeted)
-		let selectedItem = true
-
-		const dialogContent = `
-		<form>
-		<div class="form-group">
-			<label>${i18n.$("PF2E.MKS.Dialog.disarm.select")}</label>
-			<select name="item">
-				${heldItems.map((heldItem) =>
-					`<option value="${heldItem.id}" ${selectedItem ? 'selected' : ''} ${selectedItem = false}>${$$strings.escapeHtml(heldItem.name)}</option>`
-				).join('')}
-			</select>
-		</div>
-		</form>
-		`
-
-		const dialogCallback = ($html) => {
-			const itemId = $html[0].querySelector('[name="item"]').value
-			this.disarmItem(selected, targeted, heldItems.find((i)=>i.id === itemId))
-		}
-
-		new Dialog({
-			title: i18n.$("PF2E.MKS.Dialog.disarm.title"),
-			content: dialogContent,
-			buttons: {
-				no: {
-					icon: '<i class="fas fa-times"></i>',
-					label: i18n.$("PF2E.MKS.UI.Actions.cancel"),
-				},
-				yes: {
-					icon: '<i class="fas fa-hands-helping"></i>',
-					label: i18n.action('disarm'),
-					callback: dialogCallback
-				},
-			},
-			default: 'yes',
-		}).render(true)
-	}
-
-	isApplicable(method=null, warn=false) {
-		const selected = this._.ensureOneSelected(warn)
-		const targeted = this._.ensureOneTarget(null,warn)
-		if (!selected || !targeted)
-			return {applicable: false}
-
-		const handsFree = this._.inventoryManager.handsFree(selected)
-		const sizeDiff = this._.getSizeDifference(selected, targeted)
-		const grabbed = this.effectManager.hasCondition(selected, 'grabbed')
-		const distance = this._.distanceTo(selected, targeted)
-		const heldItems = this._.inventoryManager.heldItems(targeted)
-		const reqMet = (handsFree > 0 || grabbed) && sizeDiff < 2 && heldItems.length > 0 && selected.actor.alliance !== targeted.actor.alliance
-			&& distance < (this._.inventoryManager.wieldsWeaponWithTraits(selected, ['reach', 'disarm']) ? 15 : 10)
-
-		return {applicable: reqMet, selected, targeted}
+	async apply(engagement, result) {
+		const roll = result.roll
+		if (roll.degreeOfSuccess === 0)
+			return engagement.setConditionOnInitiator(CONDITION_FLATFOOTED).then(c => c.setFlag('duration', {type: 'start', turn: 0})) 
+		else if (roll.degreeOfSuccess === 2)
+			return engagement.setEffectOnTarget(EFFECT_DISARM_SUCCESS)
+		else if (roll.degreeOfSuccess === 3)
+			return new Equipments(engagement.targeted).dropItem(result.options.itemId)
 	}
 }

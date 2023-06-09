@@ -1,5 +1,7 @@
 import {SYSTEM} from "../constants.js"
 import CommonUtils from "../helpers/common-utils.js"
+import { Attitude, Awareness } from "./condition.js"
+import Effect from "./effect.js"
 
 export default class RelativeConditions {
 
@@ -7,12 +9,9 @@ export default class RelativeConditions {
 		const relativeData = game.combat?.flags?.[SYSTEM.moduleId]?.relative
 		if (relativeData && relativeData.changed) {
 			relativeData.changed = false
-			if (game.user.isGM)  
-				game.combat.setFlag(SYSTEM.moduleId, "relative", relativeData).then(() => {
-					console.log("Updated Relative Data")
-				})
-			else
-				game.MKS.socketHandler.emit('UpdateRelativeConditions', relativeData)
+			game.combat.setFlag(SYSTEM.moduleId, "relative", relativeData).then(() => {
+				console.log("Updated Relative Data")
+			})
 		}
 	}
 

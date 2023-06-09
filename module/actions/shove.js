@@ -4,21 +4,41 @@ import Action from "../action.js"
 import Compendium from "../compendium.js"
 import Check from "../check.js"
 import {ROLL_MODE} from "../constants.js";
+import { Engagement } from "../model/engagement.js"
+import Equipments from "../model/equipments.js"
+import Effect from "../model/effect.js"
+import Condition, { CONDITION_PRONE } from "../model/condition.js"
 
 export default class ActionShove extends Action {
 
-	shove(options = {}) {
-		const {applicable, selected, targeted} = this.isApplicable(null,true)
-		if (!applicable)
+	constructor(MKS) {
+		super(MKS, 'shove', 'encounter', false, true)
+	}
+
+	get properties() {
+		return {
+			label: i18n.action("shove"),
+			icon: "systems/pf2e/icons/spells/knock.webp",
+			actionGlyph: 'A',
+			tags: ['combat']
+		}
+	}
+
+	relevant(warn) {
+		const selected = this._.ensureOneSelected(warn)
+		const targeted = this._.ensureOneTarget(null,warn)
+		if (!selected || !targeted)
 			return
 
-		const rollCallback = ({roll, actor}) => {
-			if (roll.degreeOfSuccess === 0)
-				this.effectManager.setCondition(selected, 'prone').then()
-			else if (roll.degreeOfSuccess > 1)
-				this._.compendiumToChat(selected, Compendium.ACTION_SHOVE, ROLL_MODE.BLIND)
-		}
+		const engagement = new Engagement(selected, targeted)
+		const equipments = new Equipments(selected), grabbed = new Condition(willBeGrabbed, CONDITION_GRABBED)
+		
+		if (equipments.handsFree > 0 && engagement.sizeDifference < 2 && engagement.isEnemy
+			&& distance < (equipments.wieldsWeaponWithTraits(selected, ['reach', 'shove']) ? 15 : 10))
+			return engagement
+	}
 
+	async act(engagement, options) {
 		const check = new Check({
 			actionGlyph: "A",
 			rollOptions: ["action:shove"],
@@ -28,33 +48,14 @@ export default class ActionShove extends Action {
 			checkType: "skill[athletics]",
 			difficultyClassStatistic: (target) => target.saves.fortitude
 		})
-		check.roll(selected, targeted).then(rollCallback)
+		check.roll(engagement).then(rollCallback)
 	}
 
-	methods(onlyApplicable) {
-		const {applicable} = this.isApplicable()
-		return !onlyApplicable || applicable ? [{
-			method: "shove",
-			label: i18n.action("shove"),
-			icon: "systems/pf2e/icons/spells/knock.webp",
-			action: 'A',
-			mode: "encounter",
-			tags: ['combat']
-		}] : []
-	}
-
-	isApplicable(method=null, warn=false) {
-		const selected = this._.ensureOneSelected(warn)
-		const targeted = this._.ensureOneTarget(null,warn)
-		if (!selected || !targeted)
-			return {applicable: false}
-
-		const handsFree = this._.inventoryManager.handsFree(selected)
-		const sizeDiff = this._.getSizeDifference(selected, targeted)
-		const distance = this._.distanceTo(selected, targeted)
-		const reqMet = handsFree > 0 && sizeDiff < 2 && selected.actor.alliance !== targeted.actor.alliance
-			&& distance < (this._.inventoryManager.wieldsWeaponWithTraits(selected, ['reach', 'shove']) ? 15 : 10)
-
-		return {applicable: reqMet, selected, targeted}
+	async apply(engagement, result) {
+		const degreeOfSuccess = result.roll.degreeOfSuccess
+		if (degreeOfSuccess === 0)
+			engagement.setConditionOnInitiator(CONDITION_PRONE)
+		else if (degreeOfSuccess > 1)
+			this._.compendiumToChat(selected, Compendium.ACTION_SHOVE, ROLL_MODE.BLIND)
 	}
 }

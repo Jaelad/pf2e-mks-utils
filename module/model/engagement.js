@@ -1,5 +1,7 @@
 import CommonUtils from "../helpers/common-utils.js"
 import Condition from "./condition.js"
+import Effect from "./effect.js"
+import Item from "./item.js"
 
 export class Engagement {
 	constructor(initiator, targeted) {
@@ -70,20 +72,34 @@ export class Engagement {
 		return dcFunc(this.targeted)
 	}
 
-	hasInitiatorCondition(condition) {
-		return new Condition(this.targeted, condition).exists
+	hasInitiatorCondition(condition, any = true) {
+		if (Array.isArray(condition))
+			return Item[any ? 'hasAny' : 'hasAll'](this.initiator, condition)
+		else
+			return new Condition(this.targeted, condition).exists
 	}
-	
-	hasTargetCondition(condition) {
-		return new Condition(this.targeted, condition).exists
-	}
-	
-	async setConditionOnTarget(condition) {
-		return new Condition(this.targeted, condition).ensure()
+
+	hasTargetCondition(condition, any = true) {
+		if (Array.isArray(condition))
+			return Item[any ? 'hasAny' : 'hasAll'](this.targeted, condition)
+		else
+			return new Condition(this.targeted, condition).exists
 	}
 	
 	async setConditionOnInitiator(condition) {
 		return new Condition(this.initiator, condition).ensure()
+	}
+
+	async setConditionOnTarget(condition) {
+		return new Condition(this.targeted, condition).ensure()
+	}
+
+	async setEffectOnInitiator(effect) {
+		return new Effect(this.initiator, effect).ensure()
+	}
+
+	async setEffectOnTarget(effect) {
+		return new Effect(this.targeted, effect).ensure()
 	}
 
 	get sizeDifference() {
@@ -137,9 +153,9 @@ export class Engagements extends Engagement {
 			return p > dc ? p : dc
 		}, 0)
 	}
-	
-	isTargetInCondition(condition) {
-		return this.engagements.every( e => e.isTargetInCondition(condition))
+
+	hasTargetCondition(condition, any = true) {
+		return this.engagements.every( e => e.hasTargetCondition(condition, any))
 	}
 	
 	async setConditionOnTarget(condition) {

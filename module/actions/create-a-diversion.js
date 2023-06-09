@@ -39,7 +39,7 @@ export default class ActionCreateADiversion extends SimpleAction {
 			extraOptions: ["action:create-a-diversion"],
 			actionGlyph: "A",
 		})
-		return await check.roll(selected).then(rollCallback)
+		return await check.roll(engagement).then(rollCallback)
 	}
 	
 	async apply(engagement, result) {

@@ -6,6 +6,7 @@ import Condition, { CONDITION_DYING } from "../model/condition.js"
 import PersistentDamage, { PERSISTENT_BLEED, PERSISTENT_POISON } from "../model/persistent-damage.js"
 import Equipments, { EQU_HEALERS_TOOLS, EQU_HEALERS_TOOLS_EXPANDED } from "../model/equipments.js"
 import Effect, { EFFECT_POISON_TREATED } from "../model/effect.js"
+import Item from "../model/item.js"
 
 export default class ActionAdministerFirstAid extends SimpleAction {
 	constructor(MKS) {
@@ -21,7 +22,7 @@ export default class ActionAdministerFirstAid extends SimpleAction {
 	
 	pertinent(engagement, warn) {
 		return engagement.isAdjacent && engagement.isAlly
-			&& (Condition.hasAny(engagement.targeted, CONDITION_DYING) || PersistentDamage.hasAny(engagement.targeted, [PERSISTENT_BLEED, PERSISTENT_POISON]))
+			&& (Item.hasAny(engagement.targeted, CONDITION_DYING) || PersistentDamage.hasAny(engagement.targeted, [PERSISTENT_BLEED, PERSISTENT_POISON]))
 	}
 	
 	async act(engagement, {overrideDC}) {
@@ -67,6 +68,8 @@ export default class ActionAdministerFirstAid extends SimpleAction {
 			formula = poisoned.formula
 			id = poisoned.item.id
 		}
+		else
+			return
 		
 		return await super.act( engagement, {overrideDC: dc, affliction, formula, conditionId: id})
 	}

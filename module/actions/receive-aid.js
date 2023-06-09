@@ -3,6 +3,7 @@ import {SimpleAction} from "../action.js"
 import Check from "../check.js"
 import CommonUtils from "../helpers/common-utils.js"
 import Effect, { EFFECT_AIDED, EFFECT_AID_READY } from "../model/effect.js"
+import { Engagement } from "../model/engagement.js"
 
 export default class ActionReceiveAid extends SimpleAction {
 	
@@ -14,8 +15,6 @@ export default class ActionReceiveAid extends SimpleAction {
 			requiresEncounter: true,
 		})
 	}
-	
-	async act(engagement, options) {}
 	
 	async apply(engagement) {
 		const selected = engagement.initiator
@@ -43,7 +42,7 @@ export default class ActionReceiveAid extends SimpleAction {
 			if (helperToken?.actor) {
 				checkContext.checkType = config.checkType
 				const check = new Check(checkContext)
-				const {roll} = await check.roll(helperToken)
+				const {roll} = await check.roll(new Engagement(helperToken))
 				if (!roll) return
 				const proficiency = await Check.getProficiency(helperToken, config.checkType)
 				let degreeOfSuccess = roll.degreeOfSuccess
@@ -82,7 +81,7 @@ export default class ActionReceiveAid extends SimpleAction {
 					if (helperToken?.actor) {
 						checkContext.checkType = config.checkType
 						const check = new Check(checkContext)
-						const {roll} = await check.roll(helperToken)
+						const {roll} = await check.roll(new Engagement(helperToken))
 						promisesAll.push(roll)
 					}
 				}

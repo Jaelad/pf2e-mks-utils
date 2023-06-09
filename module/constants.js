@@ -55,7 +55,7 @@ export const SKILLS = {
 	thievery: "thi"
 }
 
-export const ACTOR_IDENTIFICATION = {
+export const MONSTER_KNOWLEDGE = {
 	'aberration': ['occultism'],
 	'animal': ['nature'],
 	'astral': ['occultism'],

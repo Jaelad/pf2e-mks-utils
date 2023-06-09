@@ -12,15 +12,13 @@ export default class ActionReadyAid extends SimpleAction {
 			tags: ['basic'],
 			actionGlyph: 'A',
 			targetCount: 1,
-			requiresEncounter: true
+			requiresEncounter: true,
 		})
 	}
 	
 	pertinent(engagement, warn) {
 		return engagement.isAlly
 	}
-	
-	async act(engagement, options) {}
 	
 	async apply(engagement) {
 		const selected = engagement.initiator, targeted = engagement.targeted

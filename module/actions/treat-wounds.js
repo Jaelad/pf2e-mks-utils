@@ -2,38 +2,36 @@ import {default as i18n} from "../../lang/pf2e-i18n.js"
 import {default as LOG} from "../../utils/logging.js"
 import Action from "../action.js"
 import Compendium from "../compendium.js"
+import { Engagement } from "../model/engagement.js"
 
 export default class ActionTreatWounds extends Action {
-	
+
 	constructor(MKS) {
-		super(MKS, 'exploration')
+		super(MKS, 'treatWounds', 'exploration', false, false)
 	}
 
-	async treatWounds() {
-		const {applicable, selected, targeted} = this.isApplicable(null,true)
-		if (!applicable) return
-		
-		game.pf2e.actions.treatWounds({ actors: [selected] })
-	}
-
-	methods(onlyApplicable) {
-		const {applicable} = this.isApplicable()
-		return !onlyApplicable || applicable ? [{
-			method: "treatWounds",
+	get properties() {
+		return {
 			label: i18n.action("treatWounds"),
 			icon: "systems/pf2e/icons/features/feats/treat-wounds.webp",
-			action: '',
+			actionGlyph: '',
 			tags: ['preparation']
-		}] : []
+		}
 	}
 
-	isApplicable(method=null, warn=false) {
+	relevant(warn) {
 		const selected = this._.ensureOneSelected(warn)
-		const targeted = this._.ensureOneTarget(null, warn)
-		
-		return {applicable: !!selected && !!targeted
-				&& selected.actor.alliance === targeted.actor.alliance
-				&& this._.actorManager.hasLostHP(targeted)
-			, selected, targeted}
+		const targeted = this._.ensureOneTarget(null,warn)
+		if (!selected || !targeted)
+			return
+
+		const engagement = new Engagement(selected, targeted)
+
+		if (engagement.isAlly && this._.actorManager.hasLostHP(targeted))
+			return engagement
+	}
+	
+	async act(engagement, options) {
+		game.pf2e.actions.treatWounds({ actors: [engagement.initiator] })
 	}
 }

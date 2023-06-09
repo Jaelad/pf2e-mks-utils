@@ -3,27 +3,20 @@ import Action from "../action.js"
 import Effect, { EFFECT_COVER_TAKEN } from "../model/effect.js"
 
 export default class ActionTakeCover extends Action {
-
-	takeCover(options = {}) {
-		const {applicable, selected} = this.isApplicable('takeCover',true)
-		if (!applicable) return
-		new Effect(selected, EFFECT_COVER_TAKEN).ensure()
+	constructor(MKS) {
+		super(MKS, 'takeCover', 'encounter', false, false)
 	}
 
-	methods(onlyApplicable) {
-		const {applicable} = this.isApplicable()
-		return !onlyApplicable || applicable ? [{
-			method: "takeCover",
+	get properties() {
+		return {
 			label: i18n.action("takeCover"),
 			icon: "systems/pf2e/icons/conditions-2/status_acup.webp",
-			action: 'A',
-			mode: "encounter",
-			tags: ['stealth']
-		}] : []
-	}
+			actionGlyph: 'A',
+			tags: ['basic']
+		}
+	} 
 
-	isApplicable(method, warn=false) {
-		const selected = this._.ensureOneSelected(warn)
-		return {applicable: !!selected, selected}
+	async apply(engagement) {
+		new Effect(engagement.initiator, EFFECT_COVER_TAKEN).ensure().then()
 	}
 }

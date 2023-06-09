@@ -1,20 +1,29 @@
 import {default as i18n} from "../../lang/pf2e-i18n.js"
-import { SimpleAction } from "../action.js"
+import { Action } from "../action.js"
 import Effect, { EFFECT_RAISE_A_SHIELD } from "../model/effect.js"
 
-export default class ActionRaiseAShield extends SimpleAction {
+export default class ActionRaiseAShield extends Action {
 
 	constructor(MKS) {
-		super(MKS, { action: 'raiseAShield',
-			icon: "systems/pf2e/icons/actions/raise-a-shield.webp",
-			tags: ['combat'],
-			actionGlyph: 'A',
-			targetCount: 0
-		})
+		super(MKS, 'raiseAShield', 'encounter', false, false)
 	}
 
-	pertinent(engagement, warn) {
-		const shield = engagement.initiator?.actor.heldShield
+	get properties() {
+		return {
+			label: i18n.action("raiseAShield"),
+			icon: "systems/pf2e/icons/actions/raise-a-shield.webp",
+			actionGlyph: 'A',
+			tags: ['combat']
+		}
+	}
+
+	relevant(warn) {
+		const selected = this._.ensureOneSelected(warn)
+		if (!selected)
+			return
+		const engagement = new Engagement(selected)
+
+		const shield = engagement.initiator.actor.heldShield
 		let shieldOk = false
 		if (shield?.isBroken === false) {
 			shieldOk = true
@@ -27,18 +36,12 @@ export default class ActionRaiseAShield extends SimpleAction {
 			if (warn) ui.notifications.warn(i18n.$$('PF2E.Actions.RaiseAShield.NoShieldEquipped', {actor: selected.actor.name}))
 			shieldOk = false
 		}
-		return shieldOk
+		return shieldOk ? engagement : undefined
 	}
 	
-	async act(engagement, options) {}
-
 	async apply(engagement) {
-		const raiseAShield = new Effect(engagement.initiator, EFFECT_RAISE_A_SHIELD)
-		if (raiseAShield.exists)
-			await raiseAShield.purge()
-		else {
-			await raiseAShield.ensure()
-			engagement.initiator.actor.heldShield.toChat().then()
-		}
+		new Effect(engagement.initiator, EFFECT_RAISE_A_SHIELD).toogle().then(()=> {
+			engagement.initiator.actor.heldShield?.toChat().then()
+		})
 	}
 }

@@ -5,18 +5,25 @@ import Dialogs from "../apps/dialogs.js"
 
 export default class ActionRepair extends SimpleAction {
 	constructor(MKS) {
-		super(MKS, {action: 'repair',
-			traits: ['exploration', 'manipulate'],
+		super(MKS, {action: 'repair', mode: 'exploration',
 			checkType: 'skill[crafting]',
+			traits: ['exploration', 'manipulate'],
 			icon: "systems/pf2e/icons/equipment/weapons/gnome-hooked-hammer.webp",
 			tags: ['preparation'],
-			actionGlyph: '',
-			mode: 'exploration'
+			actionGlyph: ''
 		})
 	}
+
+	pertinent(engagement, warn) {
+		const selected = engagement.initiator
+		const hasRepairableItem = !!selected.actor.items.find(i => i.system.hp?.max > i.system.hp?.value)
+		return hasRepairableItem
+			&& !!selected.actor.itemTypes.equipment.find(e => e.slug === 'repair-kit')
+			&& selected.actor.skills.crafting.rank > 0
+	}
 	
-	async act({overrideDC}) {
-		const selected = this._.ensureOneSelected(false)
+	async act(engagement, {overrideDC}) {
+		const selected = engagement.initiator
 		const repairableItems = selected.actor.items.filter(i => i.system.hp?.max > i.system.hp?.value)
 		let itemId = null
 		if (repairableItems.length > 0) {
@@ -28,11 +35,12 @@ export default class ActionRepair extends SimpleAction {
 		else
 			itemId = repairableItems[0].id
 		
-		await super.act({overrideDC, itemId})
+		return super.act(engagement, {overrideDC, itemId})
 	}
-	
-	resultHandler(roll, selected, targets, options) {
-		const item = selected.actor.items.filter(i => i.id === options.itemId)
+
+	async apply(engagement, result) {
+		const selected = engagement.initiator
+		const item = selected.actor.items.filter(i => i.id === result.options.itemId)
 		const rank = selected.actor.skills.crafting.rank
 		let hpValue = item.system.hp.value
 		
@@ -45,13 +53,6 @@ export default class ActionRepair extends SimpleAction {
 		hpValue = Math.clamped(hpValue, 0, item.system.hp.max)
 		
 		if (hpValue !== item.system.hp.value)
-			item.update({ "system.hp.value": hpValue})
-	}
-	
-	applies(selected, targets) {
-		const hasRepairableItem = !!selected.actor.items.find(i => i.system.hp?.max > i.system.hp?.value)
-		return !!selected && hasRepairableItem
-			&& !!selected.actor.itemTypes.equipment.find(e => e.slug === 'repair-kit')
-			&& selected.actor.skills.crafting.rank > 0
+			await item.update({ "system.hp.value": hpValue})
 	}
 }

@@ -107,6 +107,15 @@ export default class Equipments {
 		this.equipments = equipments
 	}
 
+	// {carryType: dropped/worn/held, handsHeld: 0/1/2, invested:null, true, false}
+	async changeItemEquipped(itemId, equipped) {
+		return this.actor.updateEmbeddedDocuments("Item", [{"_id": itemId, "system.equipped": equipped}])
+	}
+
+	async dropItem(itemId) {
+		return this.changeItemEquipped(itemId, {carryType: 'dropped', handsHeld: 0})
+	}
+
 	get handsFree() {
 		const heldItems = this.actor.inventory.filter((i) => i.system.consumableType?.value === 'ammo' ? false : i.isHeld)
 		const handsFree = heldItems.reduce((count, item) => {

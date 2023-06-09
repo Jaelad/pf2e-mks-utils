@@ -1,84 +1,45 @@
 import {default as i18n} from "../../lang/pf2e-i18n.js"
-import {default as LOG} from "../../utils/logging.js"
 import Action from "../action.js"
 import Check from "../check.js"
 import CommonUtils from "../helpers/common-utils.js"
 import {ROLL_MODE} from "../constants.js"
-import Condition, {Awareness} from "../model/condition.js"
+import Condition, {Awareness, CONDITION_HIDDEN, CONDITION_INVISIBLE, CONDITION_OBSERVED, CONDITION_UNDETECTED, CONDITION_UNNOTICED} from "../model/condition.js"
+import Item from "../model/item.js"
+import RelativeConditions from "../model/relative-conditions.js"
+import { Engagement } from "../model/engagement.js"
 
 export default class ActionSeek extends Action {
 
-	initialize() {
-		this._.socketHandler.on('SeekRequest', ({seekerId, targetIds, userId}) => {
-			const seeker = CommonUtils.getTokenById(seekerId)
-			const targets = targetIds.map((tid => CommonUtils.getTokenById(tid)))
-			const user = game.users.get(userId)
-			this.seekTargets(seeker, targets, user)
-		})
+	constructor(MKS) {
+		super(MKS, 'seek', 'encounter', false, true)
 	}
 
-	seekTargets(seeker, targets, user = game.user) {
-		const rollCallback = ({roll, actor, target}) => {
-			const step = roll.degreeOfSuccess - 1
-			if (step <= 0)
-				return
-
-			//const seekerType = seeker.actor.type, targetType = target.actor.type
-
-			const invisible = new Condition(target, 'invisible')
-			const awareness = new Awareness(target)
-			const awarenessState = awareness.state
-			
-			if (awarenessState === 'hidden' || step > 1)
-				return awareness.setState(invisible.exists ? 'hidden' : 'observed')
-			else if (awarenessState === 'unnoticed' || awarenessState === 'undetected')
-				return awareness.setState('hidden')
-		}
-
-		const check = new Check({
-			actionGlyph: "A",
-			rollOptions: ["action:seek"],
-			extraOptions: ["action:seek"],
-			traits: ["secret", "concentrate"],
-			checkType: "perception",
-			rollMode: ROLL_MODE.BLIND,
-			secret: true,
-			skipDialog: false,
-			difficultyClassStatistic: (target) => target.skills.stealth
-		})
-
-		for (let i = 0; i < targets.length; i++) {
-			check.roll(seeker, targets[i]).then(rollCallback)
+	get properties() {
+		return {
+			label: i18n.action("seek"),
+			icon: "systems/pf2e/icons/features/classes/alertness.webp",
+			actionGlyph: 'A',
+			tags: ['inspection']
 		}
 	}
 
-	seek(options = {}) {
-		const {selected} = this.isApplicable(null,true)
+	async act(engagement, options) {
+		const selected = engagement.initiator
 
 		const templateCallback = (template) => {
 			const tokens = this._.templateManager.getEncompassingTokens(template, (token) => {
 				if (game.user.isGM) {
-					return ['character', 'familiar'].includes(token.actor.type) && Condition.hasAny(token, ['unnoticed', 'undetected', 'hidden'])
+					return ['character', 'familiar'].includes(token.actor.type) && Item.hasAny(token, ['unnoticed', 'undetected', 'hidden'])
 				}
 				else
-					return !token.owner && Condition.hasAny(token, ['unnoticed', 'undetected', 'hidden'])
+					return !token.owner && Item.hasAny(token, ['unnoticed', 'undetected', 'hidden'])
 			})
 			if (template.user.isGM)
 				this._.templateManager.deleteTemplate(template.id)
 			else
 				setTimeout(() => this._.templateManager.deleteTemplate(template.id), 5000)
 
-			if (game.user.isGM)
-				this.seekTargets(selected, tokens)
-			else {
-				const eventData = {
-					seekerId: selected.id,
-					targetIds: tokens.map(t => t.id),
-					userId: game.user.id
-				}
-				LOG.info(eventData)
-				this._.socketHandler.emit('SeekRequest', eventData, true)
-			}
+			return tokens
 		}
 
 		const dialogContent = `
@@ -93,7 +54,7 @@ export default class ActionSeek extends Action {
 		</form>
 		`
 
-		new Dialog({
+		const tokens = await new Dialog({
 			title: i18n.$("PF2E.MKS.Dialog.seek.selecttype.title"),
 			content: dialogContent,
 			buttons: {
@@ -108,27 +69,58 @@ export default class ActionSeek extends Action {
 							override = {t: "circle", distance: 15, ttype: "ghost"}
 						else if (seekType === 'object')
 							override = {t: "circle", distance: 10}
-						this._.templateManager.draw(selected, templateCallback, {preset: 'seek'}, override)
+						return this._.templateManager.draw(selected, templateCallback, {preset: 'seek'}, override)
 					}
 				}
 			}
 		}).render(true)
+
+		return this.createResult(engagement, null, {tokenIds: tokens.map(t => t.id)})
 	}
 
-	methods(onlyApplicable) {
-		const {applicable} = this.isApplicable()
-		return !onlyApplicable || applicable ? [{
-			method: "seek",
-			label: i18n.action("seek"),
-			icon: "systems/pf2e/icons/features/classes/alertness.webp",
-			action: 'A',
-			mode: "encounter",
-			tags: ['inspection']
-		}] : []
-	}
+	async apply(engagement, result) {
+		const rollCallback = ({roll, actor, target}) => {
+			const step = roll.degreeOfSuccess - 1
+			if (step <= 0)
+				return
 
-	isApplicable(method=null, warn=false) {
-		let selected = this._.ensureOneSelected(warn)
-		return {applicable: !!selected, selected, targeted: null}
+			const invisible = new Condition(target, CONDITION_INVISIBLE)
+			const relative = RelativeConditions()
+			if (relative.isOk) {
+				const awarenessState = relative.getMyAwarenessOf(target)
+				if (awarenessState === CONDITION_HIDDEN || step > 1)
+					relative.setMyAwarenessOf(target, invisible.exists ? CONDITION_HIDDEN : CONDITION_OBSERVED)
+				else if (awarenessState === CONDITION_UNNOTICED || awarenessState === CONDITION_UNDETECTED)
+					relative.setMyAwarenessOf(target, CONDITION_HIDDEN)
+				this._.encounterManager.applyRelativeConditions(target.combatant)
+			}
+			else {
+				const awareness = new Awareness(target)
+				const awarenessState = awareness.state
+				
+				if (awarenessState === CONDITION_HIDDEN || step > 1)
+					return awareness.setStateAsync(invisible.exists ? CONDITION_HIDDEN : CONDITION_OBSERVED)
+				else if (awarenessState === CONDITION_UNNOTICED || awarenessState === CONDITION_UNDETECTED)
+					return awareness.setStateAsync(CONDITION_HIDDEN)
+			}
+		}
+
+		const check = new Check({
+			actionGlyph: "A",
+			rollOptions: ["action:seek"],
+			extraOptions: ["action:seek"],
+			traits: ["secret", "concentrate"],
+			checkType: "perception",
+			rollMode: ROLL_MODE.BLIND,
+			secret: true,
+			skipDialog: true,
+			difficultyClassStatistic: (target) => target.skills.stealth
+		})
+
+		const targets = result.options.tokenIds.map(tId => CommonUtils.getTokenById(tId))
+
+		for (const target of targets) {
+			check.roll(new Engagement(engagement.initiator, target)).then(rollCallback)
+		}
 	}
 }

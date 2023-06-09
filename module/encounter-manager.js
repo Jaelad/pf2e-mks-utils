@@ -3,6 +3,7 @@ import RelativeCondPanel from "./apps/relative-cond-panel.js"
 import {ATTITUDES, AWARENESS, SYSTEM} from "./constants.js"
 import Condition, {Attitude, Awareness} from "./model/condition.js"
 import Effect, { EFFECT_AIDED, EFFECT_COVER, EFFECT_COVER_TAKEN, EFFECT_MAP } from "./model/effect.js"
+import Item from "./model/item.js"
 
 export default class EncounterManager {
 	constructor(MKS) {
@@ -94,7 +95,7 @@ export default class EncounterManager {
 		const combatants = Array.from(encounter.combatants)
 		for (let i = 0; i < combatants.length; i++) {
 			new Effect(combatants[i].actor, EFFECT_COVER).purge()
-			Condition.purgeAll(combatants[i].actor, AWARENESS.concat(ATTITUDES))
+			Item.purgeAll(combatants[i].actor, AWARENESS.concat(ATTITUDES))
 		}
 	}
 	
@@ -128,7 +129,7 @@ export default class EncounterManager {
 		for (let i = 0; i < combatants.length; i++) {
 			const c = combatants[i], tokenId = c.token.id
 			if (c.actor.alliance === combatant.actor.alliance) {
-				await Condition.purgeAll(c.actor, [...ATTITUDES, ...AWARENESS])
+				await Item.purgeAll(c.actor, [...ATTITUDES, ...AWARENESS])
 				await new Effect(c.actor, EFFECT_COVER).purge()
 				continue
 			}

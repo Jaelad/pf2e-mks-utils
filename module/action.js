@@ -6,6 +6,7 @@ import DCHelper from "./helpers/dc-helper.js"
 import $$lang from "../utils/lang.js"
 import CommonUtils from "./helpers/common-utils.js"
 import {Engagement, Engagements} from "./model/engagement.js"
+import ObjectColl from "./model/object-coll.js"
 
 export default class Action {
 
@@ -29,21 +30,23 @@ export default class Action {
 		// }
 	}
 
+	// return engagement
 	relevant(warn) {
-		// return engagement
+		const selected = this._.ensureOneSelected(warn)
+		return selected ? new Engagement(selected) : undefined
 	}
 
-	async act(engagement, options) {
-		// simply returns action result object
-	}
+	// simply returns action result object
+	async act(engagement, options) {}
 
 	async apply(engagement, result) {
-
+		if (result?.roll?.degreeOfSuccess > -1)
+			this.resultToChat(engagement.initiator, this.name, result.roll.degreeOfSuccess)
 	}
 
 	createResult(engagement, roll, options) {
 		return {
-			engagement: engagement.participants,
+			engagement: engagement.initiator ? engagement.participants : ObjectColl.serialize(engagement),
 			roll: {
 				degreeOfSuccess: roll.degreeOfSuccess
 			},
@@ -119,7 +122,7 @@ export class ActionRunner {
 		if (engagement) {
 			if (!this.action.gmActs) {
 				const result = await this.action.act(engagement, options)
-				if (!this.action.gmActs) {
+				if (!this.action.gmApplies) {
 					this.action.apply(engagement, result)
 				}
 				else {
@@ -133,7 +136,7 @@ export class ActionRunner {
 			else {
 				const eventData = {
 					action: this.action.name,
-					engagement: engagement.participants,
+					engagement: engagement.initiator ? engagement.participants : engagement.serialize(),
 					options
 				}
 				game.MKS.socketHandler.emit('GmTakesAction', eventData, true)
@@ -142,7 +145,7 @@ export class ActionRunner {
 	}
 
 	async actByGM(request) {
-		const engagement = Engagement.from(request.engagement)
+		const engagement = request.engagement.initiator ? Engagement.from(request.engagement) : ObjectColl.deserialize(request.engagement)
 		if (!engagement)
 			return
 
@@ -150,17 +153,17 @@ export class ActionRunner {
 	}
 
 	async applyByGM(result) {
-		const engagement = Engagement.from(result.engagement)
+		const engagement = result.engagement.initiator ? Engagement.from(result.engagement) : ObjectColl.deserialize(result.engagement)
 		if (!engagement)
 			return
 
-		return this.action.apply(engagement, result.result)
+		return this.action.apply(engagement, result)
 	}
 }
 
 export class SimpleAction extends Action {
-	constructor(MKS, {action, traits, checkType, dc, icon, tags, mode='encounter', requiresEncounter = false, actionGlyph = 'A', targetCount = 0}) {
-		super(MKS, action, mode)
+	constructor(MKS, {action, mode = 'encounter', gmActs = false, gmApplies = true, traits, checkType, dc, icon, tags, requiresEncounter = false, actionGlyph = 'A', targetCount = 0}) {
+		super(MKS, action, mode, gmActs, gmApplies)
 		this.actionGlyph = actionGlyph
 		this.traits = traits
 		this.checkType = checkType
@@ -222,7 +225,7 @@ export class SimpleAction extends Action {
 				defaultDC: typeof this.dc === 'number' ? this.dc : null
 			}
 		})
-		const result = await check.roll(engagement.initiator).then(rollCallback)
+		const result = await check.roll(engagement).then(rollCallback)
 		return result
 	}
 
