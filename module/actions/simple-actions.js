@@ -1,6 +1,6 @@
 import {SimpleAction} from "../action.js"
-import Condition, {CONDITION_DYING, CONDITION_FLATFOOTED} from "../model/condition.js"
-import Equipments, {EQU_ALCHEMISTS_TOOLS, EQU_THVS_TOOLS, THVS_TOOLS} from "../model/equipments.js"
+import Condition, {CONDITION_FLATFOOTED} from "../model/condition.js"
+import Equipments, {EQU_ALCHEMISTS_TOOLS, EQU_THVS_TOOLS} from "../model/equipments.js"
 
 export class ActionTumbleThrough extends SimpleAction {
 
@@ -51,7 +51,7 @@ export class ActionForceOpen extends SimpleAction {
 	}
 }
 
-export class ActionBalance extends SimpleAction {
+export class ActionBalance extends SimpleAction { //TESTED
 	constructor(MKS) {
 		super(MKS, {action: 'balance',
 			checkType: 'skill[acrobatics]',
@@ -269,13 +269,13 @@ export class ActionPickALock extends SimpleAction {
 	}
 	
 	pertinent(engagement, warn) {
-		return engagement.hasEquippedAny(EQU_THVS_TOOLS)
+		return new Equipments(engagement.initiator).hasEquippedAny(EQU_THVS_TOOLS)
 	}
 }
 
-export class ActionDisableADevice extends SimpleAction {
+export class ActionDisableDevice extends SimpleAction {
 	constructor(MKS) {
-		super(MKS, {action: 'disableADevice',
+		super(MKS, {action: 'disableDevice',
 			checkType: 'skill[thievery]',
 			traits: ['manipulate'],
 			icon: "systems/pf2e/icons/spells/visions-of-danger.webp",
@@ -378,7 +378,7 @@ export class ActionIdentifyAlchemy extends SimpleAction {
 	}
 	
 	pertinent(engagement, warn) {
-		return engagement.hasEquippedAny(EQU_ALCHEMISTS_TOOLS)
+		return new Equipments(engagement.initiator).hasEquippedAny(EQU_ALCHEMISTS_TOOLS)
 	}
 }
 
@@ -483,7 +483,6 @@ export class ActionCreateForgery extends SimpleAction {
 			icon: "systems/pf2e/icons/spells/crusade.webp",
 			tags: ['situational'],
 			actionGlyph: '',
-			
 			dc: 15
 		})
 	}

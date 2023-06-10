@@ -12,10 +12,11 @@ export class Engagement {
 	}
 
 	static from(participants) {
-		const initiatorToken = CommonUtils.getTokenById(participants.initiator)
-		const targetedTokens = participants.targeted.map(tId => CommonUtils.getTokenById(tId))
+		const init = participants.initiator, targeted = participants.targeted ?? []
+		const initiatorToken = CommonUtils.getTokenById(init)
+		const targetedTokens = targeted.map(tId => CommonUtils.getTokenById(tId))
 
-		if (!initiatorToken || targetedTokens. length !== participants.targeted)
+		if (!initiatorToken || targetedTokens.length !== targeted.length)
 			return
 
 		if (targetedTokens.length < 2)

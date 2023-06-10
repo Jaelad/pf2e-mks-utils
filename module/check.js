@@ -141,7 +141,7 @@ export default class Check {
 			...(this.context.weaponTraitWithPenalty ? Check.getApplicableEquippedWeapons(selfActor, this.context.weaponTraitWithPenalty) : [])
 		].shift()
 		if (weapon) {
-			const modifier = Check.getWeaponPotencyModifier(weapon, stat.name)
+			const modifier = Check.getWeaponPotencyModifier(weapon, stat.slug) //stat.name deprecated
 			if (modifier) check.push(modifier)
 		}
 
@@ -153,7 +153,7 @@ export default class Check {
 					slug,
 					adjustments: Check.extractModifierAdjustments(
 						selfActor.synthetics.modifierAdjustments,
-						["all", stat.name],
+						["all", stat.slug], //stat.name deprecated
 						slug
 					),
 					type: MODIFIER_TYPE.CIRCUMSTANCE,
@@ -205,8 +205,8 @@ export default class Check {
 		const targetInfo = target && target.actor && typeof distance === "number"
 				? { token: target.document, actor: target.actor, distance }
 				: null
-		const notes = [stat.notes ?? [], this.context.extraNotes?.(stat.name) ?? []].flat()
-		const substitutions = Check.extractRollSubstitutions(actor.synthetics.rollSubstitutions,[stat.name], finalOptions)
+		const notes = [stat.notes ?? [], this.context.extraNotes?.(stat.slug) ?? []].flat() //stat.name deprecated
+		const substitutions = Check.extractRollSubstitutions(actor.synthetics.rollSubstitutions,[stat.slug], finalOptions) //stat.name deprecated
 
 		const rollPromise = game.pf2e.Check.roll(
 			check,

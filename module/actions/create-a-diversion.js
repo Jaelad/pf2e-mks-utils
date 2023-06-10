@@ -1,11 +1,11 @@
 import {default as i18n} from "../../lang/pf2e-i18n.js"
-import Action from "../action.js"
 import Check from "../check.js"
 import Dialogs from "../apps/dialogs.js"
 import DCHelper from "../helpers/dc-helper.js"
 import Effect, { EFFECT_RESIST_A_DIVERSION } from "../model/effect.js"
 import RelativeConditions from "../model/relative-conditions.js"
 import { UUID_CONDITONS } from "../model/condition.js"
+import { SimpleAction } from "../action.js"
 
 export default class ActionCreateADiversion extends SimpleAction {
 

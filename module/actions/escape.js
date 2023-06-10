@@ -28,14 +28,14 @@ export default class ActionEscape extends Action {
 		if (!selected)
 			return
 		const engagement = new Engagement(selected)
-		return engagement.hasInitiatorCondition(CONDITIONS) ? engagement :undefined
+		return engagement.hasInitiatorCondition(ActionEscape.CONDITIONS) ? engagement :undefined
 	}
 
 	async act(engagement, options) {
 		const conds = Condition.collect(engagement.initiator, ActionEscape.CONDITIONS)
 
 		let selectedCond //[1].system.references.parent.type == condition
-		const conditions = this._.effectManager.getConditions(selected, ActionEscape.CONDITIONS)
+		const conditions = Condition.collect(engagement.initiator, ActionEscape.CONDITIONS)
 			.filter((c) => !c.system.references?.parent?.type)
 		if (conditions.length === 1)
 			selectedCond = conditions[0]

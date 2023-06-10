@@ -16,11 +16,6 @@ export default class ActionEarnIncome extends Action {
 		}
 	}
 
-	relevant(warn) {
-		const selected = this._.ensureOneSelected(warn)
-		return selected ? new Engagement(selected) : undefined
-	}
-
 	async act(engagement, options) {
 		game.pf2e.actions.earnIncome(engagement.initiator.actor)
 	}

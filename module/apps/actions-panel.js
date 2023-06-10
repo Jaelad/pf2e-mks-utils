@@ -1,7 +1,7 @@
 import {default as i18n} from "../../lang/pf2e-i18n.js"
 import $$arrays from "../../utils/arrays.js"
 import LocalStorage from "../../utils/local-storage.js"
-import { ActionRunner } from "../action.js"
+import { ActionRunner, RUDIMENTARY_ACTIONS } from "../action.js"
 import {SYSTEM} from "../constants.js"
 import BasePanel from "./base-panel.js"
 
@@ -68,10 +68,11 @@ export default class ActionsPanel extends BasePanel {
 		const dataset = event?.currentTarget?.dataset
 		if (dataset?.action) {
 			if (dataset.action.startsWith("Compendium"))
-				game.MKS.compendiumToChat(null, dataset.action)
-			else {
+				game.MKS.compendiumShow(dataset.action)
+			else if (event.ctrlKey)
+				game.MKS.actions[dataset.action]?.showSheet()
+			else
 				new ActionRunner(game.MKS.actions[dataset.action]).run()
-			}
 		}
 	}
 	
@@ -122,14 +123,14 @@ export default class ActionsPanel extends BasePanel {
 		data.showApplicable = localSettings?.showApplicable ?? true
 		data.inCombatTurn = game.settings.get(SYSTEM.moduleId, "selectCombatantFirst")
 		
-		const allTags = {}, mksActions = game.MKS.actions, mksRudimentaryActions = game.MKS.rudimentaryActions
+		const allTags = {}, mksActions = game.MKS.actions
 		for (let action in mksActions) {
 			if (!mksActions.hasOwnProperty(action) || mksActions[action].mode !== this.activeTab) continue
 			const actionObj = mksActions[action]
 			if (data.showApplicable && !actionObj.relevant())
 				continue
 			
-			(m.tags ?? []).forEach(tag => {
+			(actionObj.tags ?? []).forEach(tag => {
 				if (!allTags[tag])
 					allTags[tag] = {
 						expanded: localSettings?.expanded?.[tag] ?? false,
@@ -147,11 +148,11 @@ export default class ActionsPanel extends BasePanel {
 			label: i18n.actionTag("rudimentary"),
 			actions: []
 		}
-		for (let rudimentaryAction in mksRudimentaryActions) {
-			const definition = mksRudimentaryActions[rudimentaryAction]
+		for (const rudimentaryAction in RUDIMENTARY_ACTIONS) {
+			const definition = RUDIMENTARY_ACTIONS[rudimentaryAction]
 			if (definition.mode === this.activeTab)
 				allTags.rudimentary.actions.push({
-					action: rudimentaryAction,
+					action: definition.compendium,
 					label: i18n.action(rudimentaryAction),
 					icon: definition.icon,
 					compendium: definition.compendium,

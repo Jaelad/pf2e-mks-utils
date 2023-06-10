@@ -1,4 +1,3 @@
-import {default as LOG} from "../../utils/logging.js"
 import {SYSTEM} from "../constants.js"
 import Effect, { EFFECT_GRABBING } from "./effect.js"
 
@@ -128,7 +127,7 @@ export default class Equipments {
 	}
 	
 	hasAny(items) {
-		return !!this.actor.itemTypes.equipment.find(e => items.includes(e.slug))
+		return this.actor.itemTypes.equipment.filter(e => items.includes(e.slug))
 	}
 
 	get heldItems() {
@@ -136,7 +135,7 @@ export default class Equipments {
 	}
 
 	hasEquippedAny(items) {
-		const handsFree = this.handsFree()
+		const handsFree = this.handsFree
 		const inv = this.hasAny(items)
 		return inv.filter(e => { 
 			if ([EQU_HEALERS_TOOLS, EQU_HEALERS_TOOLS_EXPANDED, EQU_THVS_TOOLS, EQU_ALCHEMISTS_TOOLS].includes(e.slug))

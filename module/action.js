@@ -7,6 +7,7 @@ import $$lang from "../utils/lang.js"
 import CommonUtils from "./helpers/common-utils.js"
 import {Engagement, Engagements} from "./model/engagement.js"
 import ObjectColl from "./model/object-coll.js"
+import $$strings from "../utils/strings.js"
 
 export default class Action {
 
@@ -30,6 +31,11 @@ export default class Action {
 		// }
 	}
 
+	showSheet() {
+		const compendium = Compendium['ACTION_' + $$strings.underscored(this.name)]
+		this._.compendiumShow(compendium).then()
+	}
+
 	// return engagement
 	relevant(warn) {
 		const selected = this._.ensureOneSelected(warn)
@@ -41,29 +47,29 @@ export default class Action {
 
 	async apply(engagement, result) {
 		if (result?.roll?.degreeOfSuccess > -1)
-			this.resultToChat(engagement.initiator, this.name, result.roll.degreeOfSuccess)
+			this.resultToChat(engagement.initiator, result.roll.degreeOfSuccess)
 	}
 
 	createResult(engagement, roll, options) {
 		return {
 			engagement: engagement.initiator ? engagement.participants : ObjectColl.serialize(engagement),
 			roll: {
-				degreeOfSuccess: roll.degreeOfSuccess
+				degreeOfSuccess: roll?.degreeOfSuccess
 			},
 			options
 		}
 	}
 
-	resultToChat(token, action, degreeOfSuccess, glyph = 'A') {
-		const actionName = i18n.action(action)
-		const noteText = i18n.actionNote(action, degreeOfSuccess)
+	resultToChat(token, degreeOfSuccess) {
+		const actionName = i18n.action(this.name)
+		const noteText = i18n.actionNote(this.name, degreeOfSuccess)
 		if (!noteText)
 			return
 
 		const chatMessage =	`
 		<div class="pf2e chat-card action-card">
             <header class="card-header flexrow">
-                <img src="${ACTION_GLYPH[glyph].img}" title="${actionName}" width="36" height="36">
+                <img src="${ACTION_GLYPH[this.actionGlyph].img}" title="${actionName}" width="36" height="36">
                 <h3>${actionName}</h3>
             </header>
     		<p>${noteText}</p>
@@ -77,7 +83,8 @@ export default class Action {
 				alias: token.name
 			},
 			content: chatMessage,
-			blind: true
+			blind: true,
+			whisper: [game.user.id]
 		}
 		if (game.user.isGM)
 			ChatMessage.create(chatData, {rollMode: ROLL_MODE.BLIND})
@@ -85,13 +92,13 @@ export default class Action {
 			this._.socketHandler.emit('GmChatMessage', chatData, true)
 	}
 
-	messageToChat(token, action, message, glyph = 'A', priv = false, rollMode = ROLL_MODE.PUBLIC) {
-		const actionName = i18n.action(action)
+	messageToChat(token, message, priv = false, rollMode = ROLL_MODE.PUBLIC) {
+		const actionName = i18n.action(this.name)
 
 		const chatMessage =	`
 		<div class="pf2e chat-card action-card">
             <header class="card-header flexrow">
-                <img src="${ACTION_GLYPH[glyph].img}" title="${actionName}" width="36" height="36">
+                <img src="${ACTION_GLYPH[this.actionGlyph].img}" title="${actionName}" width="36" height="36">
                 <h3>${actionName}</h3>
             </header>
     		<p>${message}</p>
@@ -118,11 +125,12 @@ export class ActionRunner {
 	}
 
 	async run(options, warn = false) {
+		const gm = game.user.isGM
 		const engagement = this.action.relevant(warn)
 		if (engagement) {
-			if (!this.action.gmActs) {
+			if (!this.action.gmActs || gm) {
 				const result = await this.action.act(engagement, options)
-				if (!this.action.gmApplies) {
+				if (!this.action.gmApplies || gm) {
 					this.action.apply(engagement, result)
 				}
 				else {
@@ -149,7 +157,8 @@ export class ActionRunner {
 		if (!engagement)
 			return
 
-		return this.action.act(engagement, request.options)
+		const result = await this.action.act(engagement, request.options)
+		this.action.apply(engagement, result)
 	}
 
 	async applyByGM(result) {
@@ -200,12 +209,12 @@ export class SimpleAction extends Action {
 	}
 
 	pertinent(engagement, warn) {
-		const opponentCount = engagement.opponentCount()
+		const opponentCount = engagement.opponentCount
 		return this.targetCount === 1 ? opponentCount === 1 : this.targetCount > 1 ? opponentCount > 1 : true
 	}
 
-	async act(engagement, {overrideDC}) {
-		const options = arguments[1]
+	async act(engagement, options) {
+		const overrideDC = options?.overrideDC
 
 		const rollCallback = ({roll, actor}) => {
 			//this.resultHandler(roll, engagement, options)
@@ -227,11 +236,6 @@ export class SimpleAction extends Action {
 		})
 		const result = await check.roll(engagement).then(rollCallback)
 		return result
-	}
-
-	async apply(engagement, result) {
-		if (!result.roll) return
-		this.resultToChat(engagement.initiator, this.name, result.roll.degreeOfSuccess, this.actionGlyph)
 	}
 
 	// resultHandler(roll, engagement, options) {

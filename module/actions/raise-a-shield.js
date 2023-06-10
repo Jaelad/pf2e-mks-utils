@@ -1,6 +1,7 @@
 import {default as i18n} from "../../lang/pf2e-i18n.js"
-import { Action } from "../action.js"
+import Action from "../action.js"
 import Effect, { EFFECT_RAISE_A_SHIELD } from "../model/effect.js"
+import { Engagement } from "../model/engagement.js"
 
 export default class ActionRaiseAShield extends Action {
 

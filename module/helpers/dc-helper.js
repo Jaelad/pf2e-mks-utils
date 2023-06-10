@@ -102,7 +102,8 @@ export default class DCHelper {
 		const actionTitle = i18n.action(action)
 		title = title ?? ((challenger ? challenger + ": " : "") + actionTitle)
 		return new Promise(resolve => {
-			const compendiumOnClick = compendium ? `game.MKS.compendiumToChat(null, '${compendium}', 'blindroll')` : ''
+			// const compendiumOnClick = compendium ? `game.MKS.compendiumToChat(null, '${compendium}', 'blindroll')` : ''
+			const compendiumOnClick = compendium ? `game.MKS.compendiumShow('${compendium}')` : ''
 			const dialogContent = `
 			<form>
 			<div class="form-group">
@@ -135,7 +136,7 @@ export default class DCHelper {
 			timeout = setTimeout( ()=> {
 				resolve({})
 				dialog?.close({}).then()
-			},20000)
+			},60000)
 			
 			dialog.render(true)
 		})

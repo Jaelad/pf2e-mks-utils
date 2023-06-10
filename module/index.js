@@ -57,12 +57,14 @@ Hooks.on("ready", () => {
 	setInterval(() => {
 		RelativeConditions.sync()
 
-		const messageExpiration = game.MKS.settingsManager.get("chatMessageExpiration") ?? 600
-		const now = new Date().getTime()
-		const expiredMessages = game.messages.filter( (message) => {
-			return now - message.timestamp > messageExpiration * 1000
-		})
-		expiredMessages.forEach(m => m.delete())
+		if (game.user.isGM) {
+			const messageExpiration = game.MKS.settingsManager.get("chatMessageExpiration") ?? 600
+			const now = new Date().getTime()
+			const expiredMessages = game.messages.filter( (message) => {
+				return now - message.timestamp > messageExpiration * 1000
+			})
+			expiredMessages.forEach(m => m.delete())
+		}
 	}, 5000)
 })
 

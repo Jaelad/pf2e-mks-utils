@@ -12,7 +12,8 @@ import SettingsManager from "./settings-manager.js"
 import SocketHandler from "./socket-handler.js"
 import {ActionRunner, RUDIMENTARY_ACTIONS} from "./action.js"
 import ActionAdministerFirstAid from "./actions/administer-first-aid.js"
-import ActionAid from "./actions/aid.js"
+import ActionReadyAid from "./actions/ready-aid.js"
+import ActionReceiveAid from "./actions/receive-aid.js"
 import ActionCreateADiversion from "./actions/create-a-diversion.js"
 import ActionDemoralize from "./actions/demoralize.js"
 import ActionDisarm from "./actions/disarm.js"
@@ -37,7 +38,7 @@ import {
 	ActionConcealAnObject,
 	ActionCoverTracks, ActionCreateForgery,
 	ActionDecipherWriting,
-	ActionDisableADevice,
+	ActionDisableDevice,
 	ActionFeint,
 	ActionForceOpen, ActionGatherInformation,
 	ActionGrabAnEdge,
@@ -59,8 +60,6 @@ import ActionCraft from "./actions/craft.js"
 import ActionLongTermRest from "./actions/long-term-rest.js"
 import ActionEarnIncome from "./actions/earn-income.js"
 import ActionTreatDisease from "./actions/treat-disease.js"
-import ActionReadyAid from "./actions/ready-aid.js"
-import ActionReceiveAid from "./actions/receive-aid.js"
 
 export default class MksTools {
 
@@ -84,11 +83,11 @@ export default class MksTools {
 			})
 		}, true)
 		game.MKS.socketHandler.on('GmTakesAction', (actionRequest) => {
-			const action = this.actions[actionRequest.action]
+			const action = game.MKS.actions[actionRequest.action]
 			new ActionRunner(action).actByGM(actionRequest)
 		}, true)
 		game.MKS.socketHandler.on('GmAppliesActionResult', (actionResult) => {
-			const action = this.actions[actionResult.action]
+			const action = game.MKS.actions[actionResult.action]
 			new ActionRunner(action).applyByGM(actionResult.result)
 		}, true)
 	}
@@ -141,7 +140,7 @@ export default class MksTools {
 			palmAnObject: new ActionPalmAnObject(this),
 			steal: new ActionSteal(this),
 			pickALock: new ActionPickALock(this),
-			disableADevice: new ActionDisableADevice(this),
+			disableDevice: new ActionDisableDevice(this),
 			avoidNotice: new ActionAvoidNotice(this),
 			borrowAnArcaneSpell: new ActionBorrowAnArcaneSpell(this),
 			coerce: new ActionCoerce(this),
@@ -171,7 +170,7 @@ export default class MksTools {
 		registerHandlebarsHelpers()
 	}
 
-	ensureOneSelected(warn = true, requiresEncounter = false) {
+	ensureOneSelected(warn = false, requiresEncounter = false) {
 		if (requiresEncounter) {
 			if (game.combat?.combatant)
 				return game.combat?.combatant?.token?.object
@@ -199,7 +198,7 @@ export default class MksTools {
 		}
 	}
 
-	ensureAtLeastOneSelected(warn = true) {
+	ensureAtLeastOneSelected(warn = false) {
 		let tokens = canvas.tokens.controlled
 		if (tokens.length >= 1)
 			return tokens
@@ -209,7 +208,7 @@ export default class MksTools {
 		}
 	}
 
-	ensureOneTarget(player, warn = true) {
+	ensureOneTarget(player, warn = false) {
 		let tokens
 		if (player)
 			tokens = game.users.players.find(p => p.name === player).targets
@@ -223,7 +222,7 @@ export default class MksTools {
 		}
 	}
 
-	ensureAtLeastOneTarget(warn = true, player = null) {
+	ensureAtLeastOneTarget(warn = false, player = null) {
 		let tokens
 		if (player)
 			tokens = game.users.players.find(p => p.name === player).targets
@@ -277,6 +276,11 @@ export default class MksTools {
 				: null
 			: null
 		return token1.distanceTo(token2, {reach})
+	}
+
+	async compendiumShow(source) {
+		if (source)
+			return fromUuid(source).then(c => c.sheet.render(true))
 	}
 
 	compendiumToChat(tokenOrActor, source, rollMode = 'publicroll', byGM = false) {
