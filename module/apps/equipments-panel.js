@@ -3,6 +3,9 @@ import {SYSTEM} from "../constants.js"
 import BasePanel from "./base-panel.js"
 import {SLOT_USAGES} from "../inventory-manager.js"
 import SelectItemDialog from "./select-item-dialog.js"
+import Equipments from "../model/equipments.js"
+import HandableEquipment from "../model/handable.js"
+import Equipment from "../model/equipment.js"
 
 export default class EquipmentsPanel extends BasePanel {
 	
@@ -32,9 +35,7 @@ export default class EquipmentsPanel extends BasePanel {
 		html.contextmenu((event) => this._mainRightClick(event))
 		html.find("a[data-action=refresh]").click((event) => {
 			event.stopPropagation()
-			game.MKS.inventoryManager.equipments(this.token).then(() => {
-				EquipmentsPanel.rerender()
-			})
+			EquipmentsPanel.rerender()
 		})
 		html.find("[data-token]").click((event) => {
 			event.stopPropagation()
@@ -67,6 +68,12 @@ export default class EquipmentsPanel extends BasePanel {
 	}
 
 	_slotItemSelect(slot, itemId) {
+		if (slot === 'hand2' && itemId) {
+			let eqp = HandableEquipment.byOwner(this.token, itemId)
+			if (eqp.handsEquipped > 1)
+				return
+		}
+
 		const pf2eSlots = []
 		for (const [key, value] of Object.entries(SLOT_USAGES)) {
 			if (Array.isArray(value.slot) ? value.slot.includes(slot) : value.slot === slot)
@@ -90,11 +97,14 @@ export default class EquipmentsPanel extends BasePanel {
 		
 		SelectItemDialog.getItem({items, title: i18n.$$("PF2E.MKS.Dialog.Equipment.SelectItem", {slot: i18n.equipmentSlot(slot)})})
 			.then((selectedItem) => {
+				const eqOld = Equipment.byOwner(this.token, itemId)
+				const eqNew = new Equipment(selectedItem)
+
 				if (selectedItem === null)
-					game.MKS.inventoryManager.unequip(this.token, itemId, slot).then()
+					eqOld.unequip().then(() => EquipmentsPanel.rerender())
 				else if (selectedItem) {
-					game.MKS.inventoryManager.unequip(this.token, itemId, slot).then( () => {
-						game.MKS.inventoryManager.equip(this.token, selectedItem, slot).then()
+					eqOld.unequip().then(() => {
+						eqNew.equip().then(() => EquipmentsPanel.rerender())
 					})
 				}
 			})
@@ -111,7 +121,13 @@ export default class EquipmentsPanel extends BasePanel {
 		if (!itemId || !action || !this.token) return
 
 		event.stopPropagation()
-		game.MKS.inventoryManager[action](this.token, itemId, slot).then()
+		const item = this.token.actor.items.find(i => i.id === itemId)
+		let eqp = new HandableEquipment(item)
+		if (!eqp.item)
+			eqp = new Equipment(item)
+		eqp[action](slot).then(() => {
+			EquipmentsPanel.rerender()
+		})
 	}
 	
 	async getData(options = {}) {
@@ -120,22 +136,10 @@ export default class EquipmentsPanel extends BasePanel {
 		const selected = game.MKS.ensureOneSelected(false)
 		if (!selected) return data
 		this.token = selected
-		
-		let equipments = selected.actor.getFlag(SYSTEM.moduleId, "equipments")
-		if (!equipments)
-			equipments = await game.MKS.inventoryManager.equipments(this.token)
-		
+
 		data.token = {id: selected.id, name: selected.name, img: selected.document.texture.src}
-		data.equipments = {}
-		Object.keys(equipments).forEach(slot => {
-			const itemId = equipments[slot]
-			if (!itemId) return
-			const item = selected.actor.items.find(i => i.id === itemId)
-			if (!item) return
-			const investable = item.system.traits.value.includes('invested')
-			data.equipments[slot] = {img: item.img, name: item.name, id: itemId, invested: investable ? !!item.system.equipped.invested : null}
-		})
-		
+		const equipments = new Equipments(this.token)
+		data.equipments = equipments.description
 		return data
 	}
 }

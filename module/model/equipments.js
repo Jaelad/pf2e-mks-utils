@@ -1,5 +1,8 @@
+import $$objects from "../../utils/objects.js"
 import {SYSTEM} from "../constants.js"
 import Effect, { EFFECT_GRABBING } from "./effect.js"
+import Equipment from "./equipment.js"
+import HandableEquipment from "./handable.js"
 
 export const EQU_HEALERS_TOOLS = "healers-tools" 
 export const EQU_HEALERS_TOOLS_EXPANDED = "healers-tools-expanded"
@@ -25,6 +28,7 @@ export const SLOT_USAGES = {
 	'cloak': {exclusive: true, slot: 'cloak'},
 	'necklace': {exclusive: false, slot: 'necklace'},
 	'amulet': {exclusive: false, slot: 'necklace'},
+	'collar': {exclusive: false, slot: 'necklace'},
 	'bracers': {exclusive: false, slot: 'bracers'},
 	'wrist': {exclusive: false, slot: 'bracers'},
 	'epaulet': {exclusive: true, slot: 'shoulders'}
@@ -33,77 +37,129 @@ export const SLOT_USAGES = {
 export default class Equipments {
 	constructor(tokenOrActor) {
 		this.actor = tokenOrActor?.actor ?? tokenOrActor
-		const items = this.actor.items
 
-		const slots =  {
+		const slots = /* this.actor.getFlag(SYSTEM.moduleId, "equipments") ??*/ {
 			armor: null, head :null, legs :null, feet: null,
 			hand1: null, hand2: null, gloves: null, bracers: null,
 			cloak: null, belt: null, necklace: null, shoulders: null,
 			ring1: null, ring2: null
 		}
-		slots.armor = this.actor.wornArmor?.id
-		slots.hand2 = this.actor.heldShield?.id
-		const weapons = items.filter(i => i.type === 'weapon' && i.isEquipped)
-		const itemsEquipped = items.filter(i => i.type === 'equipment' && i.isEquipped)
+		const handables = HandableEquipment.collectAsMap(tokenOrActor, true)
+		const shields = $$objects.filter(handables, (h => h.isShield))
+		const weapons = $$objects.filter(handables, (h => h.isWeapon))
+
 		const updates = []
-		
-		for (let i = 0; i < weapons.length; i++) {
-			if (!slots.hand1)
-				slots.hand1 = weapons[i].id
-			else if (!slots.hand2)
-				slots.hand2 = weapons[i].id
-			else
-				updates.push({"_id": weapons[i].id, "system.equipped.carryType": 'worn', "system.equipped.handsHeld": 0})
+		let leftHand, rightHand
+
+		const twohandedEquipped = Object.values(weapons).find(w => w.handsEquipped == 2)?.id
+		if (twohandedEquipped) {
+			leftHand = rightHand = twohandedEquipped
 		}
-		
-		for (let i = 0; i < itemsEquipped.length; i++) {
-			const eqp = itemsEquipped[i], usage = eqp.system.usage
-			
-			if (usage.type === 'held') {
-				if (!slots.hand1)
-					slots.hand1 = eqp.id
-				else if (!slots.hand2)
-					slots.hand2 = eqp.id
-				else
-					updates.push({"_id": eqp.id, "system.equipped.carryType": 'worn', "system.equipped.handsHeld": 0})
+		for (const itemId in weapons) {
+			const weapon = weapons[itemId], handsEquipped = weapon.handsEquipped
+			if (twohandedEquipped == itemId)
+				continue
+
+			if ((leftHand && rightHand) || ((leftHand || rightHand) && handsEquipped == 2)) 
+				updates.push(weapon.getUnequipUpdateObject())
+			else if (!leftHand) {
+				leftHand = itemId
 			}
-			else if (usage.type === 'worn') {
-				let unequip = false
-				const slotUsage = SLOT_USAGES[usage.where]
-				if (!slotUsage) continue
-				if (Array.isArray(slotUsage.slot)) {
-					let slotted = false
-					for (let i = 0; i < slotUsage.slot.length; i++) {
-						if (slotted) break
-						if (!slots[slotUsage.slot[i]]) {
-							slots[slotUsage.slot[i]] = eqp.id
-							slotted = true
-						}
-					}
-					unequip = !slotted
+			else if (!rightHand) {
+				rightHand = itemId
+			}
+		}
+		for (const itemId in shields) {
+			if (rightHand)
+				updates.push(shields[itemId].getUnequipUpdateObject())
+			else {
+				rightHand = itemId
+			}
+		}
+
+		for (const itemId in handables) {
+			const handable = handables[itemId], handsEquipped = handable.handsEquipped
+			if (handable.isShield || handable.isWeapon)
+				continue
+			if ((leftHand && rightHand)) 
+				updates.push(handable.getUnequipUpdateObject())
+			else if (handsEquipped == 2 && (!leftHand || !rightHand)) {
+				if (leftHand) {
+					const prevEqp = HandableEquipment.byOwner(this.actor, leftHand)
+					updates.push(prevEqp.getUnequipUpdateObject())
 				}
-				else
-					slots[slotUsage.slot] ? unequip = slotUsage.exclusive : slots[slotUsage.slot] = eqp.id
-				
-				if (unequip)
-					updates.push({"_id": eqp.id, "system.equipped.inSlot": false})
+				else if (rightHand) {
+					const prevEqp = HandableEquipment.byOwner(this.actor, rightHand)
+					updates.push(prevEqp.getUnequipUpdateObject())
+				}
+				leftHand = rightHand = itemId
 			}
+			else if (!leftHand) {
+				leftHand = itemId
+			}
+			else if (!rightHand) {
+				rightHand = itemId
+			}
+			else
+				updates.push(handable.getUnequipUpdateObject())
 		}
+
+		slots.hand1 = leftHand
+		slots.hand2 = rightHand
+		const worns = Equipment.collectAsMap(tokenOrActor, 'worn', true)
+		for (const itemId in worns) {
+			const worn = worns[itemId]
+			let unequip = false
+			const slotUsage = SLOT_USAGES[worn.usage.where]
+			if (!slotUsage) continue
+			if (Array.isArray(slotUsage.slot)) {
+				let slotted = false
+				for (let i = 0; i < slotUsage.slot.length; i++) {
+					if (slotted) break
+					if (!slots[slotUsage.slot[i]]) {
+						slots[slotUsage.slot[i]] = worn.id
+						slotted = true
+					}
+				}
+				unequip = !slotted
+			}
+			else {
+				if (slots[slotUsage.slot])
+					unequip = slotUsage.exclusive
+				else
+					slots[slotUsage.slot] = worn.id
+			}
+			
+			if (unequip)
+				updates.push(worn.getUnequipUpdateObject())
+		}
+
 		if (updates.length > 0)
 			this.actor.updateEmbeddedDocuments("Item", updates).then()
-		
-		const equipments = {
-			armor: slots.armor ?? null, head: slots.head ?? null, legs: slots.legs ?? null, feet: slots.feet ?? null,
-			hand1: slots.hand1 ?? null, hand2: slots.hand2 ?? null, gloves: slots.gloves ?? null, bracers: slots.bracers ?? null,
-			cloak: slots.cloak ?? null, belt: slots.belt ?? null, necklace: slots.necklace ?? null, shoulders: slots.shoulders ?? null,
-			ring1: slots.ring1 ?? null, ring2: slots.ring2 ?? null
-		}
-		if (equipments.hand1 === equipments.hand2)
-			equipments.hand2 = null
-		if (equipments.ring1 === equipments.ring2)
-			equipments.ring2 = null
-		this.actor.setFlag(SYSTEM.moduleId, "equipments", equipments).then()
-		this.equipments = equipments
+		this.actor.unsetFlag(SYSTEM.moduleId, 'equipments').then(() => {
+			this.actor.setFlag(SYSTEM.moduleId, "equipments", slots).then()
+		})
+		this.equipments = slots
+	}
+
+	get description() {
+		const description = {}
+		Object.keys(this.equipments).forEach(slot => {
+			const itemId = this.equipments[slot]
+			if (itemId) {
+				const item = this.actor.items.find(i => i.id === itemId)
+				if (item) {
+					const investable = item.system.traits.value.includes('invested')
+					description[slot] = {img: item.img, name: item.name, id: itemId, invested: investable ? !!item.system.equipped.invested : null}
+					if (slot == 'hand2' && this.equipments.hand1 === this.equipments.hand2)
+						description[slot].secondHand = true
+					if (item.type == 'weapon' && (!!item.system.traits?.value?.find(t => t.startsWith('two-hand')) || item.system.usage.value == 'held-in-one-plus-hands'))
+						description[slot].grip = item.system.equipped.handsHeld
+ 				}
+			}
+		})
+
+		return description
 	}
 
 	// {carryType: dropped/worn/held, handsHeld: 0/1/2, invested:null, true, false}

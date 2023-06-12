@@ -137,6 +137,8 @@
 	"PF2E.MKS.UI.EquipmentsPanel.NoActorSelected": "Please select an actor...",
 	"PF2E.MKS.UI.EquipmentsPanel.Refresh": "Refresh",
 	"PF2E.MKS.UI.EquipmentsPanel.Unequip": "Unequip",
+	"PF2E.MKS.UI.EquipmentsPanel.ChangeGrip": "Change Grip",
+	"PF2E.MKS.UI.EquipmentsPanel.Stow": "Stow",
 	"PF2E.MKS.UI.EquipmentsPanel.Change": "Change",
 	"PF2E.MKS.UI.EquipmentsPanel.ToggleInvested": "Toggle Invested",
 	"PF2E.MKS.Dialog.SelectOne.Title": "Select One",

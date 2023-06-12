@@ -1,18 +1,28 @@
 <div class="equipments">
 	{{#each equipments as |eqp slot|}}
-	<div class="eq-slot slot-{{slot}}" slot-title="{{eqp.name}}" style="background-image: url('{{eqp.img}}');" data-item="{{eqp.id}}" data-slot="{{slot}}">
-		<a title="{{localize 'PF2E.MKS.UI.EquipmentsPanel.Unequip'}}" data-action="unequip" data-item="{{eqp.id}}" data-slot="{{slot}}">
-			<i class="fas fa-sign-out-alt"></i>
-		</a>
+	<div class="eq-slot slot-{{slot}}" slot-title="{{#unless eqp.secondHand}}{{eqp.name}}{{/unless}}" style="background-image: url('{{eqp.img}}'); {{#if eqp.secondHand}}filter: blur(3px);{{/if}}" data-item="{{eqp.id}}" data-slot="{{slot}}">
+		{{#unless eqp.secondHand}}
+			<a title="{{localize 'PF2E.MKS.UI.EquipmentsPanel.Unequip'}}" data-action="unequip" data-item="{{eqp.id}}" data-slot="{{slot}}">
+				<i class="fas fa-sign-out-alt"></i>
+			</a>
+			<a title="{{localize 'PF2E.MKS.UI.EquipmentsPanel.Stow'}}" data-action="stow" data-item="{{eqp.id}}" data-slot="{{slot}}">
+				<i class="fas fa-box"></i>
+			</a>
+			{{#if eqp.grip}}
+				<a title="{{localize 'PF2E.MKS.UI.EquipmentsPanel.ChangeGrip'}}" data-action="changeGrip" data-item="{{eqp.id}}" data-slot="{{slot}}">
+					<i class="fas fa-{{#if (eq eqp.grip 1)}}hand-point-up{{/if}}{{#if (eq eqp.grip 2)}}hand-peace{{/if}}"></i>
+				</a>
+			{{/if}}
+		{{/unless}}
 		<!--
 		<a title="{{localize 'PF2E.MKS.UI.EquipmentsPanel.Change'}}" data-action="change" data-item="{{eqp.id}}">
 			<i class="fas fa-tshirt"></i>
 		</a>
 		-->
-		{{#unless (isNullish eqp.invested)}}
-		<a title="{{localize 'PF2E.MKS.UI.EquipmentsPanel.ToggleInvested'}}" data-action="toggleInvested" data-item="{{eqp.id}}" data-slot="{{slot}}">
-			<i class="fas fa-gem {{#if eqp.invested}}fas-active{{else}}fas-inactive{{/if}}"></i>
-		</a>
+		{{#unless (or eqp.secondHand (isNullish eqp.invested))}}
+			<a title="{{localize 'PF2E.MKS.UI.EquipmentsPanel.ToggleInvested'}}" data-action="toggleInvested" data-item="{{eqp.id}}" data-slot="{{slot}}">
+				<i class="fas fa-gem {{#if eqp.invested}}fas-active{{else}}fas-inactive{{/if}}"></i>
+			</a>
 		{{/unless}}
 	</div>
 	{{/each}}

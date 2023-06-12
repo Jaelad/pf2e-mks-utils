@@ -194,6 +194,8 @@
 	"PF2E.MKS.UI.EquipmentsPanel.NoActorSelected": "Bir aktör seçiniz...",
 	"PF2E.MKS.UI.EquipmentsPanel.Refresh": "Yenile",
 	"PF2E.MKS.UI.EquipmentsPanel.Unequip": "Çıkar",
+	"PF2E.MKS.UI.EquipmentsPanel.ChangeGrip": "Tutuşu Değiştir",
+	"PF2E.MKS.UI.EquipmentsPanel.Stow": "İstifle",
 	"PF2E.MKS.UI.EquipmentsPanel.Change": "Değiştir",
 	"PF2E.MKS.UI.EquipmentsPanel.ToggleInvested": "Bağlanma Durumu",
 	"PF2E.MKS.Warning.Actor.OneMustBeSelected": "Bir piyon seçmelisiniz!",
