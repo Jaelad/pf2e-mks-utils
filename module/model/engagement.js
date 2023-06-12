@@ -64,7 +64,7 @@ export class Engagement {
 	}
 	
 	get isAdjacent() {
-		return this.distance() === 0
+		return this.distance() === 5
 	}
 	
 	getTargetDC(dcFunc) {

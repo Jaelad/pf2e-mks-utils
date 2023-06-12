@@ -25,9 +25,17 @@ export default class ActionAdministerFirstAid extends SimpleAction {
 			&& (Item.hasAny(engagement.targeted, CONDITION_DYING) || PersistentDamage.hasAny(engagement.targeted, [PERSISTENT_BLEED, PERSISTENT_POISON]))
 	}
 	
-	async act(engagement, {overrideDC}) {
+	async act(engagement) {
 		const targeted = engagement.targeted
-		const healersTools = new Equipments(engagement.initiator).hasEquippedAny([EQU_HEALERS_TOOLS, EQU_HEALERS_TOOLS_EXPANDED])
+		const equipments = new Equipments(engagement.initiator)
+		const healersTools = !!game.combat
+					? equipments.hasEquippedAny([EQU_HEALERS_TOOLS, EQU_HEALERS_TOOLS_EXPANDED])
+					: equipments.hasAny([EQU_HEALERS_TOOLS, EQU_HEALERS_TOOLS_EXPANDED])
+		
+		if (!healersTools) {
+			this._.warn("PF2E.MKS.Warning.Action.MustUseHealersTools")
+			return
+		}
 		
 		const dying = new Condition(targeted, CONDITION_DYING)
 		const bleeding = new PersistentDamage(targeted, PERSISTENT_BLEED)

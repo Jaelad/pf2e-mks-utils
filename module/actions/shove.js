@@ -31,7 +31,7 @@ export default class ActionShove extends Action {
 			return
 
 		const engagement = new Engagement(selected, targeted)
-		const equipments = new Equipments(selected), grabbed = new Condition(willBeGrabbed, CONDITION_GRABBED)
+		const equipments = new Equipments(selected)
 		
 		if (equipments.handsFree > 0 && engagement.sizeDifference < 2 && engagement.isEnemy
 			&& distance < (equipments.wieldsWeaponWithTraits(selected, ['reach', 'shove']) ? 15 : 10))

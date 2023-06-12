@@ -203,6 +203,7 @@
 	"PF2E.MKS.Warning.Target.OneMustBeSelected": "Bir piyon hedeflemelisiniz!",
 	"PF2E.MKS.Warning.Target.AtLeastOneMustBeSelected": "En az bir piyon hedeflemelisiniz!",
 	"PF2E.MKS.Warning.Encounter.NoneExists": "Mücadelede değilsiniz.",
+	"PF2E.MKS.Warning.Action.MustUseHealersTools": "Sağlıkçı çantası kullanmalısınız.",
 	"PF2E.MKS.Error.DCNotSetInTime": "GM DC'yi zamanında tayin edemedi.",
 	"pf2e.mks.check.skill-check.defaulttitle.firstpart": "${actor.name} ${stat.label} Atışı",
 	"pf2e.mks.check.perception-check.defaulttitle.firstpart": "${actor.name} Algı Atışı",

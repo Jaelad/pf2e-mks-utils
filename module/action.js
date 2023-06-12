@@ -130,6 +130,7 @@ export class ActionRunner {
 		if (engagement) {
 			if (!this.action.gmActs || gm) {
 				const result = await this.action.act(engagement, options)
+				if (!result) return
 				if (!this.action.gmApplies || gm) {
 					this.action.apply(engagement, result)
 				}

@@ -170,13 +170,20 @@ export default class MksTools {
 		registerHandlebarsHelpers()
 	}
 
+	warn(message, predicate) {
+		if (predicate === true || !predicate || predicate()) {
+			const warning = i18n.$(message)
+			ui.notifications.warn(warning)
+		}
+	}
+
 	ensureOneSelected(warn = false, requiresEncounter = false) {
 		if (requiresEncounter) {
 			if (game.combat?.combatant)
 				return game.combat?.combatant?.token?.object
 			else {
 				if (warn)
-					ui.notifications.warn(i18n.$("PF2E.MKS.Warning.Encounter.NoneExists"))
+					this.warn("PF2E.MKS.Warning.Encounter.NoneExists")
 				return
 			}
 		}
@@ -193,8 +200,7 @@ export default class MksTools {
 		if (token)
 			return token
 		else if (warn) {
-			const warning = i18n.$("PF2E.MKS.Warning.Actor.OneMustBeSelected")
-			ui.notifications.warn(warning)
+			this.warn("PF2E.MKS.Warning.Actor.OneMustBeSelected")
 		}
 	}
 
@@ -203,8 +209,7 @@ export default class MksTools {
 		if (tokens.length >= 1)
 			return tokens
 		else if (warn) {
-			const warning = i18n.$("PF2E.MKS.Warning.Actor.AtLeastOneMustBeSelected")
-			ui.notifications.warn(warning)
+			this.warn("PF2E.MKS.Warning.Actor.AtLeastOneMustBeSelected")
 		}
 	}
 
@@ -217,8 +222,7 @@ export default class MksTools {
 		if (tokens.size === 1)
 			return Array.from(tokens)[0]
 		else if (warn) {
-			const warning = i18n.$("PF2E.MKS.Warning.Target.OneMustBeSelected")
-			ui.notifications.warn(warning)
+			this.warn("PF2E.MKS.Warning.Target.OneMustBeSelected")
 		}
 	}
 
@@ -231,7 +235,7 @@ export default class MksTools {
 		if (tokens.size >= 1)
 			return Array.from(tokens)
 		else if (warn) {
-			const warning = i18n.$("PF2E.MKS.Warning.Target.AtLeastOneMustBeSelected")
+			this.warn("PF2E.MKS.Warning.Target.AtLeastOneMustBeSelected")
 			ui.notifications.warn(warning)
 		}
 	}
