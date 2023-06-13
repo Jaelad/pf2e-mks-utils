@@ -1,17 +1,16 @@
 import {default as i18n} from "../../lang/pf2e-i18n.js"
 import Action from "../action.js"
-import { Engagement, Engagements } from "../model/engagement.js"
 import ObjectColl from "../model/object-coll.js"
 
-export default class ActionLongTermRest extends Action {
+export default class ActionRestForNight extends Action {
 
 	constructor(MKS) {
-		super(MKS, 'longTermRest', 'downtime', false, false)
+		super(MKS, 'restForNight', 'downtime', false, false)
 	}
 
 	get properties() {
 		return {
-			label: i18n.action("longTermRest"),
+			label: i18n.action("restForNight"),
 			icon: "systems/pf2e/icons/spells/sleep.webp",
 			actionGlyph: '',
 			tags: ['preparation']
@@ -26,6 +25,6 @@ export default class ActionLongTermRest extends Action {
 
 	async act(coll, options) {
 		const selecteds = coll.objects
-		game.pf2e.actions.longTermRest({actors: selecteds.map(t => t.actor)})
+		game.pf2e.actions.restForTheNight({actors: selecteds.map(t => t.actor)})
 	}
 }

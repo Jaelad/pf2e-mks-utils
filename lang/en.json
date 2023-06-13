@@ -77,7 +77,7 @@
 	"PF2E.Actions.Craft.DropItemDialog.Title": "Select Item to Craft",
 	"PF2E.Actions.Craft.Error.ItemReferenceMismatch": "A Physical Item must be selected!",
 	"PF2E.Actions.EarnIncome.Title": "Earn Income",
-	"PF2E.Actions.LongTermRest.Title": "Long-Term Rest",
+	"PF2E.Actions.RestForNight.Title": "Rest",
 	"PF2E.Actions.Subsist.Title": "Subsist",
 	"PF2E.Actions.CreateForgery.Title": "Create Forgery",
 

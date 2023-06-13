@@ -183,6 +183,15 @@ export class SimpleAction extends Action {
 		this.targetCount = targetCount
 		this.requiresEncounter = requiresEncounter
 	}
+	
+	get properties() {
+		return {
+			label: i18n.action(this.name),
+			icon: this.icon,
+			actionGlyph: this.actionGlyph,
+			tags: this.tags
+		}
+	}
 
 	relevant(warn) {
 		const selected = this._.ensureOneSelected(warn, this.requiresEncounter)

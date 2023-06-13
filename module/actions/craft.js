@@ -2,7 +2,6 @@ import {default as i18n} from "../../lang/pf2e-i18n.js"
 import Action from "../action.js"
 import DropItemDialog from "../apps/drop-item-dialog.js"
 import $$lang from "../../utils/lang.js"
-import {Engagement} from "../model/engagement.js"
 
 export default class ActionCraft extends Action {
 	

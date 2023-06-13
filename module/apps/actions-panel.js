@@ -127,17 +127,17 @@ export default class ActionsPanel extends BasePanel {
 		for (let action in mksActions) {
 			if (!mksActions.hasOwnProperty(action) || mksActions[action].mode !== this.activeTab) continue
 			const actionObj = mksActions[action]
+			const props = actionObj.properties
 			if (data.showApplicable && !actionObj.relevant())
 				continue
 			
-			(actionObj.tags ?? []).forEach(tag => {
+			(props.tags ?? []).forEach(tag => {
 				if (!allTags[tag])
 					allTags[tag] = {
 						expanded: localSettings?.expanded?.[tag] ?? false,
 						label: i18n.actionTag(tag),
 						actions: []
 					}
-				const props = actionObj.properties
 				props.action = action
 				allTags[tag].actions.push(props)
 			})

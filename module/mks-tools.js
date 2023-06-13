@@ -57,8 +57,8 @@ import {
 import ActionRepair from "./actions/repair.js"
 import ActionTreatWounds from "./actions/treat-wounds.js"
 import ActionCraft from "./actions/craft.js"
-import ActionLongTermRest from "./actions/long-term-rest.js"
 import ActionEarnIncome from "./actions/earn-income.js"
+import ActionRestForNight from "./actions/rest-for-night.js"
 import ActionTreatDisease from "./actions/treat-disease.js"
 import ActionTreatPoison from "./actions/treat-poison.js"
 
@@ -115,7 +115,6 @@ export default class MksTools {
 			escape: new ActionEscape(this),
 			grapple: new ActionGrapple(this),
 			hide: new ActionHide(this),
-			longTermRest: new ActionLongTermRest(this),
 			palmAnObject: new ActionPalmAnObject(this),
 			prone: new ActionProne(this),
 			raiseAShield: new ActionRaiseAShield(this),
@@ -123,6 +122,7 @@ export default class MksTools {
 			recallKnowledge: new ActionRecallKnowledge(this),
 			receiveAid: new ActionReceiveAid(this),
 			repair: new ActionRepair(this),
+			restForNight: new ActionRestForNight(this),
 			seek: new ActionSeek(this),
 			shove: new ActionShove(this),
 			sneak: new ActionSneak(this),
