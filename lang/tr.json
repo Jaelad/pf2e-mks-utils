@@ -33,6 +33,7 @@
 	"PF2E.Actions.AdministerFirstAid.Poisoned": "Zehirlenme",
 	"PF2E.Actions.AdministerFirstAid.Dying": "Ölüm Hali",
 	"PF2E.Actions.AdministerFirstAid.BleedingFlatCheck": "Kanamayı engeleme atışı : {roll}",
+	"PF2E.Actions.AdministerFirstAid.PoisoningFlatCheck": "Zehirlenmeyi engeleme atışı : {roll}",
 	"PF2E.Actions.AvertGaze.Title": "Gözünü Kaçır",
 	"PF2E.Actions.Balance.Title": "Dengeni Sağla",
 	"PF2E.Actions.CommandAnAnimal.Title": "Hayvana Emret",

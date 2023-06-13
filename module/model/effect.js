@@ -45,7 +45,8 @@ export default class Effect extends Item {
 				const val = changes[change]
 				eval("effectData." + change + "=" + val)
 			}
-			this.item = await this.actor.createEmbeddedDocuments("Item", [effectData])
+			await this.actor.createEmbeddedDocuments("Item", [effectData])
+			this.item = this.actor.itemTypes.effect.find((c) => "effect-" + this.effect === c.slug)
 		}
 		return this
 	}
@@ -82,7 +83,7 @@ export default class Effect extends Item {
 				if (this.hasBadge)
 					updates["system.badge.value"] = value
 				else
-					updates["system.badge"] = {type: "counter", value: value}
+					updates["system.badge"] = {type: "value", value: value}
 			}
 		}
 		return this.actor.updateEmbeddedDocuments("Item", [updates])

@@ -82,12 +82,12 @@ export default class ActionAdministerFirstAid extends SimpleAction {
 		return await super.act( engagement, {overrideDC: dc, affliction, formula, conditionId: id})
 	}
 
-	async bleedingFlatCheck(targeted, bleeding) {
+	async flatCheck(targeted, effect, message) {
 		const flatCheckRoll = new Roll('1d20').roll({async: false})
-		CommonUtils.chat(targeted, i18n.$$("PF2E.Actions.AdministerFirstAid.BleedingFlatCheck", {roll: flatCheckRoll.result}))
+		CommonUtils.chat(targeted, i18n.$$(message, {roll: flatCheckRoll.result}))
 		
 		if (flatCheckRoll.result >= 15) {
-			await bleeding.purge()
+			await effect.purge()
 			return true
 		}
 		return false
@@ -108,9 +108,9 @@ export default class ActionAdministerFirstAid extends SimpleAction {
 		else if (options.affliction === 'bleeding') {
 			const bleeding = new PersistentDamage(targeted, PERSISTENT_BLEED)
 			if (degreeOfSuccess > 1) {
-				const bleedingStopped = await this.bleedingFlatCheck()
+				const bleedingStopped = await this.bleedingFlatCheck(targeted, bleeding, "PF2E.Actions.AdministerFirstAid.BleedingFlatCheck")
 				if (!bleedingStopped && degreeOfSuccess > 2)
-					await this.bleedingFlatCheck()
+					await this.bleedingFlatCheck(targeted, bleeding, "PF2E.Actions.AdministerFirstAid.BleedingFlatCheck")
 			}
 			else if (degreeOfSuccess === 0) {
 				const healthLost = new Roll(options.formula).roll({async: false}).total
@@ -120,11 +120,23 @@ export default class ActionAdministerFirstAid extends SimpleAction {
 			}
 		}
 		else if (options.affliction === 'poisoned') {
-			const bonus = degreeOfSuccess === 2 ? 2 : degreeOfSuccess === 3 ? 4 : degreeOfSuccess === 0 ? -2 : 0
-			if (bonus !== 0) {
-				const poisonTreated = new Effect(targeted, EFFECT_POISON_TREATED)
-				poisonTreated.ensure().then(() => {
-					poisonTreated.setBadgeValue(bonus)
+			// const bonus = degreeOfSuccess === 2 ? 2 : degreeOfSuccess === 3 ? 4 : degreeOfSuccess === 0 ? -2 : 0
+			// if (bonus !== 0) {
+			// 	const poisonTreated = new Effect(targeted, EFFECT_POISON_TREATED)
+			// 	poisonTreated.ensure().then(() => {
+			// 		poisonTreated.setBadgeValue(bonus)
+			// 	})
+			// }
+			const poisoning = new PersistentDamage(targeted, PERSISTENT_POISON)
+			if (degreeOfSuccess > 1) {
+				const poisoningStopped = await this.flatCheck(targeted, poisoning, "PF2E.Actions.AdministerFirstAid.PoisoningFlatCheck")
+				if (!poisoningStopped && degreeOfSuccess > 2)
+					await this.bleedingFlatCheck(targeted, bleeding, "PF2E.Actions.AdministerFirstAid.PoisoningFlatCheck")
+			}
+			else if (degreeOfSuccess === 0) {
+				const healthLost = new Roll(options.formula).roll({async: false}).total
+				this._.actorManager.applyHPChange(targeted, {value: -1 * healthLost}).then(()=> {
+					CommonUtils.chat(targeted, i18n.$$("PF2E.MKS.Chat.HealthLost", {healthLost}))
 				})
 			}
 		}

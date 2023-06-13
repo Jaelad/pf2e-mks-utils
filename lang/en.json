@@ -31,6 +31,7 @@
 	"PF2E.Actions.AdministerFirstAid.Poisoned": "Poisoned",
 	"PF2E.Actions.AdministerFirstAid.Dying": "Dying",
 	"PF2E.Actions.AdministerFirstAid.BleedingFlatCheck": "Bleeding Flat Check : {roll}",
+	"PF2E.Actions.AdministerFirstAid.PoisoningFlatCheck": "Posioning Flat Check : {roll}",
 	"PF2E.Actions.TakeCover.Title": "Take Cover",
 	"PF2E.Actions.ReceiveAid.Title": "Receive Aid",
 	"PF2E.Actions.RaiseAShield.Title": "Raise a Shield",
