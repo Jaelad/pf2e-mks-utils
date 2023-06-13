@@ -14,11 +14,8 @@ export default class ActionSneak extends SimpleAction {
 			actionGlyph: 'A',
 			targetCount: 2,
 			requiresEncounter: true,
+			opposition: 'enemy',
 		})
-	}
-
-	pertinent(engagement, warn) {
-		return engagement.isEnemy
 	}
 
 	async apply(engagement, result) {
@@ -34,7 +31,7 @@ export default class ActionSneak extends SimpleAction {
 				const conditionUuid = degree > 1 ? UUID_CONDITONS.undetected : (degree == 1 ? UUID_CONDITONS.hidden : UUID_CONDITONS.observed)
 
 				const message = i18n.$$('PF2E.Actions.Sneak.Result', {target: target.name, conditionRef: `@UUID[${conditionUuid}]`})
-				this.messageToChat(selected, this.action, message, this.actionGlyph, true)
+				this.messageToChat(engagement.initiator, message, true)
 			}
 		}
 	}

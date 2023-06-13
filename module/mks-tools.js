@@ -216,6 +216,15 @@ export default class MksTools {
 		}
 	}
 
+	getTargets(player) {
+		let tokens
+		if (player)
+			tokens = game.users.players.find(p => p.name === player).targets
+		else
+			tokens = game.user.targets
+		return tokens
+	}
+
 	ensureOneTarget(player, warn = false) {
 		let tokens
 		if (player)
@@ -229,7 +238,7 @@ export default class MksTools {
 		}
 	}
 
-	ensureAtLeastOneTarget(warn = false, player = null) {
+	ensureAtLeastOneTarget(player = null, warn = false) {
 		let tokens
 		if (player)
 			tokens = game.users.players.find(p => p.name === player).targets

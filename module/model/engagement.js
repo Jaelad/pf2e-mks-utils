@@ -121,7 +121,7 @@ export class Engagements extends Engagement {
 	}
 
 	get participants() {
-		return {initiator: this.initiator.id, targeted: this.targetedOnes.map(t => t.id)}
+		return {initiator: this.initiator.id, targeted: this.engagements.map(e => e.id)}
 	}
 
 	get targets() {
@@ -137,7 +137,11 @@ export class Engagements extends Engagement {
 	}
 	
 	get isAlly() {
-		return this.engagements.every( e => e.isAlly())
+		return this.engagements.every( e => e.isAlly)
+	}
+
+	get isEnemy() {
+		return this.engagements.every( e => e.isEnemy)
 	}
 
 	get inMeleeRange() {

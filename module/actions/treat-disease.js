@@ -11,16 +11,13 @@ export default class ActionTreatDisease extends SimpleAction {
 			tags: ['preparation'],
 			actionGlyph: '',
 			targetCount: 1,
+			opposition: 'ally',
 			dc: 15
 		})
 	}
 	
-	pertinent(engagement, warn) {
-		return engagement.isAlly
-	}
-	
 	async apply(engagement, result) {
-		const healersTools = new Equipments(engagement.initiator).hasAny([EQU_HEALERS_TOOLS, EQU_HEALERS_TOOLS_EXPANDED])
+		const healersTools = new Equipments(engagement.initiator).hasAny([EQU_HEALERS_TOOLS, EQU_HEALERS_TOOLS_EXPANDED]).length > 0
 		if (!healersTools) {
 			this._.warn("PF2E.MKS.Warning.Action.MustUseHealersTools")
 			return

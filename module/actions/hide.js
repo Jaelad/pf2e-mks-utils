@@ -14,11 +14,8 @@ export default class ActionHide extends SimpleAction {
 			actionGlyph: 'A',
 			targetCount: 2,
 			requiresEncounter: true,
+			opposition: 'enemy',
 		})
-	}
-
-	pertinent(engagement, warn) {
-		return engagement.isEnemy
 	}
 
 	async apply(engagement, result) {
@@ -34,12 +31,12 @@ export default class ActionHide extends SimpleAction {
 			const degree = DCHelper.calculateRollSuccess(result.roll, dc - coverBonus)
 			if (degree < 2) {
 				const message = i18n.$$('PF2E.Actions.Hide.Result', {target: target.name, conditionRef: `@UUID[${UUID_CONDITONS.observed}]`})
-				this.messageToChat(selected, this.action, message, this.actionGlyph, true)
+				this.messageToChat(engagement.initiator, message, true)
 			}
 			else {
 				relative.setAwarenessTowardMe(target, Math.min(awareness, 2))
 				const message = i18n.$$('PF2E.Actions.Hide.Result', {target: target.name, conditionRef: `@UUID[${UUID_CONDITONS.hidden}]`})
-				this.messageToChat(selected, this.action, message, this.actionGlyph, true)
+				this.messageToChat(engagement.initiator, message, true)
 			}
 		}
 	}

@@ -2,10 +2,10 @@
   "id": "pf2e-tools-mks",
   "title": "PF2e Tools by MKS",
   "description": "General Utilities and Action Implementations for Pathfinder 2e",
-  "version": "0.3",
+  "version": "0.5",
   "compatibility": {
-    "minimum": "10",
-    "verified": "10.286"
+    "minimum": "11",
+    "verified": "11.301"
   },
   "authors": [
     {

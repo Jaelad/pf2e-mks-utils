@@ -16,12 +16,14 @@ export default class ActionAdministerFirstAid extends SimpleAction {
 			icon: "systems/pf2e/icons/spells/heal-companion.webp",
 			tags: ['combat'],
 			actionGlyph: 'D',
-			targetCount: 1
+			targetCount: 1,
+			opposition: 'ally'
 		})
 	}
 	
 	pertinent(engagement, warn) {
-		return engagement.isAdjacent && engagement.isAlly
+		const ok = super.pertinent(engagement, warn)
+		return ok && engagement.isAdjacent
 			&& (Item.hasAny(engagement.targeted, CONDITION_DYING) || PersistentDamage.hasAny(engagement.targeted, [PERSISTENT_BLEED, PERSISTENT_POISON]))
 	}
 	
@@ -29,8 +31,8 @@ export default class ActionAdministerFirstAid extends SimpleAction {
 		const targeted = engagement.targeted
 		const equipments = new Equipments(engagement.initiator)
 		const healersTools = !!game.combat
-					? equipments.hasEquippedAny([EQU_HEALERS_TOOLS, EQU_HEALERS_TOOLS_EXPANDED])
-					: equipments.hasAny([EQU_HEALERS_TOOLS, EQU_HEALERS_TOOLS_EXPANDED])
+					? equipments.hasEquippedAny([EQU_HEALERS_TOOLS, EQU_HEALERS_TOOLS_EXPANDED]).length > 0
+					: equipments.hasAny([EQU_HEALERS_TOOLS, EQU_HEALERS_TOOLS_EXPANDED]).length > 0
 		
 		if (!healersTools) {
 			this._.warn("PF2E.MKS.Warning.Action.MustUseHealersTools")
@@ -120,13 +122,6 @@ export default class ActionAdministerFirstAid extends SimpleAction {
 			}
 		}
 		else if (options.affliction === 'poisoned') {
-			// const bonus = degreeOfSuccess === 2 ? 2 : degreeOfSuccess === 3 ? 4 : degreeOfSuccess === 0 ? -2 : 0
-			// if (bonus !== 0) {
-			// 	const poisonTreated = new Effect(targeted, EFFECT_POISON_TREATED)
-			// 	poisonTreated.ensure().then(() => {
-			// 		poisonTreated.setBadgeValue(bonus)
-			// 	})
-			// }
 			const poisoning = new PersistentDamage(targeted, PERSISTENT_POISON)
 			if (degreeOfSuccess > 1) {
 				const poisoningStopped = await this.flatCheck(targeted, poisoning, "PF2E.Actions.AdministerFirstAid.PoisoningFlatCheck")

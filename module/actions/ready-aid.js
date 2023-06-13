@@ -13,11 +13,8 @@ export default class ActionReadyAid extends SimpleAction {
 			actionGlyph: 'A',
 			targetCount: 1,
 			requiresEncounter: true,
+			opposition: 'ally',
 		})
-	}
-	
-	pertinent(engagement, warn) {
-		return engagement.isAlly
 	}
 	
 	async apply(engagement) {

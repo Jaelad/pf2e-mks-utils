@@ -12,12 +12,9 @@ export class ActionTumbleThrough extends SimpleAction {
 			tags: ['situational'],
 			actionGlyph: 'A',
 			targetCount: 1,
+			opposition: 'enemy',
 			dc: t => t.actor.saves.reflex.dc.value,
 		})
-	}
-	
-	pertinent(engagement, warn) {
-		return engagement.isEnemy
 	}
 }
 
@@ -30,12 +27,9 @@ export class ActionSenseMotive extends SimpleAction {
 			tags: ['social'],
 			actionGlyph: 'A',
 			targetCount: 1,
+			opposition: 'enemy',
 			dc: t => t.actor.skills.deception.dc.value,
 		})
-	}
-	
-	pertinent(engagement, warn) {
-		return engagement.isEnemy
 	}
 }
 
@@ -135,6 +129,7 @@ export class ActionLie extends SimpleAction {
 			tags: ['social'],
 			actionGlyph: 'T',
 			targetCount: 2,
+			opposition: 'enemy',
 			dc: t => t.actor.perception.dc.value,
 		})
 	}
@@ -149,12 +144,14 @@ export class ActionFeint extends SimpleAction {
 			tags: ['combat'],
 			actionGlyph: 'A',
 			targetCount: 1,
+			opposition: 'enemy',
 			dc: t => t.actor.perception.dc.value,
 		})
 	}
 	
 	pertinent(engagement, warn) {
-		return engagement.isEnemy && engagement.inMeleeRange
+		const ok = super.pertinent(engagement, warn)
+		return ok && engagement.inMeleeRange
 	}
 	
 	async apply(engagement, result) {
@@ -177,6 +174,7 @@ export class ActionRequest extends SimpleAction {
 			tags: ['social'],
 			actionGlyph: 'A',
 			targetCount: 1,
+			opposition: 'enemy',
 			dc: 15
 		})
 	}
@@ -191,12 +189,14 @@ export class ActionCommandAnAnimal extends SimpleAction {
 			tags: ['social'],
 			actionGlyph: 'A',
 			targetCount: 1,
+			opposition: 'ally',
 			dc: 15
 		})
 	}
 	
 	pertinent(engagement, warn) {
-		return Array.from(engagement?.targeted?.actor?.traits).indexOf('animal') !== -1
+		const ok = super.pertinent(engagement, warn)
+		return ok && Array.from(engagement?.targeted?.actor?.traits).indexOf('animal') !== -1
 	}
 }
 
@@ -208,7 +208,6 @@ export class ActionPerform extends SimpleAction {
 			icon: "systems/pf2e/icons/features/classes/magnum-opus.webp",
 			tags: ['social'],
 			actionGlyph: 'A',
-			targetCount: 0,
 			dc: 15
 		})
 	}
@@ -223,6 +222,7 @@ export class ActionConcealAnObject extends SimpleAction {
 			tags: ['stealth'],
 			actionGlyph: 'A',
 			targetCount: 2,
+			opposition: 'enemy',
 			dc: t => t.actor.perception.dc.value
 		})
 	}
@@ -237,6 +237,7 @@ export class ActionPalmAnObject extends SimpleAction {
 			tags: ['stealth'],
 			actionGlyph: 'A',
 			targetCount: 2,
+			opposition: 'enemy',
 			dc: t => t.actor.perception.dc.value
 		})
 	}
@@ -251,6 +252,7 @@ export class ActionSteal extends SimpleAction {
 			tags: ['stealth'],
 			actionGlyph: 'A',
 			targetCount: 1,
+			opposition: 'enemy',
 			dc: 15
 		})
 	}
@@ -269,7 +271,8 @@ export class ActionPickALock extends SimpleAction {
 	}
 	
 	pertinent(engagement, warn) {
-		return new Equipments(engagement.initiator).hasEquippedAny(EQU_THVS_TOOLS)
+		const ok = super.pertinent(engagement, warn)
+		return ok && new Equipments(engagement.initiator).hasEquippedAny(EQU_THVS_TOOLS).length > 0
 	}
 }
 
@@ -283,6 +286,11 @@ export class ActionDisableDevice extends SimpleAction {
 			actionGlyph: 'D',
 			dc: 15
 		})
+	}
+
+	pertinent(engagement, warn) {
+		const ok = super.pertinent(engagement, warn)
+		return ok && new Equipments(engagement.initiator).hasEquippedAny(EQU_THVS_TOOLS).length > 0
 	}
 }
 
@@ -378,7 +386,8 @@ export class ActionIdentifyAlchemy extends SimpleAction {
 	}
 	
 	pertinent(engagement, warn) {
-		return new Equipments(engagement.initiator).hasEquippedAny(EQU_ALCHEMISTS_TOOLS)
+		const ok = super.pertinent(engagement, warn)
+		return ok && new Equipments(engagement.initiator).hasAny(EQU_ALCHEMISTS_TOOLS).length > 0
 	}
 }
 
@@ -404,6 +413,7 @@ export class ActionImpersonate extends SimpleAction {
 			tags: ['situational'],
 			actionGlyph: '',
 			targetCount: 2,
+			opposition: 'enemy',
 			dc: t => t.actor.perception.dc.value
 		})
 	}
@@ -431,6 +441,7 @@ export class ActionMakeAnImpression extends SimpleAction {
 			tags: ['social'],
 			actionGlyph: '',
 			targetCount: 2,
+			opposition: 'enemy',
 			dc: t => t.actor.saves.will.dc.value,
 		})
 	}

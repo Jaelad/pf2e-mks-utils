@@ -11,16 +11,18 @@ export default class ActionTreatPoison extends SimpleAction {
 			tags: ['combat'],
 			actionGlyph: 'A',
 			targetCount: 1,
+			opposition: 'ally',
 			dc: 15
 		})
 	}
 	
 	pertinent(engagement, warn) {
-		return engagement.isAdjacent && engagement.isAlly
+		const ok = super.pertinent(engagement, warn)
+		return ok && engagement.isAdjacent
 	}
 	
 	async apply(engagement, result) {
-		const healersTools = new Equipments(engagement.initiator).hasAny([EQU_HEALERS_TOOLS, EQU_HEALERS_TOOLS_EXPANDED])
+		const healersTools = new Equipments(engagement.initiator).hasAny([EQU_HEALERS_TOOLS, EQU_HEALERS_TOOLS_EXPANDED]).length > 0
 		if (!healersTools) {
 			this._.warn("PF2E.MKS.Warning.Action.MustUseHealersTools")
 			return

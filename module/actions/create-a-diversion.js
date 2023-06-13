@@ -16,7 +16,12 @@ export default class ActionCreateADiversion extends SimpleAction {
 			actionGlyph: 'A',
 			targetCount: 2,
 			requiresEncounter: true,
+			opposition: 'enemy'
 		})
+	}
+
+	pertinent(engagement, warn) {
+		return engagement.isEnemy
 	}
 	
 	async act(engagement, options) {
@@ -45,6 +50,7 @@ export default class ActionCreateADiversion extends SimpleAction {
 	async apply(engagement, result) {
 		const relative = new RelativeConditions()
 		if (!relative.isOk) return
+		const roll = result.roll
 
 		for (const target of engagement.targets) {
 			const awareness = relative.getAwarenessTowardMe(target)
@@ -53,14 +59,14 @@ export default class ActionCreateADiversion extends SimpleAction {
 			const resistDiversion = new Effect(target, EFFECT_RESIST_A_DIVERSION)
 			const dc = target.actor.perception.dc.value + (resistDiversion.exists ? 4 : 0)
 
-			const degree = DCHelper.calculateRollSuccess(roll, dc)
+			const degree = DCHelper.calculateDegreeOfSuccess(roll.die, roll.total, dc)
 			relative.setAwarenessTowardMe(target, degree > 1 ? 2 : 3)
 			const conditionUuid = degree > 1 ? UUID_CONDITONS.hidden : UUID_CONDITONS.observed
 
 			resistDiversion.ensure()
 
 			const message = i18n.$$('PF2E.Actions.CreateADiversion.Result', {target: target.name, conditionRef: `@UUID[${conditionUuid}]`})
-			this.messageToChat(selected, 'create-a-diversion', message, 'A', true)
+			this.messageToChat(engagement.initiator, message, true)
 		}
 		
 		RelativeConditions.sync()

@@ -11,14 +11,16 @@ export default class ActionDemoralize extends SimpleAction {
 			tags: ['social', 'combat'],
 			actionGlyph: 'A',
 			targetCount: 1,
+			opposition: 'enemy',
 			dc: t => t.actor.saves.will.dc.value,
 		})
 	}
 
 	pertinent(engagement, warn) {
+		const ok = super.pertinent(engagement, warn)
 		const immuneToDem = new Effect(engagement.targeted, EFFECT_IMMUNE_TO_DEMORALIZE)
 		const actorsImmuneTo = immuneToDem.exists ? immuneToDem.getFlag("actors") : []
-		return engagement.isEnemy && engagement.distance() <= 30
+		return ok && engagement.distance() <= 30
 			&& !(actorsImmuneTo?.includes(engagement.initiator.actor.id))
 	}
 

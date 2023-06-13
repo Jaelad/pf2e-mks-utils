@@ -54,7 +54,10 @@ export default class Action {
 		return {
 			engagement: engagement.initiator ? engagement.participants : ObjectColl.serialize(engagement),
 			roll: {
-				degreeOfSuccess: roll?.degreeOfSuccess
+				die: roll?.dice?.[0]?.total,
+				total: roll?.total,
+				degreeOfSuccess: roll?.degreeOfSuccess,
+				options: roll?.options
 			},
 			options
 		}
@@ -172,7 +175,7 @@ export class ActionRunner {
 }
 
 export class SimpleAction extends Action {
-	constructor(MKS, {action, mode = 'encounter', gmActs = false, gmApplies = true, traits, checkType, dc, icon, tags, requiresEncounter = false, actionGlyph = 'A', targetCount = 0}) {
+	constructor(MKS, {action, mode = 'encounter', gmActs = false, gmApplies = true, traits, checkType, dc, icon, tags, requiresEncounter = false, actionGlyph = 'A', targetCount = 0, opposition = "all"}) {
 		super(MKS, action, mode, gmActs, gmApplies)
 		this.actionGlyph = actionGlyph
 		this.traits = traits
@@ -182,6 +185,7 @@ export class SimpleAction extends Action {
 		this.tags = tags
 		this.targetCount = targetCount
 		this.requiresEncounter = requiresEncounter
+		this.opposition = opposition
 	}
 	
 	get properties() {
@@ -205,7 +209,7 @@ export class SimpleAction extends Action {
 			return ok ? engagement : undefined
 		}
 		else if (this.targetCount > 1) {
-			const targets = this._.ensureAtLeastOneTarget(false, null)
+			const targets = this._.ensureAtLeastOneTarget(null, false)
 			if (!targets || targets.find(t => t.id === selected.id)) return
 			const engagement = new Engagements(selected, targets)
 			const ok = this.pertinent(engagement, warn) 
@@ -213,6 +217,9 @@ export class SimpleAction extends Action {
 		}
 		else if (this.targetCount === 0) {
 			const engagement = new Engagement(selected)
+			const targets = this._.getTargets()
+			if (targets?.size > 0)
+				return
 			const ok = this.pertinent(engagement, warn) 
 			return ok ? engagement : undefined
 		}
@@ -220,6 +227,11 @@ export class SimpleAction extends Action {
 
 	pertinent(engagement, warn) {
 		const opponentCount = engagement.opponentCount
+		if (this.opposition === 'ally' && !engagement.isAlly)
+			return false
+		if (this.opposition === 'enemy' && !engagement.isEnemy)
+			return false
+
 		return this.targetCount === 1 ? opponentCount === 1 : this.targetCount > 1 ? opponentCount > 1 : true
 	}
 
@@ -227,7 +239,6 @@ export class SimpleAction extends Action {
 		const overrideDC = options?.overrideDC
 
 		const rollCallback = ({roll, actor}) => {
-			//this.resultHandler(roll, engagement, options)
 			return this.createResult(engagement, roll, options)
 		}
 		
