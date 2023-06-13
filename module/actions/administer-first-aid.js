@@ -81,6 +81,17 @@ export default class ActionAdministerFirstAid extends SimpleAction {
 		
 		return await super.act( engagement, {overrideDC: dc, affliction, formula, conditionId: id})
 	}
+
+	async bleedingFlatCheck(targeted, bleeding) {
+		const flatCheckRoll = new Roll('1d20').roll({async: false})
+		CommonUtils.chat(targeted, i18n.$$("PF2E.Actions.AdministerFirstAid.BleedingFlatCheck", {roll: flatCheckRoll.result}))
+		
+		if (flatCheckRoll.result >= 15) {
+			await bleeding.purge()
+			return true
+		}
+		return false
+	}
 	
 	async apply(engagement, result) {
 		const targeted = engagement.targeted, options = result.options
@@ -95,17 +106,14 @@ export default class ActionAdministerFirstAid extends SimpleAction {
 			}
 		}
 		else if (options.affliction === 'bleeding') {
-			const bleeding = new PersistentDamage(PERSISTENT_BLEED)
+			const bleeding = new PersistentDamage(targeted, PERSISTENT_BLEED)
 			if (degreeOfSuccess > 1) {
-				const flatCheckRoll = new Roll('1d20').roll({async: false})
-				CommonUtils.chat(targeted, i18n.$$("PF2E.Actions.AdministerFirstAid.BleedingFlatCheck", {roll: flatCheckRoll.result}))
-				
-				if (flatCheckRoll.result >= 15) {
-					await bleeding.purge()
-				}
+				const bleedingStopped = await this.bleedingFlatCheck()
+				if (!bleedingStopped && degreeOfSuccess > 2)
+					await this.bleedingFlatCheck()
 			}
 			else if (degreeOfSuccess === 0) {
-				const healthLost = new Roll(options.formula).roll({async: false})
+				const healthLost = new Roll(options.formula).roll({async: false}).total
 				this._.actorManager.applyHPChange(targeted, {value: -1 * healthLost}).then(()=> {
 					CommonUtils.chat(targeted, i18n.$$("PF2E.MKS.Chat.HealthLost", {healthLost}))
 				})
@@ -116,7 +124,7 @@ export default class ActionAdministerFirstAid extends SimpleAction {
 			if (bonus !== 0) {
 				const poisonTreated = new Effect(targeted, EFFECT_POISON_TREATED)
 				poisonTreated.ensure().then(() => {
-					poisonTreated.setFlag("treatPoisonBonus", bonus)
+					poisonTreated.setBadgeValue(bonus)
 				})
 			}
 		}
