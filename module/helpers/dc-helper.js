@@ -23,7 +23,8 @@ const simpleDCs = [
 export default class DCHelper {
 
 	static calculateRollSuccess(roll, dc) {
-		return DCHelper.calculateDegreeOfSuccess(roll.dice[0].total, roll.total, dc)
+		const die = roll?.die ?? roll.dice[0].total
+		return DCHelper.calculateDegreeOfSuccess(die, roll.total, dc)
 	}
 
 	static calculateDegreeOfSuccess(die, rollTotal, dc) {

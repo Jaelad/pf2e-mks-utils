@@ -101,7 +101,7 @@ export default class EncounterManager {
 	
 	async applyCover(combatant, targetCombatant, coverValue) {
 		const coverTaken = new Effect(targetCombatant.actor, EFFECT_COVER_TAKEN)
-		const coverState = coverTaken.exists ? coverValue === 2 ? 3 : 2 : coverValue
+		const coverState = coverTaken.exists ? coverValue === 2 ? 3 : coverValue : coverValue
 		const cover = new Effect(targetCombatant.actor, EFFECT_COVER)
 
 		if (coverState > 0)

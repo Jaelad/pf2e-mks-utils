@@ -24,7 +24,7 @@ export default class ActionHide extends SimpleAction {
 		if (!relative.isOk) return
 
 		for (const target of engagement.targets) {
-			const dc =  target.actor.perception.dc.value, awareness = relative.getAwarenessTowardMe(target), cover = relative.getMyCoverFrom(target) ?? 1
+			const dc =  target.actor.perception.dc.value, awareness = relative.getAwarenessTowardMe(target), cover = relative.getMyCoverFrom(target) ?? 0
 			if (awareness < 3 || (cover < 2 && !concealed))
 				continue
 			const coverBonus = Math.max(0, 2 * (cover-1))
