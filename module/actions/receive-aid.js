@@ -2,7 +2,7 @@ import {default as i18n} from "../../lang/pf2e-i18n.js"
 import {SimpleAction} from "../action.js"
 import Check from "../check.js"
 import CommonUtils from "../helpers/common-utils.js"
-import Effect, { EFFECT_AIDED, EFFECT_AID_READY } from "../model/effect.js"
+import Effect, {EFFECT_AIDED, EFFECT_AID_READY, EFFECT_IMMUNE_TO_DEMORALIZE} from "../model/effect.js"
 import { Engagement } from "../model/engagement.js"
 
 export default class ActionReceiveAid extends SimpleAction {
@@ -14,6 +14,10 @@ export default class ActionReceiveAid extends SimpleAction {
 			actionGlyph: 'A',
 			requiresEncounter: true,
 		})
+	}
+	
+	pertinent(engagement, warn) {
+		return new Effect(engagement.initiator, EFFECT_AID_READY).exists
 	}
 	
 	async apply(engagement) {

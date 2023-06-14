@@ -25,7 +25,7 @@ export default class ActionDisarm extends Action {
 	relevant(warn) {
 		const selected = this._.ensureOneSelected(warn)
 		const targeted = this._.ensureOneTarget(null,warn)
-		if (!selected || !targeted)
+		if (!selected || !targeted || selected.id === targeted.id)
 			return
 
 		const engagement = new Engagement(selected, targeted)

@@ -20,10 +20,6 @@ export default class ActionCreateADiversion extends SimpleAction {
 		})
 	}
 
-	pertinent(engagement, warn) {
-		return engagement.isEnemy
-	}
-	
 	async act(engagement, options) {
 		const type = await Dialogs.multipleButtons([
 			{ value: 'trick-gesture', name: 'PF2E.Actions.CreateADiversion.TrickGesture'},

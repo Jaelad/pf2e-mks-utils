@@ -81,6 +81,7 @@
 	"PF2E.Actions.RestForNight.Title": "Rest",
 	"PF2E.Actions.Subsist.Title": "Subsist",
 	"PF2E.Actions.CreateForgery.Title": "Create Forgery",
+	"PF2E.Actions.TreatWounds.Title": "Treat Wounds",
 
 	"PF2E.Actions.Hide.Result": "Hide action resulted in {conditionRef} from {target}",
 	"PF2E.Actions.Sneak.Result": "Sneak action resulted in {conditionRef} from {target}",

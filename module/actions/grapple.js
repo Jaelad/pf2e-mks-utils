@@ -28,7 +28,7 @@ export default class ActionGrapple extends Action {
 	relevant(warn) {
 		const grappler = this._.ensureOneSelected(warn)
 		const willBeGrabbed = this._.ensureOneTarget(null,warn)
-		if (!grappler || !willBeGrabbed)
+		if (!grappler || !willBeGrabbed || grappler.id === willBeGrabbed.id)
 			return
 
 		const engagement = new Engagement(grappler, willBeGrabbed)

@@ -26,7 +26,7 @@ export default class ActionSneak extends SimpleAction {
 			const dc =  target.actor.perception.dc.value, awareness = relative.getAwarenessTowardMe(target)
 
 			if (awareness < 3) {
-				const degree = DCHelper.calculateRollSuccess(roll, dc)
+				const degree = DCHelper.calculateRollSuccess(result.roll, dc)
 				relative.setAwarenessTowardMe(target, degree > 1 ? 1 : (degree == 1 ? 2 : 3))
 				const conditionUuid = degree > 1 ? UUID_CONDITONS.undetected : (degree == 1 ? UUID_CONDITONS.hidden : UUID_CONDITONS.observed)
 
