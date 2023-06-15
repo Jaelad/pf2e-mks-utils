@@ -6,18 +6,13 @@ import {Engagement} from "../model/engagement.js"
 export default class ActionProne extends Action {
 
 	constructor(MKS) {
-		super(MKS, 'prone', 'encounter', false, false)
-	}
-
-	get properties() {
-		return {
-			label: i18n.action("prone"),
+		super(MKS, 'prone', 'encounter', false, false, {
 			icon: "systems/pf2e/icons/conditions/prone.webp",
 			actionGlyph: 'A',
 			tags: ['basic']
-		}
+		})
 	}
-	
+
 	relevant(warn) {
 		const selected = this._.ensureOneSelected(warn)
 		if (!selected) return

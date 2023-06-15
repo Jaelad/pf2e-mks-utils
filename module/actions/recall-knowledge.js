@@ -12,16 +12,11 @@ import { Engagement } from "../model/engagement.js"
 export default class ActionRecallKnowledge extends Action {
 
 	constructor(MKS) {
-		super(MKS, 'recallKnowledge', 'encounter', true, true)
-	}
-
-	get properties() {
-		return {
-			label: i18n.action("recallKnowledge"),
+		super(MKS, 'recallKnowledge', 'encounter', true, true, {
 			icon: "systems/pf2e/icons/spells/daydreamers-curse.webp",
 			actionGlyph: 'A',
 			tags: ['inspection']
-		}
+		})
 	}
 
 	relevant(warn) {
@@ -31,7 +26,7 @@ export default class ActionRecallKnowledge extends Action {
 			return
 		const engagement = new Engagement(selected, targeted)
 
-		if (['npc', 'hazard', 'character'].includes(targeted.type) && engagement.isEnemy)
+		if (['npc', 'hazard', 'character'].includes(targeted.actor.type) && engagement.isEnemy)
 			return engagement
 	}
 

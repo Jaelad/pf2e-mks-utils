@@ -6,16 +6,11 @@ import { Engagement } from "../model/engagement.js"
 export default class ActionRaiseAShield extends Action {
 
 	constructor(MKS) {
-		super(MKS, 'raiseAShield', 'encounter', false, false)
-	}
-
-	get properties() {
-		return {
-			label: i18n.action("raiseAShield"),
+		super(MKS, 'raiseAShield', 'encounter', false, false, {
 			icon: "systems/pf2e/icons/actions/raise-a-shield.webp",
 			actionGlyph: 'A',
 			tags: ['combat']
-		}
+		})
 	}
 
 	relevant(warn) {

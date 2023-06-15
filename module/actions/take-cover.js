@@ -5,18 +5,13 @@ import {Engagement} from "../model/engagement.js"
 
 export default class ActionTakeCover extends Action {
 	constructor(MKS) {
-		super(MKS, 'takeCover', 'encounter', false, false)
-	}
-
-	get properties() {
-		return {
-			label: i18n.action("takeCover"),
+		super(MKS, 'takeCover', 'encounter', false, false, {
 			icon: "systems/pf2e/icons/conditions-2/status_acup.webp",
 			actionGlyph: 'A',
 			tags: ['basic']
-		}
+		})
 	}
-	
+
 	relevant(warn) {
 		const selected = this._.ensureOneSelected(warn)
 		if (!selected) return

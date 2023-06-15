@@ -4,16 +4,11 @@ import Action from "../action.js"
 export default class ActionEarnIncome extends Action {
 	
 	constructor(MKS) {
-		super(MKS, "earnIncome", 'downtime', false, false)
-	}
-
-	get properties() {
-		return {
-			label: i18n.action("earnIncome"),
+		super(MKS, "earnIncome", 'downtime', false, false, {
 			icon: "systems/pf2e/icons/spells/charitable-urge.webp",
 			actionGlyph: '',
 			tags: ['preparation']
-		}
+		})
 	}
 
 	async act(engagement, options) {

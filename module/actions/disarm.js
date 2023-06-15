@@ -10,16 +10,12 @@ import Action from "../action.js";
 
 export default class ActionDisarm extends Action {
 	constructor(MKS) {
-		super(MKS, 'disarm', 'encounter', false, true)
-	}
-
-	get properties() {
-		return {
-			label: i18n.action("disarm"),
+		super(MKS, 'disarm', 'encounter', false, true, {
 			icon: "systems/pf2e/icons/spells/hand-of-the-apprentice.webp",
 			actionGlyph: 'A',
-			tags: ['combat']
-		}
+			tags: ['combat'],
+			requiresEncounter: false
+		})
 	}
 
 	relevant(warn) {

@@ -12,16 +12,11 @@ import Condition, { CONDITION_PRONE } from "../model/condition.js"
 export default class ActionShove extends Action {
 
 	constructor(MKS) {
-		super(MKS, 'shove', 'encounter', false, true)
-	}
-
-	get properties() {
-		return {
-			label: i18n.action("shove"),
+		super(MKS, 'shove', 'encounter', false, true, {
 			icon: "systems/pf2e/icons/spells/knock.webp",
 			actionGlyph: 'A',
 			tags: ['combat']
-		}
+		})
 	}
 
 	relevant(warn) {

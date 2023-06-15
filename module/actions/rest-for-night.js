@@ -5,7 +5,11 @@ import ObjectColl from "../model/object-coll.js"
 export default class ActionRestForNight extends Action {
 
 	constructor(MKS) {
-		super(MKS, 'restForNight', 'downtime', false, false)
+		super(MKS, 'restForNight', 'downtime', false, false, {
+			icon: "systems/pf2e/icons/spells/sleep.webp",
+			actionGlyph: '',
+			tags: ['preparation']
+		})
 	}
 
 	get properties() {

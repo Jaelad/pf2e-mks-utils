@@ -13,16 +13,11 @@ import Effect, { EFFECT_GRABBING } from "../model/effect.js"
 export default class ActionGrapple extends Action {
 
 	constructor(MKS) {
-		super(MKS, 'grapple', 'encounter', false, true)
-	}
-
-	get properties() {
-		return {
-			label: i18n.action("grapple"),
+		super(MKS, 'grapple', 'encounter', false, true, {
 			icon: "systems/pf2e/icons/spells/athletic-rush.webp",
 			actionGlyph: 'A',
 			tags: ['combat']
-		}
+		})
 	}
 
 	relevant(warn) {

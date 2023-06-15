@@ -11,16 +11,11 @@ import { Engagement } from "../model/engagement.js"
 export default class ActionSeek extends Action {
 
 	constructor(MKS) {
-		super(MKS, 'seek', 'encounter', false, true)
-	}
-
-	get properties() {
-		return {
-			label: i18n.action("seek"),
+		super(MKS, 'seek', 'encounter', false, true, {
 			icon: "systems/pf2e/icons/features/classes/alertness.webp",
 			actionGlyph: 'A',
 			tags: ['inspection']
-		}
+		})
 	}
 
 	async act(engagement, options) {

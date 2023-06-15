@@ -10,16 +10,11 @@ import { CONDITION_PRONE } from "../model/condition.js";
 export default class ActionTrip extends Action {
 
 	constructor(MKS) {
-		super(MKS, 'trip', 'encounter', false, true)
-	}
-
-	get properties() {
-		return {
-			label: i18n.action("trip"),
+		super(MKS, 'trip', 'encounter', false, true, {
 			icon: "systems/pf2e/icons/spells/unimpeded-stride.webp",
 			actionGlyph: 'A',
 			tags: ['combat']
-		}
+		})
 	}
 
 	relevant(warn) {

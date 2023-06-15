@@ -11,16 +11,11 @@ export default class ActionEscape extends Action {
 	static CONDITIONS = [CONDITION_IMMOBILIZED, CONDITION_GRABBED, CONDITION_RESTRAINED]
 
 	constructor(MKS) {
-		super(MKS, 'escape', 'encounter', false, true)
-	}
-
-	get properties() {
-		return {
-			label: i18n.action("escape"),
+		super(MKS, 'escape', 'encounter', false, true, {
 			icon: "systems/pf2e/icons/spells/humanoid-form.webp",
 			actionGlyph: 'A',
 			tags: ['combat']
-		}
+		})
 	}
 
 	relevant(warn) {

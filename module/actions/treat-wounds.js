@@ -7,16 +7,11 @@ import { Engagement } from "../model/engagement.js"
 export default class ActionTreatWounds extends Action {
 
 	constructor(MKS) {
-		super(MKS, 'treatWounds', 'exploration', false, false)
-	}
-
-	get properties() {
-		return {
-			label: i18n.action("treatWounds"),
+		super(MKS, 'treatWounds', 'exploration', false, false, {
 			icon: "systems/pf2e/icons/features/feats/treat-wounds.webp",
 			actionGlyph: '',
 			tags: ['preparation']
-		}
+		})
 	}
 
 	relevant(warn) {

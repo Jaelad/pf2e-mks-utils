@@ -2,7 +2,6 @@ import {default as i18n} from "../lang/pf2e-i18n.js"
 import {ACTION_GLYPH, ROLL_MODE} from "./constants.js"
 import Compendium from "./compendium.js"
 import Check from "./check.js"
-import DCHelper from "./helpers/dc-helper.js"
 import $$lang from "../utils/lang.js"
 import CommonUtils from "./helpers/common-utils.js"
 import {Engagement, Engagements} from "./model/engagement.js"
@@ -11,24 +10,30 @@ import $$strings from "../utils/strings.js"
 
 export default class Action {
 
-	constructor(MKS, name, mode = 'encounter', gmActs = false, gmApplies = true) {
+	constructor(MKS, name, mode = 'encounter', gmActs = false, gmApplies = true,
+				{icon = ACTION_GLYPH[''], tags = ['basic'], actionGlyph = 'A', requiresEncounter = false}) {
 		this._ = MKS
 		this.name = name
 		this.mode = mode
 		this.gmActs = gmActs
 		this.gmApplies = gmApplies
+
+		this.icon = icon
+		this.tags = tags
+		this.actionGlyph = actionGlyph
+		this.requiresEncounter = requiresEncounter
 	}
 
 	initialize() {
 	}
 
 	get properties() {
-		// {
-		// 	label:
-		// 	icon:
-		// 	actionGlyph:
-		// 	tags:
-		// }
+		return {
+			label: i18n.action(this.name),
+			icon: this.icon,
+			actionGlyph: this.actionGlyph,
+			tags: this.tags
+		}
 	}
 
 	showSheet() {
@@ -122,81 +127,16 @@ export default class Action {
 	}
 }
 
-export class ActionRunner {
-	constructor(action) {
-		this.action = action
-	}
-
-	async run(options, warn = false) {
-		const gm = game.user.isGM
-		const engagement = this.action.relevant(warn)
-		if (engagement) {
-			if (!this.action.gmActs || gm) {
-				const result = await this.action.act(engagement, options)
-				if (!result) return
-				if (!this.action.gmApplies || gm) {
-					this.action.apply(engagement, result)
-				}
-				else {
-					const eventData = {
-						action: this.action.name,
-						result
-					}
-					game.MKS.socketHandler.emit('GmAppliesActionResult', eventData, true)
-				}
-			}
-			else {
-				const eventData = {
-					action: this.action.name,
-					engagement: engagement.initiator ? engagement.participants : engagement.serialize(),
-					options
-				}
-				game.MKS.socketHandler.emit('GmTakesAction', eventData, true)
-			}
-		}
-	}
-
-	async actByGM(request) {
-		const engagement = request.engagement.initiator ? Engagement.from(request.engagement) : ObjectColl.deserialize(request.engagement)
-		if (!engagement)
-			return
-
-		const result = await this.action.act(engagement, request.options)
-		this.action.apply(engagement, result)
-	}
-
-	async applyByGM(result) {
-		const engagement = result.engagement.initiator ? Engagement.from(result.engagement) : ObjectColl.deserialize(result.engagement)
-		if (!engagement)
-			return
-
-		return this.action.apply(engagement, result)
-	}
-}
-
 export class SimpleAction extends Action {
 	constructor(MKS, {action, mode = 'encounter', gmActs = false, gmApplies = true, traits, checkType, dc, icon, tags, requiresEncounter = false, actionGlyph = 'A', targetCount = 0, opposition = "all"}) {
-		super(MKS, action, mode, gmActs, gmApplies)
-		this.actionGlyph = actionGlyph
+		super(MKS, action, mode, gmActs, gmApplies, {icon, tags, actionGlyph, requiresEncounter})
 		this.traits = traits
 		this.checkType = checkType
 		this.dc = dc
-		this.icon = icon
-		this.tags = tags
 		this.targetCount = targetCount
-		this.requiresEncounter = requiresEncounter
 		this.opposition = opposition
 	}
 	
-	get properties() {
-		return {
-			label: i18n.action(this.name),
-			icon: this.icon,
-			actionGlyph: this.actionGlyph,
-			tags: this.tags
-		}
-	}
-
 	relevant(warn) {
 		const selected = this._.ensureOneSelected(warn, this.requiresEncounter)
 		if (!selected) return
@@ -271,6 +211,58 @@ export class SimpleAction extends Action {
 			actionGlyph: this.actionGlyph,
 			tags: this.tags
 		}
+	}
+}
+
+export class ActionRunner {
+	constructor(action) {
+		this.action = action
+	}
+
+	async run(options, warn = false) {
+		const gm = game.user.isGM
+		const engagement = this.action.relevant(warn)
+		if (engagement) {
+			if (!this.action.gmActs || gm) {
+				const result = await this.action.act(engagement, options)
+				if (!result) return
+				if (!this.action.gmApplies || gm) {
+					this.action.apply(engagement, result)
+				}
+				else {
+					const eventData = {
+						action: this.action.name,
+						result
+					}
+					game.MKS.socketHandler.emit('GmAppliesActionResult', eventData, true)
+				}
+			}
+			else {
+				const eventData = {
+					action: this.action.name,
+					engagement: engagement.initiator ? engagement.participants : engagement.serialize(),
+					options
+				}
+				game.MKS.socketHandler.emit('GmTakesAction', eventData, true)
+			}
+		}
+	}
+
+	async actByGM(request) {
+		const engagement = request.engagement.initiator ? Engagement.from(request.engagement) : ObjectColl.deserialize(request.engagement)
+		if (!engagement)
+			return
+
+		const result = await this.action.act(engagement, request.options)
+		this.action.apply(engagement, result)
+	}
+
+	async applyByGM(result) {
+		const engagement = result.engagement.initiator ? Engagement.from(result.engagement) : ObjectColl.deserialize(result.engagement)
+		if (!engagement)
+			return
+
+		return this.action.apply(engagement, result)
 	}
 }
 

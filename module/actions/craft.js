@@ -6,17 +6,12 @@ import $$lang from "../../utils/lang.js"
 export default class ActionCraft extends Action {
 	
 	constructor(MKS) {
-		super(MKS, 'craft', 'downtime', false, false)
-	}
-
-	get properties() {
-		return {
-			label: i18n.action("craft"),
+		super(MKS, 'craft', 'downtime', false, false, {
 			icon: "systems/pf2e/icons/spells/precious-metals.webp",
 			actionGlyph: '',
 			tags: ['preparation']
-		}
-	} 
+		})
+	}
 
 	async act(engagement, options) {
 		const item = await DropItemDialog.getItem({
