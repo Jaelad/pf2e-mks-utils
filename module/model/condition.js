@@ -1,8 +1,6 @@
 import Item from "./item.js"
 import {ATTITUDES, AWARENESS} from "../constants.js"
 
-
-
 export const CONDITION_UNNOTICED = "unnoticed"
 export const CONDITION_UNDETECTED = "undetected"
 export const CONDITION_HIDDEN = "hidden"

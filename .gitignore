@@ -2,3 +2,4 @@
 .idea/
 **/*.log
 /packs/core-effects/
+module/.DS_Store

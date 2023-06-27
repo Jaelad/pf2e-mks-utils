@@ -4,6 +4,7 @@ import Check from "../check.js"
 import CommonUtils from "../helpers/common-utils.js"
 import {ROLL_MODE} from "../constants.js"
 import Condition, {Awareness, CONDITION_HIDDEN, CONDITION_INVISIBLE, CONDITION_OBSERVED, CONDITION_UNDETECTED, CONDITION_UNNOTICED} from "../model/condition.js"
+import {AWARENESS} from "../constants.js"
 import Item from "../model/item.js"
 import RelativeConditions from "../model/relative-conditions.js"
 import { Engagement } from "../model/engagement.js"
@@ -20,12 +21,13 @@ export default class ActionSeek extends Action {
 
 	async act(engagement, options) {
 		const selected = engagement.initiator
+		const targetedTokens = []
+		let templateDone = false
 
 		const templateCallback = (template) => {
 			const tokens = this._.templateManager.getEncompassingTokens(template, (token) => {
-				if (game.user.isGM) {
-					return ['character', 'familiar'].includes(token.actor.type) && Item.hasAny(token, ['unnoticed', 'undetected', 'hidden'])
-				}
+				if (game.user.isGM)
+					return ['character', 'familiar', 'npc'].includes(token.actor.type) && Item.hasAny(token, ['unnoticed', 'undetected', 'hidden'])
 				else
 					return !token.owner && Item.hasAny(token, ['unnoticed', 'undetected', 'hidden'])
 			})
@@ -34,7 +36,8 @@ export default class ActionSeek extends Action {
 			else
 				setTimeout(() => this._.templateManager.deleteTemplate(template.id), 5000)
 
-			return tokens
+			targetedTokens.push(...tokens)
+			templateDone = true
 		}
 
 		const dialogContent = `
@@ -49,7 +52,7 @@ export default class ActionSeek extends Action {
 		</form>
 		`
 
-		const tokens = await new Dialog({
+		new Dialog({
 			title: i18n.$("PF2E.MKS.Dialog.seek.selecttype.title"),
 			content: dialogContent,
 			buttons: {
@@ -63,13 +66,24 @@ export default class ActionSeek extends Action {
 						if (seekType === 'front_burst')
 							override = {t: "circle", distance: 15, ttype: "ghost"}
 						else if (seekType === 'object')
-							override = {t: "circle", distance: 10}
+							override = {t: "circle", distance: 15}
 						return this._.templateManager.draw(selected, templateCallback, {preset: 'seek'}, override)
 					}
 				}
 			}
 		}).render(true)
 
+		const promise = new Promise((resolve) => {
+			let count = 0
+			const interval = setInterval( () => {
+				count++
+				if (templateDone || count > 10) {
+					clearInterval(interval)
+					resolve(targetedTokens)
+				}
+			}, 1000);
+		})
+		const tokens = await promise
 		return this.createResult(engagement, null, {tokenIds: tokens.map(t => t.id)})
 	}
 
@@ -80,14 +94,14 @@ export default class ActionSeek extends Action {
 				return
 
 			const invisible = new Condition(target, CONDITION_INVISIBLE)
-			const relative = RelativeConditions()
+			const relative = new RelativeConditions()
 			if (relative.isOk) {
 				const awarenessState = relative.getMyAwarenessOf(target)
-				if (awarenessState === CONDITION_HIDDEN || step > 1)
-					relative.setMyAwarenessOf(target, invisible.exists ? CONDITION_HIDDEN : CONDITION_OBSERVED)
-				else if (awarenessState === CONDITION_UNNOTICED || awarenessState === CONDITION_UNDETECTED)
-					relative.setMyAwarenessOf(target, CONDITION_HIDDEN)
-				this._.encounterManager.applyRelativeConditions(target.combatant)
+				const newAwarenessState = invisible.exists ? CONDITION_HIDDEN : (
+					AWARENESS[awarenessState] === CONDITION_HIDDEN || step > 1 ? CONDITION_OBSERVED : CONDITION_HIDDEN
+				)
+				relative.setMyAwarenessOf(target, newAwarenessState)
+				this._.encounterManager.applyAwareness(engagement.initiator, target, newAwarenessState)
 			}
 			else {
 				const awareness = new Awareness(target)
@@ -108,7 +122,7 @@ export default class ActionSeek extends Action {
 			checkType: "perception",
 			rollMode: ROLL_MODE.BLIND,
 			secret: true,
-			skipDialog: true,
+			skipDialog: false,
 			difficultyClassStatistic: (target) => target.skills.stealth
 		})
 

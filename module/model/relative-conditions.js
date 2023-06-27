@@ -1,4 +1,4 @@
-import {SYSTEM} from "../constants.js"
+import {ATTITUDES, AWARENESS, COVER, SYSTEM} from "../constants.js"
 import CommonUtils from "../helpers/common-utils.js"
 import { Attitude, Awareness } from "./condition.js"
 import Effect from "./effect.js"
@@ -64,31 +64,43 @@ export default class RelativeConditions {
 	}
 
 	setMyAwarenessOf(token, awareness) {
+		if (typeof awareness !== "number")
+			awareness = AWARENESS.indexOf(awareness)
 		this.iseethem[token.id].awareness = awareness
 		this.relative.changed = true
 	}
 
 	setMyAttitudeToward(token, attitude) {
+		if (typeof attitude !== "number")
+			attitude = ATTITUDES.indexOf(attitude)
 		this.theyseeme[token.id].attitude = attitude
 		this.relative.changed = true
 	}
 
 	setMyCoverFrom(token, cover) {
+		if (typeof cover !== "number")
+			cover = COVER.indexOf(cover)
 		this.theyseeme[token.id].cover = cover
 		this.relative.changed = true
 	}
 
 	setAwarenessTowardMe(token, awareness) {
+		if (typeof awareness !== "number")
+			awareness = AWARENESS.indexOf(awareness)
 		this.theyseeme[token.id].awareness = awareness
 		this.relative.changed = true
 	}
 
 	setAttitudeTowardMe(token, attitude) {
+		if (typeof attitude !== "number")
+			attitude = ATTITUDES.indexOf(attitude)
 		this.iseethem[token.id].attitude = attitude
 		this.relative.changed = true
 	}
 
 	setCoverFromMe(token, cover) {
+		if (typeof cover !== "number")
+			cover = COVER.indexOf(cover)
 		this.iseethem[token.id].cover = cover
 		this.relative.changed = true
 	}

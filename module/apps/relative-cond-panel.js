@@ -50,7 +50,7 @@ export default class RelativeCondPanel extends BasePanel {
 		super.activateListeners(html)
 		
 		html.find("a[data-action]").click((event) => this._conditionChange(event))
-		html.find("img[data-action=sync]").click((event) => RelativeCondPanel.rerender())
+		html.find("img[data-action=sync]").click((event) => game.MKS.encounterManager.syncRelativeConds(game.combat, false))
 	}
 	
 	async _conditionChange(event) {

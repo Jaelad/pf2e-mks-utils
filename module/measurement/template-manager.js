@@ -31,7 +31,7 @@ export default class TemplateManager {
 		const templateDoc = new MeasuredTemplateDocument(options, {
 			parent: canvas.scene
 		})
-		const template = options.ttype === 'ghost' ? new GhostTemplate(templateDoc) : new CentricTemplate(templateDoc)
+		const template = overrides.ttype === 'ghost' ? new GhostTemplate(templateDoc) : new CentricTemplate(templateDoc)
 		template.wheelSnap = Math.round((wheelSnap ?? 9)/3.0) * 3
 		template.onTemplateCreated = callback
 		template.drawPreview().then()

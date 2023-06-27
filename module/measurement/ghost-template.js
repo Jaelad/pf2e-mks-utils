@@ -9,7 +9,7 @@ export default class GhostTemplate extends MeasuredTemplate {
 			const now = Date.now()
 			if (now - this.moveTime <= 20)
 				return;
-			const center = event.document.getLocalPosition(this.layer),
+			const center = event.getLocalPosition(this.layer),
 				snapped = canvas.grid.getSnappedPosition(center.x, center.y, 2);
 			this.document.x = snapped.x
 			this.document.y = snapped.y
