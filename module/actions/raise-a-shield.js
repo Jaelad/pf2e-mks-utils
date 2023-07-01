@@ -6,7 +6,7 @@ import { Engagement } from "../model/engagement.js"
 export default class ActionRaiseAShield extends Action {
 
 	constructor(MKS) {
-		super(MKS, 'raiseAShield', 'encounter', false, false, {
+		super(MKS, 'raiseAShield', 'encounter', false, true, {
 			icon: "systems/pf2e/icons/actions/raise-a-shield.webp",
 			actionGlyph: 'A',
 			tags: ['combat']
@@ -33,6 +33,10 @@ export default class ActionRaiseAShield extends Action {
 			shieldOk = false
 		}
 		return shieldOk ? engagement : undefined
+	}
+
+	async act(engagement, options) {
+		return this.createResult(engagement)
 	}
 	
 	async apply(engagement) {

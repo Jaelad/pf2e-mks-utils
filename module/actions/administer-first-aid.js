@@ -110,9 +110,9 @@ export default class ActionAdministerFirstAid extends SimpleAction {
 		else if (options.affliction === 'bleeding') {
 			const bleeding = new PersistentDamage(targeted, PERSISTENT_BLEED)
 			if (degreeOfSuccess > 1) {
-				const bleedingStopped = await this.bleedingFlatCheck(targeted, bleeding, "PF2E.Actions.AdministerFirstAid.BleedingFlatCheck")
+				const bleedingStopped = await this.flatCheck(targeted, bleeding, "PF2E.Actions.AdministerFirstAid.BleedingFlatCheck")
 				if (!bleedingStopped && degreeOfSuccess > 2)
-					await this.bleedingFlatCheck(targeted, bleeding, "PF2E.Actions.AdministerFirstAid.BleedingFlatCheck")
+					await this.flatCheck(targeted, bleeding, "PF2E.Actions.AdministerFirstAid.BleedingFlatCheck")
 			}
 			else if (degreeOfSuccess === 0) {
 				const healthLost = new Roll(options.formula).roll({async: false}).total
@@ -126,7 +126,7 @@ export default class ActionAdministerFirstAid extends SimpleAction {
 			if (degreeOfSuccess > 1) {
 				const poisoningStopped = await this.flatCheck(targeted, poisoning, "PF2E.Actions.AdministerFirstAid.PoisoningFlatCheck")
 				if (!poisoningStopped && degreeOfSuccess > 2)
-					await this.bleedingFlatCheck(targeted, bleeding, "PF2E.Actions.AdministerFirstAid.PoisoningFlatCheck")
+					await this.flatCheck(targeted, poisoning, "PF2E.Actions.AdministerFirstAid.PoisoningFlatCheck")
 			}
 			else if (degreeOfSuccess === 0) {
 				const healthLost = new Roll(options.formula).roll({async: false}).total

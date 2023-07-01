@@ -12,15 +12,6 @@ export default class ActionRestForNight extends Action {
 		})
 	}
 
-	get properties() {
-		return {
-			label: i18n.action("restForNight"),
-			icon: "systems/pf2e/icons/spells/sleep.webp",
-			actionGlyph: '',
-			tags: ['preparation']
-		}
-	}
-
 	relevant(warn) {
 		const selecteds = this._.ensureAtLeastOneSelected(warn)
 		if (selecteds?.length > 0)

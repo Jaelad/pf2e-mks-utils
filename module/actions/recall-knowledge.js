@@ -15,19 +15,14 @@ export default class ActionRecallKnowledge extends Action {
 		super(MKS, 'recallKnowledge', 'encounter', true, true, {
 			icon: "systems/pf2e/icons/spells/daydreamers-curse.webp",
 			actionGlyph: 'A',
-			tags: ['inspection']
+			tags: ['inspection'],
+			targetCount: 1,
+			opposition: 'enemy'
 		})
 	}
 
-	relevant(warn) {
-		const selected = this._.ensureOneSelected(warn)
-		const targeted = this._.ensureOneTarget(null,warn)
-		if (!selected || !targeted)
-			return
-		const engagement = new Engagement(selected, targeted)
-
-		if (['npc', 'hazard', 'character'].includes(targeted.actor.type) && engagement.isEnemy)
-			return engagement
+	pertinent(engagement) {
+		return ['npc', 'hazard', 'character'].includes(engagement.targeted.actor.type)
 	}
 
 	async act(engagement, options) {
@@ -57,6 +52,6 @@ export default class ActionRecallKnowledge extends Action {
 				defaultDC: dc
 			}
 		})
-		return await check.roll(engagement).then(({roll, actor}) => this.createResult(engagement, roll))
+		return check.roll(engagement).then(({roll, actor}) => this.createResult(engagement, roll))
 	}
 }

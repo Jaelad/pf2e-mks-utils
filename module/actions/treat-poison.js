@@ -17,8 +17,7 @@ export default class ActionTreatPoison extends SimpleAction {
 	}
 	
 	pertinent(engagement, warn) {
-		const ok = super.pertinent(engagement, warn)
-		return ok && engagement.isAdjacent
+		return engagement.isAdjacent
 	}
 	
 	async apply(engagement, result) {

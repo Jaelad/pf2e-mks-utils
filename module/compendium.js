@@ -1,4 +1,5 @@
 export default class Compendium {
+	static ACTION_AID = "Compendium.pf2e.actionspf2e.Item.HCl3pzVefiv9ZKQW"
 	static ACTION_ADMINISTER_FIRST_AID = "Compendium.pf2e.actionspf2e.Item.MHLuKy4nQO2Z4Am1"
 	static ACTION_AVERT_GAZE = "Compendium.pf2e.actionspf2e.Item.UWdRX1VelipCzrCg"
 	static ACTION_AVOID_NOTICE = "Compendium.pf2e.actionspf2e.Item.IE2nThCmoyhQA0Jn"

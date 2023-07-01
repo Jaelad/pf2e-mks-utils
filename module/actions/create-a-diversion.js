@@ -40,7 +40,7 @@ export default class ActionCreateADiversion extends SimpleAction {
 			extraOptions: ["action:create-a-diversion"],
 			actionGlyph: "A",
 		})
-		return await check.roll(engagement).then(rollCallback)
+		return check.roll(engagement).then(rollCallback)
 	}
 	
 	async apply(engagement, result) {
@@ -64,7 +64,5 @@ export default class ActionCreateADiversion extends SimpleAction {
 			const message = i18n.$$('PF2E.Actions.CreateADiversion.Result', {target: target.name, conditionRef: `@UUID[${conditionUuid}]`})
 			this.messageToChat(engagement.initiator, message, true)
 		}
-		
-		RelativeConditions.sync()
 	}
 }

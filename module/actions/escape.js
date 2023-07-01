@@ -18,17 +18,11 @@ export default class ActionEscape extends Action {
 		})
 	}
 
-	relevant(warn) {
-		const selected = this._.ensureOneSelected(warn)
-		if (!selected)
-			return
-		const engagement = new Engagement(selected)
-		return engagement.hasInitiatorCondition(ActionEscape.CONDITIONS) ? engagement :undefined
+	pertinent(engagement) {
+		return engagement.hasInitiatorCondition(ActionEscape.CONDITIONS)
 	}
 
 	async act(engagement, options) {
-		const conds = Condition.collect(engagement.initiator, ActionEscape.CONDITIONS)
-
 		let selectedCond //[1].system.references.parent.type == condition
 		const conditions = Condition.collect(engagement.initiator, ActionEscape.CONDITIONS)
 			.filter((c) => !c.system.references?.parent?.type)
@@ -57,14 +51,13 @@ export default class ActionEscape extends Action {
 			checkType
 		})
 
-		return await check.roll(engagement).then(({roll, actor}) => this.createResult(engagement, roll, {condition: selectedCond}))
+		return check.roll(engagement).then(({roll, actor}) => this.createResult(engagement, roll, {condition: selectedCond}))
 	}
 
 	async apply(engagement, result) {
+		super.apply(engagement, result)
 		const roll = result.roll
 		if (roll.degreeOfSuccess > 1)
 			new Condition(engagement.initiator, result.options.condition).purge()
-		if (roll.degreeOfSuccess >= 0)
-			this._.compendiumToChat(selected, Compendium.ACTION_ESCAPE, ROLL_MODE.BLIND, true)
 	}
 }

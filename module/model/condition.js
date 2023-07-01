@@ -13,6 +13,7 @@ export const CONDITION_IMMOBILIZED = "immobilized"
 export const CONDITION_RESTRAINED = "restrained"
 export const CONDITION_PRONE = "prone"
 export const CONDITION_INVISIBLE = "invisible"
+export const CONDITION_CONCEALED = 'concealed'
 
 export const UUID_CONDITONS = {
 	"unnoticed" : "Compendium.pf2e.conditionitems.9evPzg9E6muFcoSk",
@@ -35,7 +36,7 @@ export default class Condition extends Item {
 		if (!this.exists) {
 			const conditionNew = game.pf2e.ConditionManager.getCondition(this.condition).toObject()
 			await this.actor.createEmbeddedDocuments("Item", [conditionNew])
-			this.item = this.actor.itemTypes.condition.find(c => conditionNew._id === c.id)
+			this.item = this.actor.itemTypes.condition.find(c => this.condition === c.slug)
 		}
 		return this
 	}

@@ -211,12 +211,14 @@ export default class Equipments {
 					if (!wTraits.includes(traits[i]))
 						return false
 				}
+				return true
 			}
 			else {
 				for (let i = 0; i < traits.length; i++) {
 					if (wTraits.includes(traits[i]))
 						return true
 				}
+				return false
 			}
 		}))
 	}

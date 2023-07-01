@@ -150,8 +150,7 @@ export class ActionFeint extends SimpleAction {
 	}
 	
 	pertinent(engagement, warn) {
-		const ok = super.pertinent(engagement, warn)
-		return ok && engagement.inMeleeRange
+		return engagement.inMeleeRange
 	}
 	
 	async apply(engagement, result) {

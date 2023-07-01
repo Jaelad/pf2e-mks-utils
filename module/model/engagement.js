@@ -4,11 +4,12 @@ import Effect from "./effect.js"
 import Item from "./item.js"
 
 export class Engagement {
-	constructor(initiator, targeted) {
+	constructor(initiator, targeted, options) {
 		this.initiator = initiator && initiator.actor ? initiator : null
 		if (!initiator)
 			throw new Error("Cannot create an engagement without initiator token!")
 		this.targeted = targeted && targeted.actor ? targeted : null
+		this.options = options
 	}
 
 	static from(participants) {
@@ -60,7 +61,8 @@ export class Engagement {
 	}
 
 	get inMeleeRange() {
-		return this.distance({action: "attack"}) === 0
+		const reachOpts = {action: "attack"}
+		return this.distance(reachOpts) <= this.initiator.actor.getReach(reachOpts)
 	}
 	
 	get isAdjacent() {

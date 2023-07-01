@@ -11,7 +11,8 @@ import $$strings from "../utils/strings.js"
 export default class Action {
 
 	constructor(MKS, name, mode = 'encounter', gmActs = false, gmApplies = true,
-				{icon = ACTION_GLYPH[''], tags = ['basic'], actionGlyph = 'A', requiresEncounter = false}) {
+				{icon = ACTION_GLYPH[''], tags = ['basic'], actionGlyph = 'A'
+				, requiresEncounter = false, targetCount, opposition = 'all'}) {
 		this._ = MKS
 		this.name = name
 		this.mode = mode
@@ -22,6 +23,8 @@ export default class Action {
 		this.tags = tags
 		this.actionGlyph = actionGlyph
 		this.requiresEncounter = requiresEncounter
+		this.targetCount = targetCount
+		this.opposition = opposition
 	}
 
 	initialize() {
@@ -41,10 +44,37 @@ export default class Action {
 		this._.compendiumShow(compendium).then()
 	}
 
-	// return engagement
 	relevant(warn) {
-		const selected = this._.ensureOneSelected(warn)
-		return selected ? new Engagement(selected) : undefined
+		const selected = this._.ensureOneSelected(warn, this.requiresEncounter)
+		if (!selected) return
+
+		if (this.targetCount === 1) {
+			const targeted = this._.ensureOneTarget(null, false)
+			if (!targeted || targeted.id === selected.id) return
+			const engagement = new Engagement(selected, targeted)
+			const oppositionOk = this.opposition === 'ally' || (this.opposition === 'ally' && engagement.isAlly) || (this.opposition === 'enemy' && engagement.isEnemy)
+			const ok = oppositionOk && this.pertinent(engagement, warn) 
+			return ok ? engagement : undefined
+		}
+		else if (this.targetCount > 1) {
+			const targets = this._.ensureAtLeastOneTarget(null, false)
+			if (!targets || targets.find(t => t.id === selected.id)) return
+			const engagement = new Engagements(selected, targets)
+			const oppositionOk = this.opposition === 'ally' || (this.opposition === 'ally' && engagement.isAlly) || (this.opposition === 'enemy' && engagement.isEnemy)
+			const ok = oppositionOk && this.pertinent(engagement, warn) 
+			return ok ? engagement : undefined
+		}
+		else  {
+			if (this.targetCount === 0 && this._.getTargets()?.size > 0)
+				return
+			const engagement = new Engagement(selected)
+			const ok = this.pertinent(engagement, warn)
+			return ok ? engagement : undefined
+		}
+	}
+
+	pertinent(engagement, warn) {
+		return true
 	}
 
 	// simply returns action result object
@@ -129,50 +159,10 @@ export default class Action {
 
 export class SimpleAction extends Action {
 	constructor(MKS, {action, mode = 'encounter', gmActs = false, gmApplies = true, traits, checkType, dc, icon, tags, requiresEncounter = false, actionGlyph = 'A', targetCount = 0, opposition = "all"}) {
-		super(MKS, action, mode, gmActs, gmApplies, {icon, tags, actionGlyph, requiresEncounter})
+		super(MKS, action, mode, gmActs, gmApplies, {icon, tags, actionGlyph, requiresEncounter, targetCount, opposition})
 		this.traits = traits
 		this.checkType = checkType
 		this.dc = dc
-		this.targetCount = targetCount
-		this.opposition = opposition
-	}
-	
-	relevant(warn) {
-		const selected = this._.ensureOneSelected(warn, this.requiresEncounter)
-		if (!selected) return
-
-		if (this.targetCount === 1) {
-			const targeted = this._.ensureOneTarget(null, false)
-			if (!targeted || targeted.id === selected.id) return
-			const engagement = new Engagement(selected, targeted)
-			const ok = this.pertinent(engagement, warn) 
-			return ok ? engagement : undefined
-		}
-		else if (this.targetCount > 1) {
-			const targets = this._.ensureAtLeastOneTarget(null, false)
-			if (!targets || targets.find(t => t.id === selected.id)) return
-			const engagement = new Engagements(selected, targets)
-			const ok = this.pertinent(engagement, warn) 
-			return ok ? engagement : undefined
-		}
-		else if (this.targetCount === 0) {
-			const engagement = new Engagement(selected)
-			const targets = this._.getTargets()
-			if (targets?.size > 0)
-				return
-			const ok = this.pertinent(engagement, warn) 
-			return ok ? engagement : undefined
-		}
-	}
-
-	pertinent(engagement, warn) {
-		const opponentCount = engagement.opponentCount
-		if (this.opposition === 'ally' && !engagement.isAlly)
-			return false
-		if (this.opposition === 'enemy' && !engagement.isEnemy)
-			return false
-
-		return this.targetCount === 1 ? opponentCount === 1 : this.targetCount > 1 ? opponentCount > 1 : true
 	}
 
 	async act(engagement, options) {
@@ -195,22 +185,31 @@ export class SimpleAction extends Action {
 				defaultDC: typeof this.dc === 'number' ? this.dc : null
 			}
 		})
-		const result = await check.roll(engagement).then(rollCallback)
+		const result = check.roll(engagement).then(rollCallback)
 		return result
 	}
+}
 
-	// resultHandler(roll, engagement, options) {
-	// 	if (!roll) return
-	// 	this.resultToChat(engagement.initiator, this.name, roll.degreeOfSuccess, this.actionGlyph)
-	// }
+export class SystemAction extends Action {
+	constructor(MKS, name, mode = 'encounter', gmActs = false, gmApplies = true, {
+				icon = ACTION_GLYPH['']
+				, tags = ['basic']
+				, actionGlyph = 'A'
+				, requiresEncounter = false,
+				targetCount,
+				opposition = 'all'
+			}) {
+		super(MKS, name, mode, gmActs, gmApplies, {icon, tags, actionGlyph, requiresEncounter, targetCount, opposition})
+	}
 
-	get properties() {
-		return {
-			label: i18n.action(this.name),
-			icon: this.icon,
-			actionGlyph: this.actionGlyph,
-			tags: this.tags
-		}
+	async act(engagement, options) {
+		const systemRoll = await new Promise((resolve, reject) => {
+			const callback = (result) => {
+				resolve(result.roll)
+			}
+			game.pf2e.actions[this.name]({ actors: engagement.initiator.actor, callback })
+		})
+		return this.createResult(engagement, systemRoll)
 	}
 }
 
@@ -267,6 +266,7 @@ export class ActionRunner {
 }
 
 export const RUDIMENTARY_ACTIONS = {
+	aid: {icon: "systems/pf2e/icons/spells/efficient-apport.webp", compendium: Compendium.ACTION_AID, mode: 'encounter'},
 	step: {icon: 'systems/pf2e/icons/spells/synchronise-steps.webp', compendium: Compendium.ACTION_STEP, mode: 'encounter'},
 	stride: {icon: 'systems/pf2e/icons/spells/fleet-step.webp', compendium: Compendium.ACTION_STRIDE, mode: 'encounter'},
 	interact: {icon: 'systems/pf2e/icons/spells/mage-hand.webp', compendium: Compendium.ACTION_INTERACT, mode: 'encounter'},

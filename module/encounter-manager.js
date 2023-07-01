@@ -19,30 +19,30 @@ export default class EncounterManager {
 	}
 
 	onCheckRoll(token, checkRoll, pf2e) {
-		const traits = pf2e.context?.traits
-		const attackTrait = traits?.find(t => t.name === "attack")
-		if (attackTrait && this.tokensTurnInCombat(token)) {
-			LOG.info(`Applying MAP to ${token.name}`)
-			const map = new Effect(token, EFFECT_MAP)
-			if (map.exists)
-				map.setBadgeValue(1, 'inc').then()
-			else
-				map.ensure().then()
-		}
+		// const traits = pf2e.context?.traits
+		// const attackTrait = traits?.find(t => t.name === "attack")
+		// if (attackTrait && this.tokensTurnInCombat(token)) {
+		// 	LOG.info(`Applying MAP to ${token.name}`)
+		// 	const map = new Effect(token, EFFECT_MAP)
+		// 	if (map.exists)
+		// 		map.setBadgeValue(1, 'inc').then()
+		// 	else
+		// 		map.ensure().then()
+		// }
 
-		const aided = pf2e.modifiers.find(mod => mod.slug === "aided")
-		if (aided)
-			new Effect(token, EFFECT_AIDED).purge()
+		// const aided = pf2e.modifiers.find(mod => mod.slug === "aided")
+		// if (aided)
+		// 	new Effect(token, EFFECT_AIDED).purge()
 	}
 	
 	async onStartTurn(combatant) {
-		await new Effect(combatant.actor, EFFECT_MAP).purge()
+		// await new Effect(combatant.actor, EFFECT_MAP).purge()
 		
 		await this.applyRelativeConditions(combatant)
 	}
 	
 	async onEndTurn(combatant) {
-		await new Effect(combatant.actor, EFFECT_MAP).purge()
+		// await new Effect(combatant.actor, EFFECT_MAP).purge()
 
 		LOG.info("Round : " +  combatant.encounter.round + " Turn : " + combatant.encounter.turn)
 
@@ -72,12 +72,12 @@ export default class EncounterManager {
 				continue
 			const rel = {}
 			
-			for (const other of encounter.combatants) {
+			for (const other of combatants) {
 				if (ref.actor.alliance === other.actor.alliance) continue
 				const conds = {}
 				rel[other.token.id] = conds
 				
-				conds.awareness = new Awareness(other.actor).stateIndex
+				conds.awareness = other.token.hidden ? 0 : new Awareness(other.actor).stateIndex
 				conds.attitude = new Attitude(other.actor).stateIndex
 				
 				const cover = new Effect(ref.actor, EFFECT_COVER)

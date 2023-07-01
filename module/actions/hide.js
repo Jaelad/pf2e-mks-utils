@@ -1,7 +1,7 @@
 import {SimpleAction} from "../action.js"
 import {default as i18n} from "../../lang/pf2e-i18n.js"
 import RelativeConditions from "../model/relative-conditions.js"
-import Condition, { UUID_CONDITONS } from "../model/condition.js"
+import Condition, { CONDITION_CONCEALED, UUID_CONDITONS } from "../model/condition.js"
 import DCHelper from "../helpers/dc-helper.js"
 
 export default class ActionHide extends SimpleAction {
@@ -19,9 +19,9 @@ export default class ActionHide extends SimpleAction {
 	}
 
 	async apply(engagement, result) {
-		const concealed = new Condition(engagement.initiator, 'concealed').exists
 		const relative = new RelativeConditions()
 		if (!relative.isOk) return
+		const concealed = new Condition(engagement.initiator, CONDITION_CONCEALED).exists
 
 		for (const target of engagement.targets) {
 			const dc =  target.actor.perception.dc.value, awareness = relative.getAwarenessTowardMe(target), cover = relative.getMyCoverFrom(target) ?? 0

@@ -1,7 +1,7 @@
 import {default as i18n} from "../../lang/pf2e-i18n.js"
-import Action from "../action.js"
+import { SystemAction } from "../action.js"
 
-export default class ActionEarnIncome extends Action {
+export default class ActionEarnIncome extends SystemAction {
 	
 	constructor(MKS) {
 		super(MKS, "earnIncome", 'downtime', false, false, {
@@ -9,9 +9,5 @@ export default class ActionEarnIncome extends Action {
 			actionGlyph: '',
 			tags: ['preparation']
 		})
-	}
-
-	async act(engagement, options) {
-		game.pf2e.actions.earnIncome(engagement.initiator.actor)
 	}
 }

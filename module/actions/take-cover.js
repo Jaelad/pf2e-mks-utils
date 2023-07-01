@@ -11,13 +11,6 @@ export default class ActionTakeCover extends Action {
 			tags: ['basic']
 		})
 	}
-
-	relevant(warn) {
-		const selected = this._.ensureOneSelected(warn)
-		if (!selected) return
-		const targets = this._.getTargets()
-		return targets?.size > 0 ? undefined : new Engagement(selected)
-	}
 	
 	async act(engagement, options) {
 		new Effect(engagement.initiator, EFFECT_COVER_TAKEN).ensure().then()

@@ -21,70 +21,61 @@ export default class ActionSeek extends Action {
 
 	async act(engagement, options) {
 		const selected = engagement.initiator
-		const targetedTokens = []
-		let templateDone = false
-
-		const templateCallback = (template) => {
-			const tokens = this._.templateManager.getEncompassingTokens(template, (token) => {
-				if (game.user.isGM)
-					return ['character', 'familiar', 'npc'].includes(token.actor.type) && Item.hasAny(token, ['unnoticed', 'undetected', 'hidden'])
-				else
-					return !token.owner && Item.hasAny(token, ['unnoticed', 'undetected', 'hidden'])
-			})
-			if (template.user.isGM)
-				this._.templateManager.deleteTemplate(template.id)
-			else
-				setTimeout(() => this._.templateManager.deleteTemplate(template.id), 5000)
-
-			targetedTokens.push(...tokens)
-			templateDone = true
-		}
-
-		const dialogContent = `
-		<form>
-		<div class="form-group">
-			<select name="seekType">
-				<option value="front_cone" selected>${i18n.$("PF2E.MKS.Dialog.seek.type.frontcone")}</option>
-				<option value="front_burst" >${i18n.$("PF2E.MKS.Dialog.seek.type.frontburst")}</option>
-				<option value="object" >${i18n.$("PF2E.MKS.Dialog.seek.type.object")}</option>
-			</select>
-		</div>
-		</form>
-		`
-
-		new Dialog({
-			title: i18n.$("PF2E.MKS.Dialog.seek.selecttype.title"),
-			content: dialogContent,
-			buttons: {
-				yes: {
-					icon: '<i class="far fa-eye"></i>',
-					label: i18n.$("PF2E.Actions.Seek.Title"),
-					callback: ($html) => {
-						const seekType = $html[0].querySelector('[name="seekType"]').value
-
-						let override = {}
-						if (seekType === 'front_burst')
-							override = {t: "circle", distance: 15, ttype: "ghost"}
-						else if (seekType === 'object')
-							override = {t: "circle", distance: 15}
-						return this._.templateManager.draw(selected, templateCallback, {preset: 'seek'}, override)
-					}
-				}
-			}
-		}).render(true)
 
 		const promise = new Promise((resolve) => {
-			let count = 0
-			const interval = setInterval( () => {
-				count++
-				if (templateDone || count > 10) {
-					clearInterval(interval)
-					resolve(targetedTokens)
-				}
-			}, 1000);
+			const templateCallback = (template) => {
+				const tokens = this._.templateManager.getEncompassingTokens(template, (token) => {
+					if (game.user.isGM)
+						return ['character', 'familiar', 'npc'].includes(token.actor.type) && Item.hasAny(token, ['unnoticed', 'undetected', 'hidden'])
+					else
+						return !token.owner && Item.hasAny(token, ['unnoticed', 'undetected', 'hidden'])
+				})
+				if (template.user.isGM)
+					this._.templateManager.deleteTemplate(template.id)
+				else
+					setTimeout(() => this._.templateManager.deleteTemplate(template.id), 5000)
+	
+				resolve(tokens)
+			}
+	
+			const dialogContent = `
+			<form>
+			<div class="form-group">
+				<select name="seekType">
+					<option value="front_cone" selected>${i18n.$("PF2E.MKS.Dialog.seek.type.frontcone")}</option>
+					<option value="front_burst" >${i18n.$("PF2E.MKS.Dialog.seek.type.frontburst")}</option>
+					<option value="object" >${i18n.$("PF2E.MKS.Dialog.seek.type.object")}</option>
+				</select>
+			</div>
+			</form>
+			`
+	
+			new Dialog({
+				title: i18n.$("PF2E.MKS.Dialog.seek.selecttype.title"),
+				content: dialogContent,
+				buttons: {
+					yes: {
+						icon: '<i class="far fa-eye"></i>',
+						label: i18n.$("PF2E.Actions.Seek.Title"),
+						callback: ($html) => {
+							const seekType = $html[0].querySelector('[name="seekType"]').value
+	
+							let override = {}
+							if (seekType === 'front_burst')
+								override = {t: "circle", distance: 15, ttype: "ghost"}
+							else if (seekType === 'object')
+								override = {t: "circle", distance: 15}
+							return this._.templateManager.draw(selected, templateCallback, {preset: 'seek'}, override)
+						}
+					}
+				},
+				close: () => setTimeout(() => resolve([]), 30000)
+			}).render(true)
 		})
-		const tokens = await promise
-		return this.createResult(engagement, null, {tokenIds: tokens.map(t => t.id)})
+
+		const tokensPromised = await promise
+		if (tokensPromised?.length > 0)
+			return this.createResult(engagement, null, {tokenIds: tokensPromised.map(t => t.id)})
 	}
 
 	async apply(engagement, result) {

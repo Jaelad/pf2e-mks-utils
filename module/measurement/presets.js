@@ -1,7 +1,7 @@
 export const TemplatePresets = {
 	seek: {
 		"t": "cone",
-		"angle": 90,
+		"angle": 100,
 		"distance": 30,
 		"flags": {
 			"pf2e": {

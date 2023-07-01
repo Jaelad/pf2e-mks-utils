@@ -16,15 +16,15 @@ export default class Item {
 	}
 	
 	getFlag(flag) {
-		this.item.getFlag(SYSTEM.moduleId, flag)
+		return this.item?.getFlag(SYSTEM.moduleId, flag)
 	}
 	
 	async setFlag(flag, value) {
-		return this.item.setFlag(SYSTEM.moduleId, flag, value)
+		return this.item?.setFlag(SYSTEM.moduleId, flag, value)
 	}
 	
 	async unsetFlag(flag) {
-		return this.item.unsetFlag(SYSTEM.moduleId, flag)
+		return this.item?.unsetFlag(SYSTEM.moduleId, flag)
 	}
 	
 	async purge() {

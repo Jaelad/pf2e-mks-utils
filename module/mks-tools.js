@@ -12,8 +12,6 @@ import SettingsManager from "./settings-manager.js"
 import SocketHandler from "./socket-handler.js"
 import {ActionRunner, RUDIMENTARY_ACTIONS} from "./action.js"
 import ActionAdministerFirstAid from "./actions/administer-first-aid.js"
-import ActionReadyAid from "./actions/ready-aid.js"
-import ActionReceiveAid from "./actions/receive-aid.js"
 import ActionCreateADiversion from "./actions/create-a-diversion.js"
 import ActionDemoralize from "./actions/demoralize.js"
 import ActionDisarm from "./actions/disarm.js"
@@ -118,9 +116,7 @@ export default class MksTools {
 			palmAnObject: new ActionPalmAnObject(this),
 			prone: new ActionProne(this),
 			raiseAShield: new ActionRaiseAShield(this),
-			readyAid: new ActionReadyAid(this),
 			recallKnowledge: new ActionRecallKnowledge(this),
-			receiveAid: new ActionReceiveAid(this),
 			repair: new ActionRepair(this),
 			restForNight: new ActionRestForNight(this),
 			seek: new ActionSeek(this),
@@ -181,7 +177,8 @@ export default class MksTools {
 	}
 
 	ensureOneSelected(warn = false, requiresEncounter = false) {
-		if (requiresEncounter) {
+		const inCombatTurn = this.settingsManager.get("selectCombatantFirst")
+		if (requiresEncounter && inCombatTurn) {
 			if (game.combat?.combatant)
 				return game.combat?.combatant?.token?.object
 			else {
@@ -190,10 +187,11 @@ export default class MksTools {
 				return
 			}
 		}
-		const inCombatTurn = this.settingsManager.get("selectCombatantFirst")
+		
 		let token
-		if (inCombatTurn && game.combat?.combatant)
+		if (inCombatTurn && game.combat?.combatant) {
 			token = game.combat?.combatant?.token?.object
+		}
 		else {
 			let tokens = canvas.tokens.controlled
 			if (tokens.length === 1)
