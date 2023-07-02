@@ -19,6 +19,10 @@
 	"PF2E.Concept.Cover.Lesser": "Lesser",
 	"PF2E.Concept.Cover.Standard": "Standard",
 	"PF2E.Concept.Cover.Greater": "Greater",
+
+	"PF2E.Actions.Warning.FreeHands": "You have no free hands nor appropriate tools to bypass.",
+	"PF2E.Actions.Warning.Size": "Your target is too big!",
+	"PF2E.Actions.Warning.Reach": "Your target is out of your reach!",
 	
 	"PF2E.Actions.ConcealAnObject.Title": "Conceal An Object",
 	"PF2E.Actions.CreateADiversion.Title": "Create a Diversion",
@@ -55,6 +59,8 @@
 	"PF2E.Actions.AvertGaze.Title": "Avert Gaze",
 	"PF2E.Actions.Crawl.Title": "Crawl",
 	"PF2E.Actions.Mount.Title": "Mount",
+	"PF2E.Actions.Mount.MountMessage": "I mount {mount}",
+	"PF2E.Actions.Mount.DismountMessage": "I dismount {mount}",
 	"PF2E.Actions.Ready.Title": "Ready",
 	
 	"PF2E.Actions.AvoidNotice.Title": "Avoid Notice",
@@ -82,6 +88,7 @@
 	"PF2E.Actions.Subsist.Title": "Subsist",
 	"PF2E.Actions.CreateForgery.Title": "Create Forgery",
 	"PF2E.Actions.TreatWounds.Title": "Treat Wounds",
+	"PF2E.Actions.TreatWounds.Warning.FullHp": "Target is totally healthy.",
 
 	"PF2E.Actions.Hide.Result": "Hide action resulted in {conditionRef} from {target}",
 	"PF2E.Actions.Sneak.Result": "Sneak action resulted in {conditionRef} from {target}",
@@ -150,6 +157,9 @@
 	"PF2E.MKS.Warning.Actor.AtLeastOneMustBeSelected": "You must select at least one actor!",
 	"PF2E.MKS.Warning.Target.OneMustBeSelected": "You must target exactly one token!",
 	"PF2E.MKS.Warning.Target.AtLeastOneMustBeSelected": "You must target at least one token!",
+	"PF2E.MKS.Warning.Target.NoneMustBeSelected": "You must target no tokens!",
+	"PF2E.MKS.Warning.Target.MustBeAlly": "You must target an ally token.",
+	"PF2E.MKS.Warning.Target.MustBeEnemy": "You must target an enemy token.",
 	"PF2E.MKS.Warning.Encounter.NoneExists": "No encounter found.",
 	"PF2E.MKS.Warning.Action.MustUseHealersTools": "You need to use healers' tools.",
 	"PF2E.MKS.Error.DCNotSetInTime": "GM didn't set required DC in time.",

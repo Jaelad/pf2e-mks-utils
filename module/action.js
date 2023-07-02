@@ -27,6 +27,11 @@ export default class Action {
 		this.opposition = opposition
 	}
 
+	async run(options) {
+		const runner = new ActionRunner(this)
+		return runner.run(options, true)
+	}
+
 	initialize() {
 	}
 
@@ -49,24 +54,30 @@ export default class Action {
 		if (!selected) return
 
 		if (this.targetCount === 1) {
-			const targeted = this._.ensureOneTarget(null, false)
+			const targeted = this._.ensureOneTarget(null, warn)
 			if (!targeted || targeted.id === selected.id) return
 			const engagement = new Engagement(selected, targeted)
 			const oppositionOk = this.opposition === 'ally' || (this.opposition === 'ally' && engagement.isAlly) || (this.opposition === 'enemy' && engagement.isEnemy)
-			const ok = oppositionOk && this.pertinent(engagement, warn) 
+			if (warn && !oppositionOk)
+				this._.warn("PF2E.MKS.Warning.Target.MustBe" + $$strings.camelize(this.opposition))
+			const ok = oppositionOk && this.pertinent(engagement, warn)
 			return ok ? engagement : undefined
 		}
 		else if (this.targetCount > 1) {
-			const targets = this._.ensureAtLeastOneTarget(null, false)
+			const targets = this._.ensureAtLeastOneTarget(null, warn)
 			if (!targets || targets.find(t => t.id === selected.id)) return
 			const engagement = new Engagements(selected, targets)
 			const oppositionOk = this.opposition === 'ally' || (this.opposition === 'ally' && engagement.isAlly) || (this.opposition === 'enemy' && engagement.isEnemy)
-			const ok = oppositionOk && this.pertinent(engagement, warn) 
+			if (warn && !oppositionOk)
+				this._.warn("PF2E.MKS.Warning.Target.MustBe" + $$strings.camelize(this.opposition))
+			const ok = oppositionOk && this.pertinent(engagement, warn)
 			return ok ? engagement : undefined
 		}
 		else  {
-			if (this.targetCount === 0 && this._.getTargets()?.size > 0)
+			if (this.targetCount === 0 && this._.getTargets()?.size > 0) {
+				this._.warn("PF2E.MKS.Warning.Target.NoneMustBeSelected")
 				return
+			}
 			const engagement = new Engagement(selected)
 			const ok = this.pertinent(engagement, warn)
 			return ok ? engagement : undefined

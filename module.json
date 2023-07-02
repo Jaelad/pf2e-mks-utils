@@ -38,6 +38,71 @@
       "type": "Item",
       "private": false,
       "flags": {}
+    },
+    {
+      "name": "mks-action-combat-macros",
+      "label": "MKS Combat Actions",
+      "banner": "systems/pf2e/assets/compendium-banner/orange.webp",
+      "path": "packs/action-combat-macros",
+      "type": "Macro",
+      "system": "pf2e",
+      "ownership": {
+        "PLAYER": "OBSERVER",
+        "ASSISTANT": "OWNER"
+      },
+      "flags": {}
+    },
+    {
+      "name": "mks-action-movement-macros",
+      "label": "MKS Movement Actions",
+      "banner": "systems/pf2e/assets/compendium-banner/orange.webp",
+      "path": "packs/action-movement-macros",
+      "type": "Macro",
+      "system": "pf2e",
+      "ownership": {
+        "PLAYER": "OBSERVER",
+        "ASSISTANT": "OWNER"
+      },
+      "flags": {}
+    },
+    {
+      "name": "mks-action-other-macros",
+      "label": "MKS Other Actions",
+      "banner": "systems/pf2e/assets/compendium-banner/orange.webp",
+      "path": "packs/action-other-macros",
+      "type": "Macro",
+      "system": "pf2e",
+      "ownership": {
+        "PLAYER": "OBSERVER",
+        "ASSISTANT": "OWNER"
+      },
+      "flags": {}
+    },
+    {
+      "name": "mks-exploration-macros",
+      "label": "MKS Exploration Actions",
+      "banner": "systems/pf2e/assets/compendium-banner/orange.webp",
+      "path": "packs/explore-macros",
+      "type": "Macro",
+      "system": "pf2e",
+      "ownership": {
+        "PLAYER": "OBSERVER",
+        "ASSISTANT": "OWNER"
+      },
+      "flags": {}
+    },
+    {
+      "name": "mks-downtime-macros",
+      "label": "MKS Downtime Actions",
+      "banner": "systems/pf2e/assets/compendium-banner/orange.webp",
+      "path": "packs/downtime-macros",
+      "type": "Macro",
+      "system": "pf2e",
+      "ownership": {
+        "PLAYER": "OBSERVER",
+        "ASSISTANT": "OWNER"
+      },
+      "flags": {}
     }
   ],
   "languages": [

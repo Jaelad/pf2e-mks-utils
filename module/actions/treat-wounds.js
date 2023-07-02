@@ -1,8 +1,6 @@
 import {default as i18n} from "../../lang/pf2e-i18n.js"
-import {default as LOG} from "../../utils/logging.js"
 import { SystemAction } from "../action.js"
-import Compendium from "../compendium.js"
-import { Engagement } from "../model/engagement.js"
+import { EQU_HEALERS_TOOLS, EQU_HEALERS_TOOLS_EXPANDED } from "../model/equipments.js"
 
 export default class ActionTreatWounds extends SystemAction {
 
@@ -17,6 +15,16 @@ export default class ActionTreatWounds extends SystemAction {
 	}
 
 	pertinent(engagement, warn) {
-		return this._.actorManager.hasLostHP(engagement.targeted)
+		const hpLost = this._.actorManager.hasLostHP(engagement.targeted)
+		if (!hpLost) {
+			if (warn) this._.warn("PF2E.Actions.TreatWounds.Warning.FullHp")
+			return false
+		}
+		const healersTools = new Equipments(engagement.initiator).hasAny([EQU_HEALERS_TOOLS, EQU_HEALERS_TOOLS_EXPANDED]).length > 0
+		if (!healersTools) {
+			if (warn) this._.warn("PF2E.MKS.Warning.Action.MustUseHealersTools")
+			return false
+		}
+		return true
 	}
 }

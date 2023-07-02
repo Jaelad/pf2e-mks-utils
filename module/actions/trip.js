@@ -15,13 +15,27 @@ export default class ActionTrip extends SystemAction {
 		})
 	}
 
-	pertinent(engagement) {
+	pertinent(engagement, warn) {
 		const equipments = new Equipments(engagement.initiator)
 		const rangedTripW = equipments.weaponWieldedWithTraits(['ranged-trip'])
 		const tripW = equipments.weaponWieldedWithTraits(['trip'])
 
-		return (equipments.handsFree > 0 || tripW || rangedTripW) && engagement.sizeDifference > -2
-			&& (rangedTripW || (tripW ? engagement.inMeleeRange : engagement.isAdjacent))
+		const freeHands = equipments.handsFree > 0 || tripW || rangedTripW
+		if (!freeHands) {
+			if (warn) this._.warn("PF2E.Actions.Warning.FreeHands")
+			return false
+		}
+		const sizeOk = engagement.sizeDifference > -2
+		if (!sizeOk) {
+			if (warn) this._.warn("PF2E.Actions.Warning.Size")
+			return false
+		}
+		const reachOk = rangedTripW || (tripW ? engagement.inMeleeRange : engagement.isAdjacent)
+		if (!reachOk) {
+			if (warn) this._.warn("PF2E.Actions.Warning.Reach")
+			return false
+		}
+		return true
 	}
 
 	async apply(engagement, result) {

@@ -26,6 +26,10 @@
 	"PF2E.BonusLabel.item": "Item",
 	"PF2E.BonusLabel.ability": "Yetenek",
 	"PF2E.BonusLabel.proficiency": "Ustalık",
+
+	"PF2E.Actions.Warning.FreeHands": "Bir eliniz boş olmalı veya uygun ekipman kullanmalısınız.",
+	"PF2E.Actions.Warning.Size": "Hedefiniz sizin için çok büyük!",
+	"PF2E.Actions.Warning.Reach": "Bu hamle için hedefinizin çok uzağındasınız!",
 	
 	"PF2E.Actions.Aid.Title": "Yardım Et",
 	"PF2E.Actions.AdministerFirstAid.Title": "İlkyardım",
@@ -61,6 +65,8 @@
 	"PF2E.Actions.Lie.Title": "Yalan Söyle",
 	"PF2E.Actions.LongJump.Title": "Uzun Atla",
 	"PF2E.Actions.Mount.Title": "Bin",
+	"PF2E.Actions.Mount.MountMessage": "{mount} üzerine bindim.",
+	"PF2E.Actions.Mount.DismountMessage": "{mount} üzerinden indim.",
 	"PF2E.Actions.PalmAnObject.Title": "Nesneyi Aşır",
 	"PF2E.Actions.Perform.Title": "Performans Sergile",
 	"PF2E.Actions.PointOut.Title": "İşaret Et",
@@ -90,6 +96,7 @@
 	"PF2E.Actions.Trip.Title": "Çelme At",
 	"PF2E.Actions.TumbleThrough.Title": "Havalı Geçiş",
 	"PF2E.Actions.TreatWounds.Title": "Yaraları Sar",
+	"PF2E.Actions.TreatWounds.Warning.FullHp": "Hedef tamamen sağlıklı.",
 
 	"PF2E.Actions.AvoidNotice.Title": "Dikkatten Sakın",
 	"PF2E.Actions.Defend.Title": "Savun",
@@ -205,6 +212,9 @@
 	"PF2E.MKS.Warning.Actor.AtLeastOneMustBeSelected": "En az bir piyon seçmelisiniz!",
 	"PF2E.MKS.Warning.Target.OneMustBeSelected": "Bir piyon hedeflemelisiniz!",
 	"PF2E.MKS.Warning.Target.AtLeastOneMustBeSelected": "En az bir piyon hedeflemelisiniz!",
+	"PF2E.MKS.Warning.Target.NoneMustBeSelected": "Hiçbir piyon hedeflenmemelidir.",
+	"PF2E.MKS.Warning.Target.MustBeAlly": "Dost bir piyon hedeflenmemelidir.",
+	"PF2E.MKS.Warning.Target.MustBeEnemy": "Düşman bir piyon hedeflenmemelidir.",
 	"PF2E.MKS.Warning.Encounter.NoneExists": "Mücadelede değilsiniz.",
 	"PF2E.MKS.Warning.Action.MustUseHealersTools": "Sağlıkçı çantası kullanmalısınız.",
 	"PF2E.MKS.Error.DCNotSetInTime": "GM DC'yi zamanında tayin edemedi.",

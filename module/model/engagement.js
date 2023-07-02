@@ -9,7 +9,7 @@ export class Engagement {
 		if (!initiator)
 			throw new Error("Cannot create an engagement without initiator token!")
 		this.targeted = targeted && targeted.actor ? targeted : null
-		this.options = options
+		this.options = options ?? {}
 	}
 
 	static from(participants) {
@@ -66,13 +66,21 @@ export class Engagement {
 	}
 	
 	get isAdjacent() {
-		return this.distance() === 5
+		return this.distance() <= 5
 	}
 	
 	getTargetDC(dcFunc) {
 		if (!this.targetExists)
 			return
 		return dcFunc(this.targeted)
+	}
+
+	initiatorHasTrait(trait) {
+		return this.initiator.actor.system.traits.value.includes(trait)
+	}
+
+	targetHasTrait(trait) {
+		return this.targeted?.actor.system.traits.value.includes(trait)
 	}
 
 	hasInitiatorCondition(condition, any = true) {

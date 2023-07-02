@@ -18,15 +18,26 @@ export default class ActionHide extends SimpleAction {
 		})
 	}
 
-	async apply(engagement, result) {
+	pertinent(engagement) {
 		const relative = new RelativeConditions()
-		if (!relative.isOk) return
+		if (!relative.isOk) return false
 		const concealed = new Condition(engagement.initiator, CONDITION_CONCEALED).exists
 
 		for (const target of engagement.targets) {
-			const dc =  target.actor.perception.dc.value, awareness = relative.getAwarenessTowardMe(target), cover = relative.getMyCoverFrom(target) ?? 0
+			const awareness = relative.getAwarenessTowardMe(target), cover = relative.getMyCoverFrom(target) ?? 0
 			if (awareness < 3 || (cover < 2 && !concealed))
-				continue
+				return false
+		}
+		return true
+	}
+
+	async apply(engagement, result) {
+		const relative = new RelativeConditions()
+
+		for (const target of engagement.targets) {
+			const dc =  target.actor.perception.dc.value
+				, awareness = relative.getAwarenessTowardMe(target)
+				, cover = relative.getMyCoverFrom(target) ?? 0
 			const coverBonus = Math.max(0, 2 * (cover-1))
 			const degree = DCHelper.calculateRollSuccess(result.roll, dc - coverBonus)
 			if (degree < 2) {

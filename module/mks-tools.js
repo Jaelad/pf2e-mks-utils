@@ -59,6 +59,7 @@ import ActionEarnIncome from "./actions/earn-income.js"
 import ActionRestForNight from "./actions/rest-for-night.js"
 import ActionTreatDisease from "./actions/treat-disease.js"
 import ActionTreatPoison from "./actions/treat-poison.js"
+import ActionMount from "./actions/mount.js"
 
 export default class MksTools {
 
@@ -127,6 +128,7 @@ export default class MksTools {
 			treatPosion: new ActionTreatPoison(this),
 			treatWounds: new ActionTreatWounds(this),
 			trip: new ActionTrip(this),
+			mount: new ActionMount(this),
 			
 			avoidNotice: new ActionAvoidNotice(this),
 			balance: new ActionBalance(this),
@@ -246,7 +248,6 @@ export default class MksTools {
 			return Array.from(tokens)
 		else if (warn) {
 			this.warn("PF2E.MKS.Warning.Target.AtLeastOneMustBeSelected")
-			ui.notifications.warn(warning)
 		}
 	}
 

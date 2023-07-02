@@ -1,15 +1,13 @@
 import {default as i18n} from "../../lang/pf2e-i18n.js"
 import {default as LOG} from "../../utils/logging.js"
-import Action from "../action.js"
-import Compendium from "../compendium.js"
+import {SystemAction} from "../action.js"
 import Check from "../check.js"
 import {MONSTER_KNOWLEDGE, ROLL_MODE} from "../constants.js"
 import DCHelper from "../helpers/dc-helper.js"
 import Dialogs from "../apps/dialogs.js"
 import $$arrays from "../../utils/arrays.js"
-import { Engagement } from "../model/engagement.js"
 
-export default class ActionRecallKnowledge extends Action {
+export default class ActionRecallKnowledge extends SystemAction {
 
 	constructor(MKS) {
 		super(MKS, 'recallKnowledge', 'encounter', true, true, {
