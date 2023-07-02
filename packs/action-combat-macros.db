@@ -1,6 +1,5 @@
 {"_id":"Bef3de9qpQHv57og","name":"Deception: Feyk At","type":"script","img":"systems/pf2e/icons/spells/mislead.webp","scope":"global","command":"game.MKS.actions.feint.run();"}
 {"_id":"En99lVMiJwT3QU6t","name":"Athletics: İtekle","type":"script","img":"systems/pf2e/icons/spells/ki-strike.webp","scope":"global","command":"game.MKS.actions.shove.run();"}
-{"_id":"FNbmDECYynyIttqm","name":"Acrobatics: Havalı Geçiş","type":"script","img":"systems/pf2e/icons/spells/unimpeded-stride.webp","scope":"global","command":"game.MKS.actions.tumbleThrough.run();"}
 {"_id":"H8GdUR00ioD45Znf","name":"Intimidate: Moralini Boz","type":"script","img":"systems/pf2e/icons/spells/deja-vu.webp","scope":"global","command":"game.MKS.actions.demoralize.run();"}
 {"_id":"SO5Ix2SLYDjCOLu9","name":"Athletics: Cebelleş","type":"script","img":"systems/pf2e/icons/conditions/grabbed.webp","scope":"global","command":"game.MKS.actions.grapple.run();"}
 {"_id":"SyIp9y2XqlcpOf0S","name":"Athletics: Çelme At","type":"script","img":"systems/pf2e/icons/spells/magnetic-attraction.webp","scope":"global","command":"game.MKS.actions.trip.run();"}

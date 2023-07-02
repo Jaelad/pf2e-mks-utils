@@ -8,7 +8,7 @@ export class ActionTumbleThrough extends SimpleAction {
 		super(MKS, {action: 'tumbleThrough',
 			checkType: 'skill[acrobatics]',
 			traits: ['move'],
-			icon: "systems/pf2e/icons/spells/mislead.webp",
+			icon: "systems/pf2e/icons/spells/unimpeded-stride.webp",
 			tags: ['situational'],
 			actionGlyph: 'A',
 			targetCount: 1,

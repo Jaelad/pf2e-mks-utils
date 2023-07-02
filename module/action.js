@@ -75,7 +75,7 @@ export default class Action {
 		}
 		else  {
 			if (this.targetCount === 0 && this._.getTargets()?.size > 0) {
-				this._.warn("PF2E.MKS.Warning.Target.NoneMustBeSelected")
+				if (warn) this._.warn("PF2E.MKS.Warning.Target.NoneMustBeSelected")
 				return
 			}
 			const engagement = new Engagement(selected)
