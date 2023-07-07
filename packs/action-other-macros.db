@@ -8,3 +8,4 @@
 {"_id":"kd7V6zScyHN8fbyE","name":"Perception: Ara/Tara","type":"script","img":"systems/pf2e/icons/spells/darkvision.webp","scope":"global","command":"game.MKS.actions.seek.run();"}
 {"_id":"sNcP9VYxk1TMaJ4w","name":"Medicine: Zehri Tedavi Et","type":"script","img":"systems/pf2e/icons/effects/treat-poison.webp","scope":"global","command":"game.MKS.actions.treatPoison.run();"}
 {"_id":"a3cPlbgxy7UMaJ5t","name":"Medicine: İlk Yardım","type":"script","img":"systems/pf2e/icons/spells/heal-companion.webp","scope":"global","command":"game.MKS.actions.administerFirstAid.run();"}
+{"_id":"SXraNYhsHK9tLrq1","name":"Kurtul","type":"script","img":"systems/pf2e/icons/spells/humanoid-form.webp","scope":"global","command":"game.MKS.actions.escape.run();"}

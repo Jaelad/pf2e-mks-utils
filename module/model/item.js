@@ -14,6 +14,14 @@ export default class Item {
 	get slug() {
 		return this.item?.slug
 	}
+
+	get name() {
+		return this.item?.name
+	}
+
+	get id() {
+		return this.item?.id
+	}
 	
 	getFlag(flag) {
 		return this.item?.getFlag(SYSTEM.moduleId, flag)
