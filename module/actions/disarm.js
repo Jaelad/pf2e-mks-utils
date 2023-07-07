@@ -1,9 +1,5 @@
 import {default as i18n} from "../../lang/pf2e-i18n.js"
-import $$strings from "../../utils/strings.js";
 import Equipments from "../model/equipments.js";
-import { CONDITION_FLATFOOTED, CONDITION_GRABBED } from "../model/condition.js";
-import { EFFECT_DISARM_SUCCESS } from "../model/effect.js";
-import { Engagement } from "../model/engagement.js";
 import { SystemAction } from "../action.js";
 
 export default class ActionDisarm extends SystemAction {
@@ -21,7 +17,21 @@ export default class ActionDisarm extends SystemAction {
 		const equipments = new Equipments(engagement.initiator)
 		const disarmW = equipments.weaponWieldedWithTraits(['disarm'])
 
-		return (equipments.handsFree > 0 || disarmW) && engagement.sizeDifference > -2
-			&& (disarmW ? engagement.inMeleeRange : engagement.isAdjacent)
+		const freeHands = equipments.handsFree > 0 || disarmW
+		if (!freeHands) {
+			if (warn) this._.warn("PF2E.Actions.Warning.FreeHands")
+			return false
+		}
+		const sizeOk = engagement.sizeDifference > -2
+		if (!sizeOk) {
+			if (warn) this._.warn("PF2E.Actions.Warning.Size")
+			return false
+		}
+		const reachOk = disarmW ? engagement.inMeleeRange : engagement.isAdjacent
+		if (!reachOk) {
+			if (warn) this._.warn("PF2E.Actions.Warning.Reach")
+			return false
+		}
+		return true
 	}
 }

@@ -7,15 +7,15 @@ import { AWARENESS } from "../constants.js"
 
 export default class ActionSneak extends SimpleAction {
 	constructor(MKS) {
-		super(MKS, {action: 'sneak', gmActs: true,
-			checkType: 'skill[stealth]',
-			traits: ['move', 'secret'],
+		super(MKS, 'sneak', 'encounter', true, true, {
 			icon: "systems/pf2e/icons/spells/undetectable-alignment.webp",
 			tags: ['stealth'],
 			actionGlyph: 'A',
 			targetCount: 2,
 			requiresEncounter: true,
 			opposition: 'enemy',
+			checkType: 'skill[stealth]',
+			traits: ['move', 'secret']
 		})
 	}
 

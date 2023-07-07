@@ -1,6 +1,7 @@
 import {default as i18n} from "../../lang/pf2e-i18n.js"
 import Action from "../action.js"
 import CommonUtils from "../helpers/common-utils.js"
+import Effect, { EFFECT_MOUNTED } from "../model/effect.js"
 import { Engagement } from "../model/engagement.js"
 
 export default class ActionMount extends Action {
@@ -9,32 +10,37 @@ export default class ActionMount extends Action {
 		super(MKS, 'mount', 'encounter', false, false, {
 			icon: "systems/pf2e/icons/equipment/worn-items/companion-items/waverider-barding.webp",
 			actionGlyph: 'A',
-			tags: ['basic'],
-			targetCount: 0
+			tags: ['basic']
 		})
 	}
 
-	pertinent(engagement) {
+	pertinent(engagement, warn) {
 		const mount = canvas.tokens.ownedTokens.find((t) => {
 			const e = new Engagement(engagement.initiator, t)
-			return e.isAdjacent && e.sizeDifference <= -1 && e.targetHasTrait('animal')
+			return e.isAdjacent && e.isAlly && e.sizeDifference <= -1 && e.targetHasTrait('animal')
 		})
 		if (mount)
 			engagement.options.mountId = mount.id
+		else if (warn)
+			this._.warn("PF2E.Actions.Mount.Warning.NoAvail")
+
 		return !!mount
 	}
 
 	async act(engagement, options) {
 		const mount = CommonUtils.getTokenById(engagement.options.mountId)
 		const ele = engagement.initiator.document.elevation
-		if (ele === 5) {
+		const mounted = new Effect(engagement.initiator, EFFECT_MOUNTED)
+		if (mounted.exists) {
+			await mounted.purge()
 			await engagement.initiator.document.update({elevation:0})
 			ui.chat.processMessage(i18n.$$('PF2E.Actions.Mount.DismountMessage', {mount: mount.name}))
 			if (tokenAttacher)
 				tokenAttacher.detachElementFromToken(engagement.initiator, mount, true)
 		}
 		else {
-			await engagement.initiator.document.update({elevation:5})
+			await mounted.ensure()
+			await engagement.initiator.document.update({elevation:4})
 			ui.chat.processMessage(i18n.$$('PF2E.Actions.Mount.MountMessage', {mount: mount.name}))
 			if (tokenAttacher) {
 				const token = engagement.initiator

@@ -13,6 +13,7 @@ export const EFFECT_RESIST_A_DIVERSION = "resist-a-diversion"
 export const EFFECT_IMMUNE_TO_DEMORALIZE = "immune-to-demoralize"
 export const EFFECT_POISON_TREATED = "poison-treated"
 export const EFFECT_DISEASE_TREATED = "disease-treated"
+export const EFFECT_MOUNTED = "mounted"
 
 export const UUID_EFFECTS = {
 	"multiple-attack-penalty": "Compendium.pf2e-tools-mks.core-effects.DPVfUT43aCQMvauJ",
@@ -26,7 +27,8 @@ export const UUID_EFFECTS = {
 	"resist-a-diversion": "Compendium.pf2e-tools-mks.core-effects.GK9OckuuNDJFdFDe",
 	"immune-to-demoralize": "Compendium.pf2e-tools-mks.core-effects.0mPMeOFZfos07cut",
 	"poison-treated": "Compendium.pf2e-tools-mks.core-effects.9CucVXo0BT77gw2h",
-	"disease-treated": "Compendium.pf2e-tools-mks.core-effects.VhUYetlOZu2PQGQZ"
+	"disease-treated": "Compendium.pf2e-tools-mks.core-effects.VhUYetlOZu2PQGQZ",
+	"mounted": "Compendium.pf2e.other-effects.Item.9c93NfZpENofiGUp",
 }
 
 export default class Effect extends Item {

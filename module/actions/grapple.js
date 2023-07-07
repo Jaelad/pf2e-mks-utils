@@ -1,14 +1,6 @@
 import {default as i18n} from "../../lang/pf2e-i18n.js"
-import {default as LOG} from "../../utils/logging.js"
 import { SystemAction } from "../action.js"
-import Compendium from "../compendium.js"
-import $$arrays from "../../utils/arrays.js"
-import Check from "../check.js"
-import CommonUtils from "../helpers/common-utils.js"
-import { Engagement } from "../model/engagement.js"
 import Equipments from "../model/equipments.js"
-import Condition, { CONDITION_GRABBED, CONDITION_RESTRAINED } from "../model/condition.js"
-import Effect, { EFFECT_GRABBING } from "../model/effect.js"
 
 export default class ActionGrapple extends SystemAction {
 
@@ -26,7 +18,21 @@ export default class ActionGrapple extends SystemAction {
 		const equipments = new Equipments(engagement.initiator)
 		const grappleW = equipments.weaponWieldedWithTraits(['grapple'])
 
-		return (equipments.handsFree > 0 || grappleW) && engagement.sizeDifference > -2
-			&& (grappleW ? engagement.inMeleeRange : engagement.isAdjacent)
+		const freeHands = equipments.handsFree > 0 || grappleW
+		if (!freeHands) {
+			if (warn) this._.warn("PF2E.Actions.Warning.FreeHands")
+			return false
+		}
+		const sizeOk = engagement.sizeDifference > -2
+		if (!sizeOk) {
+			if (warn) this._.warn("PF2E.Actions.Warning.Size")
+			return false
+		}
+		const reachOk = grappleW ? engagement.inMeleeRange : engagement.isAdjacent
+		if (!reachOk) {
+			if (warn) this._.warn("PF2E.Actions.Warning.Reach")
+			return false
+		}
+		return true
 	}
 }

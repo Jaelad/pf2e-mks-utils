@@ -10,21 +10,26 @@ import Item from "../model/item.js"
 
 export default class ActionAdministerFirstAid extends SimpleAction {
 	constructor(MKS) {
-		super(MKS, {action: 'administerFirstAid',
-			checkType: 'skill[medicine]',
-			traits: ['manipulate'],
+		super(MKS, 'administerFirstAid', 'encounter', false, false, {
 			icon: "systems/pf2e/icons/spells/heal-companion.webp",
 			tags: ['combat'],
 			actionGlyph: 'D',
 			targetCount: 1,
-			opposition: 'ally'
+			opposition: 'ally',
+			checkType: 'skill[medicine]',
+			traits: ['manipulate']
 		})
 	}
 	
 	pertinent(engagement, warn) {
-		const ok = super.pertinent(engagement, warn)
-		return ok && engagement.isAdjacent
-			&& (Item.hasAny(engagement.targeted, CONDITION_DYING) || PersistentDamage.hasAny(engagement.targeted, [PERSISTENT_BLEED, PERSISTENT_POISON]))
+		const adjacent = engagement.isAdjacent
+		const affl = Item.hasAny(engagement.targeted, CONDITION_DYING) || PersistentDamage.hasAny(engagement.targeted, [PERSISTENT_BLEED, PERSISTENT_POISON])
+		if (warn && !adjacent)
+			this._.warn("PF2E.Actions.Warning.Reach")
+		if (warn && !affl)
+		this._.warn("PF2E.Actions.AdministerFirstAid.Warning.Reach")
+
+		return adjacent && affl
 	}
 	
 	async act(engagement) {
@@ -81,7 +86,7 @@ export default class ActionAdministerFirstAid extends SimpleAction {
 		else
 			return
 		
-		return await super.act( engagement, {overrideDC: dc, affliction, formula, conditionId: id})
+		return super.act( engagement, {overrideDC: dc, affliction, formula, conditionId: id})
 	}
 
 	async flatCheck(targeted, effect, message) {

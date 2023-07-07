@@ -1,16 +1,15 @@
 import {SimpleAction} from "../action.js"
-import {SYSTEM} from "../constants.js"
 import {default as i18n} from "../../lang/pf2e-i18n.js"
 import Dialogs from "../apps/dialogs.js"
 
 export default class ActionRepair extends SimpleAction {
 	constructor(MKS) {
-		super(MKS, {action: 'repair', mode: 'exploration',
-			checkType: 'skill[crafting]',
-			traits: ['exploration', 'manipulate'],
+		super(MKS, 'repair', 'exploration', true, true, {
 			icon: "systems/pf2e/icons/equipment/weapons/gnome-hooked-hammer.webp",
 			tags: ['preparation'],
-			actionGlyph: ''
+			actionGlyph: '',
+			checkType: 'skill[crafting]',
+			traits: ['exploration', 'manipulate'],
 		})
 	}
 

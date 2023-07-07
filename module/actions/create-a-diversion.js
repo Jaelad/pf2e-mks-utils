@@ -5,12 +5,12 @@ import DCHelper from "../helpers/dc-helper.js"
 import Effect, { EFFECT_RESIST_A_DIVERSION } from "../model/effect.js"
 import RelativeConditions from "../model/relative-conditions.js"
 import { UUID_CONDITONS } from "../model/condition.js"
-import { SimpleAction } from "../action.js"
+import Action from "../action.js"
 
-export default class ActionCreateADiversion extends SimpleAction {
+export default class ActionCreateADiversion extends Action {
 
 	constructor(MKS) {
-		super(MKS, {action: 'createADiversion',
+		super(MKS, 'createADiversion', 'encounter', false, true, {
 			icon: "systems/pf2e/icons/spells/lose-the-path.webp",
 			tags: ['stealth'],
 			actionGlyph: 'A',
@@ -18,6 +18,19 @@ export default class ActionCreateADiversion extends SimpleAction {
 			requiresEncounter: true,
 			opposition: 'enemy'
 		})
+	}
+
+	pertinent(engagement, warn) {
+		const relative = new RelativeConditions()
+
+		for (const target of engagement.targets) {
+			const awareness = relative.getAwarenessTowardMe(target)
+			if (awareness < 3) {
+				if (warn) this._.warn(i18n.$$('PF2E.Actions.CreateADiversion.Warning.NotNeeded', {target: target.name}))
+				return false
+			}
+		}
+		return true
 	}
 
 	async act(engagement, options) {
@@ -44,14 +57,10 @@ export default class ActionCreateADiversion extends SimpleAction {
 	}
 	
 	async apply(engagement, result) {
-		const relative = new RelativeConditions()
-		if (!relative.isOk) return
 		const roll = result.roll
+		const relative = new RelativeConditions()
 
 		for (const target of engagement.targets) {
-			const awareness = relative.getAwarenessTowardMe(target)
-			if (awareness < 3)
-				continue
 			const resistDiversion = new Effect(target, EFFECT_RESIST_A_DIVERSION)
 			const dc = target.actor.perception.dc.value + (resistDiversion.exists ? 4 : 0)
 

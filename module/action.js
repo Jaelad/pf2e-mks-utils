@@ -7,6 +7,7 @@ import CommonUtils from "./helpers/common-utils.js"
 import {Engagement, Engagements} from "./model/engagement.js"
 import ObjectColl from "./model/object-coll.js"
 import $$strings from "../utils/strings.js"
+import DCHelper from "./helpers/dc-helper.js"
 
 export default class Action {
 
@@ -169,8 +170,18 @@ export default class Action {
 }
 
 export class SimpleAction extends Action {
-	constructor(MKS, {action, mode = 'encounter', gmActs = false, gmApplies = true, traits, checkType, dc, icon, tags, requiresEncounter = false, actionGlyph = 'A', targetCount = 0, opposition = "all"}) {
-		super(MKS, action, mode, gmActs, gmApplies, {icon, tags, actionGlyph, requiresEncounter, targetCount, opposition})
+	constructor(MKS, name, mode = 'encounter', gmActs = false, gmApplies = true, {
+		icon = ACTION_GLYPH['']
+		, tags = ['basic']
+		, requiresEncounter = false
+		, actionGlyph = 'A'
+		, targetCount
+		, opposition = "all"
+		,traits,
+		checkType,
+		dc
+	}) {
+		super(MKS, name, mode, gmActs, gmApplies, {icon, tags, actionGlyph, requiresEncounter, targetCount, opposition})
 		this.traits = traits
 		this.checkType = checkType
 		this.dc = dc
@@ -208,19 +219,30 @@ export class SystemAction extends Action {
 				, actionGlyph = 'A'
 				, requiresEncounter = false,
 				targetCount,
-				opposition = 'all'
+				opposition = 'all',
+				dc = undefined
 			}) {
 		super(MKS, name, mode, gmActs, gmApplies, {icon, tags, actionGlyph, requiresEncounter, targetCount, opposition})
+		this.dc = dc
 	}
 
 	async act(engagement, options) {
+		const actor = engagement.initiator.actor
+		let difficultyClass = undefined
+		if (this.dc) {
+			const dcObj = await DCHelper.requestGmSetDC({action: this.name, defaultDC: this.dc, challenger: actor.name})
+			difficultyClass = dcObj?.dc
+		}
 		const systemRoll = await new Promise((resolve, reject) => {
 			const callback = (result) => {
 				resolve(result.roll)
 			}
-			game.pf2e.actions[this.name]({ actors: engagement.initiator.actor, callback })
+			game.pf2e.actions[this.name]({ actors: engagement.initiator.actor, callback, difficultyClass})
 		})
 		return this.createResult(engagement, systemRoll)
+	}
+
+	async apply(engagement, result) {
 	}
 }
 

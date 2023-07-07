@@ -4,14 +4,14 @@ import Equipments, { EQU_HEALERS_TOOLS, EQU_HEALERS_TOOLS_EXPANDED } from "../mo
 
 export default class ActionTreatDisease extends SimpleAction {
 	constructor(MKS) {
-		super(MKS, {action: 'treatDisease', mode: "downtime",
-			checkType: 'skill[medicine]',
-			traits: ['manipulate', 'downtime'],
+		super(MKS, 'treatDisease', 'downtime', false, true, {
 			icon: "systems/pf2e/icons/effects/treat-disease.webp",
 			tags: ['preparation'],
 			actionGlyph: '',
 			targetCount: 1,
 			opposition: 'ally',
+			checkType: 'skill[medicine]',
+			traits: ['manipulate', 'downtime'],
 			dc: 15
 		})
 	}

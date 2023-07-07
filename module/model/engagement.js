@@ -131,7 +131,7 @@ export class Engagements extends Engagement {
 	}
 
 	get participants() {
-		return {initiator: this.initiator.id, targeted: this.engagements.map(e => e.id)}
+		return {initiator: this.initiator.id, targeted: this.engagements.map(e => e.targeted.id)}
 	}
 
 	get targets() {

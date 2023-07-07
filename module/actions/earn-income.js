@@ -10,4 +10,8 @@ export default class ActionEarnIncome extends SystemAction {
 			tags: ['preparation']
 		})
 	}
+
+	async act(engagement, options) {
+		game.pf2e.actions.earnIncome(engagement.initiator.actor)
+	}
 }

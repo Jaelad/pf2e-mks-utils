@@ -1,4 +1,4 @@
 {"_id":"AzBvPgjGq7IHyfiE","name":"Para Kazan","type":"script","img":"systems/pf2e/icons/equipment/treasure/currency/gold-pieces.webp","scope":"global","command":"game.MKS.actions.earnIncome.run();"}
 {"_id":"dqT9hXni6RyilXcB","name":"Gece Boyunca Dinlen","type":"script","img":"systems/pf2e/icons/equipment/adventuring-gear/bedroll.webp","scope":"global","command":"game.MKS.actions.restForNight.run();"}
-{"_id":"hZNzwudcrSsRxx01","name":"Crafting: Usta İşçiliği Yap","type":"script","img":"systems/pf2e/icons/equipment/weapons/gnome-hooked-hammer.webp","scope":"global","command":"game.MKS.actions.craft.run();"}
-{"_id":"zaED9Alam6gaa1MM","name":"Medicine: Hastayla İlgilen","type":"script","img":"systems/pf2e/icons/spells/hymn-of-healing.webp","scope":"global","command":"game.MKS.actions.treatDisease.run();"}
+{"_id":"hZNzwudcrSsRxx01","name":"Crafting: Usta İşçiliği Yap","type":"script","img":"systems/pf2e/icons/spells/precious-metals.webp","scope":"global","command":"game.MKS.actions.craft.run();"}
+{"_id":"zaED9Alam6gaa1MM","name":"Medicine: Hastalıkla İlgilen","type":"script","img":"systems/pf2e/icons/spells/hymn-of-healing.webp","scope":"global","command":"game.MKS.actions.treatDisease.run();"}

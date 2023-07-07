@@ -16,7 +16,18 @@ export default class ActionDemoralize extends SystemAction {
 	pertinent(engagement, warn) {
 		const immuneToDem = new Effect(engagement.targeted, EFFECT_IMMUNE_TO_DEMORALIZE)
 		const actorsImmuneTo = immuneToDem.exists ? immuneToDem.getFlag("actors") : []
-		return engagement.distance() <= 30 && !(actorsImmuneTo?.includes(engagement.initiator.actor.id))
+		const inRange = engagement.distance() <= 30
+		if (!inRange) {
+			if (warn) this._.warn("PF2E.Actions.Warning.Reach")
+			return false
+		}
+
+		const notImmune = !(actorsImmuneTo?.includes(engagement.initiator.actor.id))
+		if (!notImmune) {
+			if (warn) this._.warn("PF2E.Actions.Warning.Immune")
+			return false
+		}
+		return inRange && notImmune
 	}
 
 	async apply(engagement, result) {

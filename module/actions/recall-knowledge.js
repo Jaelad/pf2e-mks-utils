@@ -1,13 +1,13 @@
 import {default as i18n} from "../../lang/pf2e-i18n.js"
 import {default as LOG} from "../../utils/logging.js"
-import {SystemAction} from "../action.js"
+import Action from "../action.js"
 import Check from "../check.js"
 import {MONSTER_KNOWLEDGE, ROLL_MODE} from "../constants.js"
 import DCHelper from "../helpers/dc-helper.js"
 import Dialogs from "../apps/dialogs.js"
 import $$arrays from "../../utils/arrays.js"
 
-export default class ActionRecallKnowledge extends SystemAction {
+export default class ActionRecallKnowledge extends Action {
 
 	constructor(MKS) {
 		super(MKS, 'recallKnowledge', 'encounter', true, true, {

@@ -4,20 +4,23 @@ import Equipments, { EQU_HEALERS_TOOLS, EQU_HEALERS_TOOLS_EXPANDED } from "../mo
 
 export default class ActionTreatPoison extends SimpleAction {
 	constructor(MKS) {
-		super(MKS, {action: 'treatPoison', mode: "encounter",
-			checkType: 'skill[medicine]',
-			traits: ['manipulate'],
+		super(MKS, 'treatPoison', 'encounter', false, true, {
 			icon: "systems/pf2e/icons/effects/treat-poison.webp",
 			tags: ['combat'],
 			actionGlyph: 'A',
 			targetCount: 1,
 			opposition: 'ally',
+			checkType: 'skill[medicine]',
+			traits: ['manipulate'],
 			dc: 15
 		})
 	}
 	
 	pertinent(engagement, warn) {
-		return engagement.isAdjacent
+		const adjacent = engagement.isAdjacent
+		if (warn && !adjacent)
+			this._.warn("PF2E.Actions.Warning.Reach")
+		return adjacent
 	}
 	
 	async apply(engagement, result) {
