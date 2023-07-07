@@ -7,13 +7,13 @@ export default class ActionDisarm extends SystemAction {
 		super(MKS, 'disarm', 'encounter', false, true, {
 			icon: "systems/pf2e/icons/spells/hand-of-the-apprentice.webp",
 			actionGlyph: 'A',
-			tags: ['combat'],
+			tags: ['attack'],
 			targetCount: 1,
 			opposition: 'enemy'
 		})
 	}
 
-	pertinent(engagement) {
+	pertinent(engagement, warn) {
 		const equipments = new Equipments(engagement.initiator)
 		const disarmW = equipments.weaponWieldedWithTraits(['disarm'])
 

@@ -11,12 +11,15 @@ export default class ActionEscape extends Action {
 		super(MKS, 'escape', 'encounter', false, true, {
 			icon: "systems/pf2e/icons/spells/humanoid-form.webp",
 			actionGlyph: 'A',
-			tags: ['combat']
+			tags: ['attack']
 		})
 	}
 
-	pertinent(engagement) {
-		return engagement.hasInitiatorCondition(ActionEscape.CONDITIONS)
+	pertinent(engagement, warn) {
+		const conds = engagement.hasInitiatorCondition(ActionEscape.CONDITIONS)
+		if (!conds && warn)
+			this._.warn("PF2E.Actions.Warning.NoAffliction")
+		return conds
 	}
 
 	async act(engagement, options) {

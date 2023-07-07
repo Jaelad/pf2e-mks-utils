@@ -6,7 +6,7 @@ export default class ActionTreatPoison extends SimpleAction {
 	constructor(MKS) {
 		super(MKS, 'treatPoison', 'encounter', false, true, {
 			icon: "systems/pf2e/icons/effects/treat-poison.webp",
-			tags: ['combat'],
+			tags: ['assist'],
 			actionGlyph: 'A',
 			targetCount: 1,
 			opposition: 'ally',
@@ -22,14 +22,21 @@ export default class ActionTreatPoison extends SimpleAction {
 			this._.warn("PF2E.Actions.Warning.Reach")
 		return adjacent
 	}
-	
-	async apply(engagement, result) {
-		const healersTools = new Equipments(engagement.initiator).hasAny([EQU_HEALERS_TOOLS, EQU_HEALERS_TOOLS_EXPANDED]).length > 0
+
+	async act(engagement, warn) {
+		const equipments = new Equipments(engagement.initiator)
+		const healersTools = !!game.combat
+					? equipments.hasEquippedAny([EQU_HEALERS_TOOLS, EQU_HEALERS_TOOLS_EXPANDED]).length > 0
+					: equipments.hasAny([EQU_HEALERS_TOOLS, EQU_HEALERS_TOOLS_EXPANDED]).length > 0
+		
 		if (!healersTools) {
 			this._.warn("PF2E.MKS.Warning.Action.MustUseHealersTools")
 			return
 		}
-			
+		return super.act(engagement, warn)
+	}
+	
+	async apply(engagement, result) {
 		super.apply(engagement, result)
 
 		const degreeOfSuccess = result.roll.degreeOfSuccess

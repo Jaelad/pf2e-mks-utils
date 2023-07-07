@@ -8,7 +8,7 @@ export default class ActionTakeCover extends Action {
 		super(MKS, 'takeCover', 'encounter', false, false, {
 			icon: "systems/pf2e/icons/conditions-2/status_acup.webp",
 			actionGlyph: 'A',
-			tags: ['basic']
+			tags: ['combat']
 		})
 	}
 	

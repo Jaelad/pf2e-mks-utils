@@ -40,10 +40,10 @@
       "flags": {}
     },
     {
-      "name": "mks-action-combat-macros",
-      "label": "MKS Combat Actions",
+      "name": "mks-action-attack-macros",
+      "label": "MKS Attack Actions",
       "banner": "systems/pf2e/assets/compendium-banner/orange.webp",
-      "path": "packs/action-combat-macros",
+      "path": "packs/action-attack-macros",
       "type": "Macro",
       "system": "pf2e",
       "ownership": {
@@ -66,10 +66,36 @@
       "flags": {}
     },
     {
-      "name": "mks-action-other-macros",
-      "label": "MKS Other Actions",
+      "name": "mks-action-mental-macros",
+      "label": "MKS Mental Actions",
       "banner": "systems/pf2e/assets/compendium-banner/orange.webp",
-      "path": "packs/action-other-macros",
+      "path": "packs/action-mental-macros",
+      "type": "Macro",
+      "system": "pf2e",
+      "ownership": {
+        "PLAYER": "OBSERVER",
+        "ASSISTANT": "OWNER"
+      },
+      "flags": {}
+    },
+    {
+      "name": "mks-action-stealth-macros",
+      "label": "MKS Stealth Actions",
+      "banner": "systems/pf2e/assets/compendium-banner/orange.webp",
+      "path": "packs/action-stealth-macros",
+      "type": "Macro",
+      "system": "pf2e",
+      "ownership": {
+        "PLAYER": "OBSERVER",
+        "ASSISTANT": "OWNER"
+      },
+      "flags": {}
+    },
+    {
+      "name": "mks-action-misc-macros",
+      "label": "MKS Misc. Actions",
+      "banner": "systems/pf2e/assets/compendium-banner/orange.webp",
+      "path": "packs/action-misc-macros",
       "type": "Macro",
       "system": "pf2e",
       "ownership": {

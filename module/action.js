@@ -58,7 +58,7 @@ export default class Action {
 			const targeted = this._.ensureOneTarget(null, warn)
 			if (!targeted || targeted.id === selected.id) return
 			const engagement = new Engagement(selected, targeted)
-			const oppositionOk = this.opposition === 'ally' || (this.opposition === 'ally' && engagement.isAlly) || (this.opposition === 'enemy' && engagement.isEnemy)
+			const oppositionOk = this.opposition === 'all' || (this.opposition === 'ally' && engagement.isAlly) || (this.opposition === 'enemy' && engagement.isEnemy)
 			if (warn && !oppositionOk)
 				this._.warn("PF2E.MKS.Warning.Target.MustBe" + $$strings.camelize(this.opposition))
 			const ok = oppositionOk && this.pertinent(engagement, warn)
@@ -68,7 +68,7 @@ export default class Action {
 			const targets = this._.ensureAtLeastOneTarget(null, warn)
 			if (!targets || targets.find(t => t.id === selected.id)) return
 			const engagement = new Engagements(selected, targets)
-			const oppositionOk = this.opposition === 'ally' || (this.opposition === 'ally' && engagement.isAlly) || (this.opposition === 'enemy' && engagement.isEnemy)
+			const oppositionOk = this.opposition === 'all' || (this.opposition === 'ally' && engagement.isAlly) || (this.opposition === 'enemy' && engagement.isEnemy)
 			if (warn && !oppositionOk)
 				this._.warn("PF2E.MKS.Warning.Target.MustBe" + $$strings.camelize(this.opposition))
 			const ok = oppositionOk && this.pertinent(engagement, warn)
@@ -303,7 +303,6 @@ export const RUDIMENTARY_ACTIONS = {
 	step: {icon: 'systems/pf2e/icons/spells/synchronise-steps.webp', compendium: Compendium.ACTION_STEP, mode: 'encounter'},
 	stride: {icon: 'systems/pf2e/icons/spells/fleet-step.webp', compendium: Compendium.ACTION_STRIDE, mode: 'encounter'},
 	interact: {icon: 'systems/pf2e/icons/spells/mage-hand.webp', compendium: Compendium.ACTION_INTERACT, mode: 'encounter'},
-	mount: {icon: 'systems/pf2e/icons/spells/phantom-steed.webp', compendium: Compendium.ACTION_MOUNT, mode: 'encounter'},
 	ready: {icon: 'systems/pf2e/icons/features/feats/cavaliers-banner.webp', compendium: Compendium.ACTION_READY, mode: 'encounter'},
 	release: {icon: 'systems/pf2e/icons/spells/mending.webp', compendium: Compendium.ACTION_RELEASE, mode: 'encounter'},
 	sustainASpell: {icon: 'systems/pf2e/icons/spells/faerie-dust.webp', compendium: Compendium.ACTION_SUSTAIN_A_SPELL, mode: 'encounter'},

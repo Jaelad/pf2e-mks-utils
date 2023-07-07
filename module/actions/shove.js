@@ -10,7 +10,7 @@ export default class ActionShove extends SystemAction {
 		super(MKS, 'shove', 'encounter', false, true, {
 			icon: "systems/pf2e/icons/spells/knock.webp",
 			actionGlyph: 'A',
-			tags: ['combat'],
+			tags: ['attack'],
 			targetCount: 1,
 			opposition: 'enemy'
 		})

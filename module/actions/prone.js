@@ -8,7 +8,7 @@ export default class ActionProne extends Action {
 		super(MKS, 'prone', 'encounter', false, false, {
 			icon: "systems/pf2e/icons/conditions/prone.webp",
 			actionGlyph: 'A',
-			tags: ['basic']
+			tags: ['move']
 		})
 	}
 	

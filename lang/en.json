@@ -24,6 +24,7 @@
 	"PF2E.Actions.Warning.Size": "Your target is too big!",
 	"PF2E.Actions.Warning.Reach": "Your target is out of your reach!",
 	"PF2E.Actions.Warning.Immune": "Your target is immune to this action.",
+	"PF2E.Actions.Warning.NoAffliction": "The actor does not have any suitable affliction.",
 	
 	"PF2E.Actions.ConcealAnObject.Title": "Conceal An Object",
 	"PF2E.Actions.CreateADiversion.Title": "Create a Diversion",
@@ -100,7 +101,10 @@
 	
 	"PF2E.ActionTag.situational": "Situational",
 	"PF2E.ActionTag.combat": "Combat",
-	"PF2E.ActionTag.hostile": "Hostile",
+	"PF2E.ActionTag.attack": "Attack",
+	"PF2E.ActionTag.mental": "Mental",
+	"PF2E.ActionTag.assist": "Assist",
+	"PF2E.ActionTag.move": "Move",
 	"PF2E.ActionTag.basic": "Basic",
 	"PF2E.ActionTag.social": "Social",
 	"PF2E.ActionTag.stealth": "Stealth",

@@ -125,7 +125,7 @@ export default class MksTools {
 			sneak: new ActionSneak(this),
 			takeCover: new ActionTakeCover(this),
 			treatDisease: new ActionTreatDisease(this),
-			treatPosion: new ActionTreatPoison(this),
+			treatPoison: new ActionTreatPoison(this),
 			treatWounds: new ActionTreatWounds(this),
 			trip: new ActionTrip(this),
 			mount: new ActionMount(this),

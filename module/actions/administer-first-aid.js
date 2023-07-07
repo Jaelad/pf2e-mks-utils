@@ -12,7 +12,7 @@ export default class ActionAdministerFirstAid extends SimpleAction {
 	constructor(MKS) {
 		super(MKS, 'administerFirstAid', 'encounter', false, false, {
 			icon: "systems/pf2e/icons/spells/heal-companion.webp",
-			tags: ['combat'],
+			tags: ['assist'],
 			actionGlyph: 'D',
 			targetCount: 1,
 			opposition: 'ally',
@@ -27,7 +27,7 @@ export default class ActionAdministerFirstAid extends SimpleAction {
 		if (warn && !adjacent)
 			this._.warn("PF2E.Actions.Warning.Reach")
 		if (warn && !affl)
-		this._.warn("PF2E.Actions.AdministerFirstAid.Warning.Reach")
+			this._.warn("PF2E.Actions.Warning.NoAffliction")
 
 		return adjacent && affl
 	}

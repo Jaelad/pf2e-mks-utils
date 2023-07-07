@@ -12,7 +12,7 @@ export default class ActionCreateADiversion extends Action {
 	constructor(MKS) {
 		super(MKS, 'createADiversion', 'encounter', false, true, {
 			icon: "systems/pf2e/icons/spells/lose-the-path.webp",
-			tags: ['stealth'],
+			tags: ['stealth', 'mental'],
 			actionGlyph: 'A',
 			targetCount: 2,
 			requiresEncounter: true,

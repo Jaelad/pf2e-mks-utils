@@ -8,13 +8,13 @@ export default class ActionGrapple extends SystemAction {
 		super(MKS, 'grapple', 'encounter', false, true, {
 			icon: "systems/pf2e/icons/spells/athletic-rush.webp",
 			actionGlyph: 'A',
-			tags: ['combat'],
+			tags: ['attack'],
 			targetCount: 1,
 			opposition: 'enemy'
 		})
 	}
 
-	pertinent(engagement) {
+	pertinent(engagement, warn) {
 		const equipments = new Equipments(engagement.initiator)
 		const grappleW = equipments.weaponWieldedWithTraits(['grapple'])
 

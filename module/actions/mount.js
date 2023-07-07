@@ -10,7 +10,7 @@ export default class ActionMount extends Action {
 		super(MKS, 'mount', 'encounter', false, false, {
 			icon: "systems/pf2e/icons/equipment/worn-items/companion-items/waverider-barding.webp",
 			actionGlyph: 'A',
-			tags: ['basic']
+			tags: ['move']
 		})
 	}
 

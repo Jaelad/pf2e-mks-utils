@@ -6,7 +6,7 @@ export default class ActionDemoralize extends SystemAction {
 	constructor(MKS) {
 		super(MKS, 'demoralize', 'encounter', false, true, {
 			icon: "systems/pf2e/icons/spells/deja-vu.webp",
-			tags: ['social', 'combat'],
+			tags: ['mental'],
 			actionGlyph: 'A',
 			targetCount: 1,
 			opposition: 'enemy',

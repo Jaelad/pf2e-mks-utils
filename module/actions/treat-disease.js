@@ -6,7 +6,7 @@ export default class ActionTreatDisease extends SimpleAction {
 	constructor(MKS) {
 		super(MKS, 'treatDisease', 'downtime', false, true, {
 			icon: "systems/pf2e/icons/effects/treat-disease.webp",
-			tags: ['preparation'],
+			tags: ['assist'],
 			actionGlyph: '',
 			targetCount: 1,
 			opposition: 'ally',

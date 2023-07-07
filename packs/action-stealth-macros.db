@@ -1,0 +1,4 @@
+{"_id":"kd7V6zScyHN8fbyE","name":"Perception: Ara/Tara","type":"script","img":"systems/pf2e/icons/spells/darkvision.webp","scope":"global","command":"game.MKS.actions.seek.run();"}
+{"_id":"phlEQREvC4MiZAF5","name":"Stealth: Sinsice Dolaş","type":"script","img":"systems/pf2e/icons/spells/undetectable-alignment.webp","scope":"global","command":"game.MKS.actions.sneak.run();"}
+{"_id":"MWSQdX1gBNyRQxQb","name":"Stealth: Gizlen","type":"script","img":"systems/pf2e/icons/spells/zealous-conviction.webp","scope":"global","command":"game.MKS.actions.hide.run();"}
+{"_id":"Xm1Y8y0JfTedvR5a","name":"Deception: Dikkatini Dağıt","type":"script","img":"systems/pf2e/icons/spells/distracting-chatter.webp","scope":"global","command":"game.MKS.actions.createADiversion.run();"}

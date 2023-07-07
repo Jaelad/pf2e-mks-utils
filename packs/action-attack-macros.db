@@ -1,7 +1,6 @@
-{"_id":"Bef3de9qpQHv57og","name":"Deception: Feyk At","type":"script","img":"systems/pf2e/icons/spells/mislead.webp","scope":"global","command":"game.MKS.actions.feint.run();"}
 {"_id":"En99lVMiJwT3QU6t","name":"Athletics: İtekle","type":"script","img":"systems/pf2e/icons/spells/ki-strike.webp","scope":"global","command":"game.MKS.actions.shove.run();"}
-{"_id":"H8GdUR00ioD45Znf","name":"Intimidate: Moralini Boz","type":"script","img":"systems/pf2e/icons/spells/deja-vu.webp","scope":"global","command":"game.MKS.actions.demoralize.run();"}
 {"_id":"SO5Ix2SLYDjCOLu9","name":"Athletics: Cebelleş","type":"script","img":"systems/pf2e/icons/conditions/grabbed.webp","scope":"global","command":"game.MKS.actions.grapple.run();"}
 {"_id":"SyIp9y2XqlcpOf0S","name":"Athletics: Çelme At","type":"script","img":"systems/pf2e/icons/spells/magnetic-attraction.webp","scope":"global","command":"game.MKS.actions.trip.run();"}
 {"_id":"x3zIpL1oNQrhkL9L","name":"Athletics: Silahsızlandır","type":"script","img":"systems/pf2e/icons/spells/hand-of-the-apprentice.webp","scope":"global","command":"game.MKS.actions.disarm.run();"}
-{"_id":"xqnHlLwrwRHsoMt9","name":"Kalkanını Kaldır","type":"script","img":"systems/pf2e/icons/actions/raise-a-shield.webp","scope":"global","command":"game.MKS.actions.raiseAShield.run();"}
+{"_id":"SXraNYhsHK9tLrq1","name":"Kurtul","type":"script","img":"systems/pf2e/icons/spells/humanoid-form.webp","scope":"global","command":"game.MKS.actions.escape.run();"}
+{"_id":"3W6m6o7fxjCi0vH8","name":"Athletics: Güçle Aç","type":"script","img":"systems/pf2e/icons/spells/forceful-hand.webp","scope":"global","command":"game.MKS.actions.forceOpen.run();"}
