@@ -1,8 +1,8 @@
 {"_id":"2bz8mmjyO8eUuByW","name":"Acrobatics: Dengeni Sağla","type":"script","img":"systems/pf2e/icons/spells/aura-of-the-unremarkable.webp","scope":"global","command":"game.MKS.actions.balance.run();"}
 {"_id":"5yLW7x13EgQHj45b","name":"Athletics: Yüz","type":"script","img":"systems/pf2e/icons/spells/waters-of-prediction.webp","scope":"global","command":"game.MKS.actions.swim.run();"}
+{"_id":"DBK8ANXHLh8LEIVh","name":"Yere Yat/Kalk","type":"script","img":"systems/pf2e/icons/conditions/prone.webp","scope":"global","command":"game.MKS.actions.prone.run();"}
 {"_id":"FNbmDECYynyIttqm","name":"Acrobatics: Havalı Geçiş","type":"script","img":"systems/pf2e/icons/spells/unimpeded-stride.webp","scope":"global","command":"game.MKS.actions.tumbleThrough.run();"}
 {"_id":"Ixr7WLIGNnGqHW6t","name":"Athletics: Tırman","type":"script","img":"systems/pf2e/icons/equipment/held-items/rope-of-climbing.webp","scope":"global","command":"game.MKS.actions.climb.run();"}
 {"_id":"XqEXBnmd4Esog2B8","name":"Bin/İn","type":"script","img":"systems/pf2e/icons/equipment/worn-items/companion-items/waverider-barding.webp","scope":"global","command":"game.MKS.actions.mount.run();"}
 {"_id":"kkUUX1RbLzmrtjBl","name":"Athletics: Yüksek Atla","type":"script","img":"systems/pf2e/icons/spells/wind-jump.webp","scope":"global","command":"game.MKS.actions.highJump.run();"}
 {"_id":"mMOx1qjiq2nS3Qyo","name":"Athletics: Uzun Atla","type":"script","img":"systems/pf2e/icons/spells/jump.webp","scope":"global","command":"game.MKS.actions.longJump.run();"}
-{"_id":"DBK8ANXHLh8LEIVh","name":"Yere Yat/Kalk","type":"script","img":"systems/pf2e/icons/conditions/prone.webp","scope":"global","command":"game.MKS.actions.prone.run();"}

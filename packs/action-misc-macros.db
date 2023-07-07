@@ -1,6 +1,6 @@
 {"_id":"73JcuOltFL79I2fH","name":"Nature: Hayvana Talimat Ver","type":"script","img":"systems/pf2e/icons/spells/awaken-animal.webp","scope":"global","command":"game.MKS.actions.commandAnAnimal.run();"}
-{"_id":"a3cPlbgxy7UMaJ5t","name":"Medicine: İlk Yardım","type":"script","img":"systems/pf2e/icons/spells/heal-companion.webp","scope":"global","command":"game.MKS.actions.administerFirstAid.run();"}
-{"_id":"sNcP9VYxk1TMaJ4w","name":"Medicine: Zehri Tedavi Et","type":"script","img":"systems/pf2e/icons/effects/treat-poison.webp","scope":"global","command":"game.MKS.actions.treatPoison.run();"}
-{"_id":"fBhj6NGDRQ16B3tU","name":"Diplomacy: İstekte Bulun","type":"script","img":"systems/pf2e/icons/spells/miracle.webp","scope":"global","command":"game.MKS.actions.request.run();"}
 {"_id":"KSzdSqOe64MEPXcD","name":"Thievery: Kilit Aç ♦♦","type":"script","img":"systems/pf2e/icons/spells/freedom.webp","scope":"global","command":"game.MKS.actions.pickALock.run();"}
+{"_id":"a3cPlbgxy7UMaJ5t","name":"Medicine: İlk Yardım","type":"script","img":"systems/pf2e/icons/spells/heal-companion.webp","scope":"global","command":"game.MKS.actions.administerFirstAid.run();"}
+{"_id":"fBhj6NGDRQ16B3tU","name":"Diplomacy: İstekte Bulun","type":"script","img":"systems/pf2e/icons/spells/miracle.webp","scope":"global","command":"game.MKS.actions.request.run();"}
+{"_id":"sNcP9VYxk1TMaJ4w","name":"Medicine: Zehri Tedavi Et","type":"script","img":"systems/pf2e/icons/effects/treat-poison.webp","scope":"global","command":"game.MKS.actions.treatPoison.run();"}
 {"_id":"xqnHlLwrwRHsoMt9","name":"Kalkanını Kaldır","type":"script","img":"systems/pf2e/icons/actions/raise-a-shield.webp","scope":"global","command":"game.MKS.actions.raiseAShield.run();"}

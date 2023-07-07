@@ -1,4 +1,4 @@
 {"_id":"Bef3de9qpQHv57og","name":"Deception: Feyk At","type":"script","img":"systems/pf2e/icons/spells/mislead.webp","scope":"global","command":"game.MKS.actions.feint.run();"}
-{"_id":"H8GdUR00ioD45Znf","name":"Intimidate: Moralini Boz","type":"script","img":"systems/pf2e/icons/spells/deja-vu.webp","scope":"global","command":"game.MKS.actions.demoralize.run();"}
 {"_id":"GyzCsksaKte34LiP","name":"Perception: Niyet Anla","type":"script","img":"systems/pf2e/icons/spells/consecrate-flesh.webp","scope":"global","command":"game.MKS.actions.senseMotive.run();"}
+{"_id":"H8GdUR00ioD45Znf","name":"Intimidate: Moralini Boz","type":"script","img":"systems/pf2e/icons/spells/deja-vu.webp","scope":"global","command":"game.MKS.actions.demoralize.run();"}
 {"_id":"outPlaDc7XaVpEBY","name":"Hafızanı Yokla","type":"script","img":"systems/pf2e/icons/spells/daydreamers-curse.webp","scope":"global","command":"game.MKS.actions.recallKnowledge.run();"}

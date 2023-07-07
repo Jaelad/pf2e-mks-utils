@@ -2,9 +2,11 @@
 .idea/
 **/*.log
 /packs/core-effects/
-/packs/action-combat-macros/
+/packs/action-attack-macros/
 /packs/action-movement-macros/
-/packs/action-other-macros/
+/packs/action-mental-macros/
+/packs/action-stealth-macros/
+/packs/action-misc-macros/
 /packs/explore-macros/
 /packs/downtime-macros/
 module/.DS_Store
