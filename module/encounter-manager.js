@@ -1,8 +1,8 @@
 import {default as LOG} from "../utils/logging.js"
 import RelativeCondPanel from "./apps/relative-cond-panel.js"
 import {ATTITUDES, AWARENESS, SYSTEM} from "./constants.js"
-import Condition, {Attitude, Awareness} from "./model/condition.js"
-import Effect, { EFFECT_AIDED, EFFECT_COVER, EFFECT_COVER_TAKEN, EFFECT_MAP } from "./model/effect.js"
+import {Attitude, Awareness} from "./model/condition.js"
+import Effect, { EFFECT_COVER, EFFECT_COVER_TAKEN, EFFECT_MAP } from "./model/effect.js"
 import Item from "./model/item.js"
 
 export default class EncounterManager {
@@ -28,20 +28,16 @@ export default class EncounterManager {
 			else
 				map.ensure().then()
 		}
-
-		// const aided = pf2e.modifiers.find(mod => mod.slug === "aided")
-		// if (aided)
-		// 	new Effect(token, EFFECT_AIDED).purge()
 	}
 	
 	async onStartTurn(combatant) {
-		//await new Effect(combatant.actor, EFFECT_MAP).purge()
+		await new Effect(combatant.actor, EFFECT_MAP).purge()
 		
 		await this.applyRelativeConditions(combatant)
 	}
 	
 	async onEndTurn(combatant) {
-		//await new Effect(combatant.actor, EFFECT_MAP).purge()
+		await new Effect(combatant.actor, EFFECT_MAP).purge()
 
 		LOG.info("Round : " +  combatant.encounter.round + " Turn : " + combatant.encounter.turn)
 

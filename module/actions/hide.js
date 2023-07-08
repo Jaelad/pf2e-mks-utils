@@ -18,7 +18,7 @@ export default class ActionHide extends SimpleAction {
 		})
 	}
 
-	pertinent(engagement) {
+	pertinent(engagement, warn) {
 		const relative = new RelativeConditions()
 		const concealed = new Condition(engagement.initiator, CONDITION_CONCEALED).exists
 

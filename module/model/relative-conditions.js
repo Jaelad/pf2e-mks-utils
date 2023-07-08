@@ -1,7 +1,5 @@
 import {ATTITUDES, AWARENESS, COVER, SYSTEM} from "../constants.js"
 import CommonUtils from "../helpers/common-utils.js"
-import { Attitude, Awareness } from "./condition.js"
-import Effect from "./effect.js"
 
 export default class RelativeConditions {
 
