@@ -1,6 +1,6 @@
 import {SimpleAction} from "../action.js"
 import RelativeConditions from "../model/relative-conditions.js"
-import { CONDITION_HIDDEN, UUID_CONDITONS } from "../model/condition.js"
+import { CONDITION_HIDDEN, CONDITION_OBSERVED, UUID_CONDITONS } from "../model/condition.js"
 import DCHelper from "../helpers/dc-helper.js"
 import {default as i18n} from "../../lang/pf2e-i18n.js"
 import { AWARENESS } from "../constants.js"
@@ -19,15 +19,18 @@ export default class ActionSneak extends SimpleAction {
 		})
 	}
 
-	pertinent(engagement) {
+	pertinent(engagement, warn) {
 		const relative = new RelativeConditions()
-		if (!relative.isOk) return false
+		let result = true
 		for (const target of engagement.targets) {
 			const awareness = relative.getAwarenessTowardMe(target)
-			if (awareness !== AWARENESS.indexOf(CONDITION_HIDDEN))
-				return false
+			if (awareness < AWARENESS.indexOf(CONDITION_OBSERVED)) {
+				result = false
+				if (warn) this._.warn("PF2E.MKS.Warning.Target.AtLeastHidden")
+				break
+			}
 		}
-		return true
+		return result
 	}
 
 	async apply(engagement, result) {

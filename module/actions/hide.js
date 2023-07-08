@@ -20,15 +20,25 @@ export default class ActionHide extends SimpleAction {
 
 	pertinent(engagement) {
 		const relative = new RelativeConditions()
-		if (!relative.isOk) return false
 		const concealed = new Condition(engagement.initiator, CONDITION_CONCEALED).exists
 
+		let result = true
 		for (const target of engagement.targets) {
-			const awareness = relative.getAwarenessTowardMe(target), cover = relative.getMyCoverFrom(target) ?? 0
-			if (awareness < 3 || (cover < 2 && !concealed))
-				return false
+			const awareness = relative.getAwarenessTowardMe(target)
+			const cover = relative.getMyCoverFrom(target) ?? 0
+			if (awareness < 3) {
+				result = false
+				if (warn) this._.warn("PF2E.MKS.Warning.Target.AlreadyHidden")
+				break
+			}
+			
+			if (cover < 2 && !concealed) {
+				result = false
+				if (warn) this._.warn("PF2E.MKS.Warning.Target.NoCoverOrConcealment")
+				break
+			}
 		}
-		return true
+		return result
 	}
 
 	async apply(engagement, result) {

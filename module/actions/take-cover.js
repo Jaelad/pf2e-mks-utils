@@ -1,7 +1,6 @@
 import {default as i18n} from "../../lang/pf2e-i18n.js"
 import Action from "../action.js"
 import Effect, { EFFECT_COVER_TAKEN } from "../model/effect.js"
-import {Engagement} from "../model/engagement.js"
 
 export default class ActionTakeCover extends Action {
 	constructor(MKS) {
@@ -12,7 +11,7 @@ export default class ActionTakeCover extends Action {
 		})
 	}
 	
-	async act(engagement, options) {
-		new Effect(engagement.initiator, EFFECT_COVER_TAKEN).ensure().then()
+	act(engagement, options) {
+		new Effect(engagement.initiator, EFFECT_COVER_TAKEN).toogle().then()
 	}
 }
