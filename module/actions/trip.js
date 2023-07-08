@@ -38,6 +38,10 @@ export default class ActionTrip extends SystemAction {
 		return true
 	}
 
+	async act(engagement, options) {
+		return super.act(engagement, {...options, applyMAP: true})
+	}
+
 	async apply(engagement, result) {
 		super.apply(engagement, result)
 

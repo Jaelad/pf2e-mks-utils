@@ -46,7 +46,7 @@ export default class ActionDisarm extends SystemAction {
 				type: "circumstance",
 				modifier: 4, // Max range penalty before automatic failure
 			}))
-		return super.act(engagement, options, modifiers)
+		return super.act(engagement, {...options, applyMAP: true}, modifiers)
 	}
 
 	async apply(engagement, result) {

@@ -43,6 +43,10 @@ export class ActionForceOpen extends SystemAction {
 			dc: 15
 		})
 	}
+
+	async act(engagement, options) {
+		return super.act(engagement, {...options, applyMAP: true})
+	}
 }
 
 export class ActionBalance extends SystemAction {

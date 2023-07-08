@@ -7,6 +7,6 @@
 /packs/action-mental-macros/
 /packs/action-stealth-macros/
 /packs/action-misc-macros/
-/packs/explore-macros/
-/packs/downtime-macros/
+/packs/action-exploration-macros/
+/packs/action-downtime-macros/
 module/.DS_Store

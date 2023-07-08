@@ -8,6 +8,7 @@ import {Engagement, Engagements} from "./model/engagement.js"
 import ObjectColl from "./model/object-coll.js"
 import $$strings from "../utils/strings.js"
 import DCHelper from "./helpers/dc-helper.js"
+import Effect, { EFFECT_MAP } from "./model/effect.js"
 
 export default class Action {
 
@@ -227,6 +228,18 @@ export class SystemAction extends Action {
 	}
 
 	async act(engagement, options, modifiers) {
+		if (options.applyMAP) {
+			const map = new Effect(engagement.initiator, EFFECT_MAP)
+			if (map.exists) {
+				modifiers = modifiers ?? []
+				modifiers.push(new game.pf2e.Modifier({
+					label: "PF2E.MKS.Modifier.map",
+					slug: "multiple-attack-penalty",
+					type: "untyped",
+					modifier: map.badgeValue * -5
+				}))
+			}
+		}
 		const actor = engagement.initiator.actor
 		let difficultyClass = undefined
 		if (this.dc) {

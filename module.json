@@ -108,7 +108,7 @@
       "name": "mks-exploration-macros",
       "label": "MKS Exploration Actions",
       "banner": "systems/pf2e/assets/compendium-banner/orange.webp",
-      "path": "packs/explore-macros",
+      "path": "packs/action-exploration-macros",
       "type": "Macro",
       "system": "pf2e",
       "ownership": {
@@ -121,7 +121,7 @@
       "name": "mks-downtime-macros",
       "label": "MKS Downtime Actions",
       "banner": "systems/pf2e/assets/compendium-banner/orange.webp",
-      "path": "packs/downtime-macros",
+      "path": "packs/action-downtime-macros",
       "type": "Macro",
       "system": "pf2e",
       "ownership": {

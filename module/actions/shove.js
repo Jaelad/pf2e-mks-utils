@@ -38,6 +38,10 @@ export default class ActionShove extends SystemAction {
 		return true
 	}
 
+	async act(engagement, options) {
+		return super.act(engagement, {...options, applyMAP: true})
+	}
+
 	async apply(engagement, result) {
 		super.apply(engagement, result)
 		const degreeOfSuccess = result.roll.degreeOfSuccess

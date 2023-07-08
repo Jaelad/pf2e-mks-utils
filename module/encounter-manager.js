@@ -19,15 +19,15 @@ export default class EncounterManager {
 	}
 
 	onCheckRoll(token, checkRoll, pf2e) {
-		// const traits = pf2e.context?.traits
-		// const attackTrait = traits?.find(t => t.name === "attack")
-		// if (attackTrait && this.tokensTurnInCombat(token)) {
-		// 	const map = new Effect(token, EFFECT_MAP)
-		// 	if (map.exists)
-		// 		map.setBadgeValue(1, 'inc').then()
-		// 	else
-		// 		map.ensure().then()
-		// }
+		const traits = pf2e.context?.traits
+		const attackTrait = traits?.find(t => t.name === "attack")
+		if (attackTrait && this.tokensTurnInCombat(token)) {
+			const map = new Effect(token, EFFECT_MAP)
+			if (map.exists)
+				map.setBadgeValue(1, 'inc').then()
+			else
+				map.ensure().then()
+		}
 
 		// const aided = pf2e.modifiers.find(mod => mod.slug === "aided")
 		// if (aided)

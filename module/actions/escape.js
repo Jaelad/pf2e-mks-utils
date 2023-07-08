@@ -3,6 +3,7 @@ import Action from "../action.js"
 import Check from "../check.js"
 import Dialogs from "../apps/dialogs.js";
 import Condition, { CONDITION_GRABBED, CONDITION_IMMOBILIZED, CONDITION_RESTRAINED } from "../model/condition.js"
+import Effect, { EFFECT_MAP } from "../model/effect.js";
 
 export default class ActionEscape extends Action {
 	static CONDITIONS = [CONDITION_IMMOBILIZED, CONDITION_GRABBED, CONDITION_RESTRAINED]
@@ -39,6 +40,17 @@ export default class ActionEscape extends Action {
 			{name: i18n.$("PF2E.ActionsCheck.acrobatics"), value: 'skill[acrobatics]'},
 		]
 		const checkType = await Dialogs.selectOne(checkOptions, "PF2E.MKS.Dialog.Escape.SelectSkill")
+
+		const modifiers = []
+		const map = new Effect(engagement.initiator, EFFECT_MAP)
+			if (map.exists) {
+				modifiers.push(new game.pf2e.Modifier({
+					label: "PF2E.MKS.Modifier.map",
+					slug: "multiple-attack-penalty",
+					type: "untyped",
+					modifier: map.badgeValue * -5
+				}))
+			}
 		
 		const check = new Check({
 			actionGlyph: "A",
@@ -50,7 +62,8 @@ export default class ActionEscape extends Action {
 			askGmForDC: {
 				action: this.name,
 				defaultDC: 15
-			}
+			},
+			modifiers
 		})
 
 		return check.roll(engagement).then(({roll, actor}) => this.createResult(engagement, roll, {condition: selectedCond}))
