@@ -104,19 +104,19 @@ export class RelativeEffect extends Effect {
 
 	async ensure(changes) {
 		super.ensure(changes).then(() => {
-			game.MKS.encounterManager.syncRelativeConds(this.actor.combatant)
+			game.MKS.encounterManager.resetRelativeConds(this.actor.combatant)
 		})
 	}
 
 	async purge() {
 		super.purge().then(() => {
-			game.MKS.encounterManager.syncRelativeConds(this.actor.combatant)
+			game.MKS.encounterManager.resetRelativeConds(this.actor.combatant)
 		})
 	}
 
 	async setBadgeValue(value, modType) {
 		super.setBadgeValue(value, modType).then(() => {
-			game.MKS.encounterManager.syncRelativeConds(this.actor.combatant)
+			game.MKS.encounterManager.resetRelativeConds(this.actor.combatant)
 		})
 	}
 }

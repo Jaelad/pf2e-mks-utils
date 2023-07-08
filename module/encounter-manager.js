@@ -22,7 +22,6 @@ export default class EncounterManager {
 		// const traits = pf2e.context?.traits
 		// const attackTrait = traits?.find(t => t.name === "attack")
 		// if (attackTrait && this.tokensTurnInCombat(token)) {
-		// 	LOG.info(`Applying MAP to ${token.name}`)
 		// 	const map = new Effect(token, EFFECT_MAP)
 		// 	if (map.exists)
 		// 		map.setBadgeValue(1, 'inc').then()
@@ -36,13 +35,13 @@ export default class EncounterManager {
 	}
 	
 	async onStartTurn(combatant) {
-		// await new Effect(combatant.actor, EFFECT_MAP).purge()
+		//await new Effect(combatant.actor, EFFECT_MAP).purge()
 		
 		await this.applyRelativeConditions(combatant)
 	}
 	
 	async onEndTurn(combatant) {
-		// await new Effect(combatant.actor, EFFECT_MAP).purge()
+		//await new Effect(combatant.actor, EFFECT_MAP).purge()
 
 		LOG.info("Round : " +  combatant.encounter.round + " Turn : " + combatant.encounter.turn)
 
@@ -59,28 +58,29 @@ export default class EncounterManager {
 	}
 	
 	async onEncounterStart(encounter) {
-		await this.syncRelativeConds(encounter, false)
+		await this.resetRelativeConds(encounter, false)
 	}
 	
-	async syncRelativeConds(encounterOrCombatant, onlyOnTurn = true) {
+	async resetRelativeConds(encounterOrCombatant, onlyOnTurn = true, newCombatantsOnly) {
 		const encounter = encounterOrCombatant?.combatants ? encounterOrCombatant : encounterOrCombatant?.encounter
 		if (!encounter) return
 		const combatants = encounter.combatants
-		const relativeData = {}
+		const relativeData = newCombatantsOnly ? encounter.flags?.[SYSTEM.moduleId]?.relative ?? {} : {}
 		for (const ref of combatants) {
 			if (onlyOnTurn && ref.encounter.combatant.id !== ref.id)
 				continue
-			const rel = {}
+			const rel = newCombatantsOnly ? relativeData[ref.token.id] ?? {} : {}
 			
 			for (const other of combatants) {
-				if (ref.actor.alliance === other.actor.alliance) continue
+				if (ref.actor.alliance === other.actor.alliance || (newCombatantsOnly && rel[other.token.id]))
+					continue
 				const conds = {}
 				rel[other.token.id] = conds
 				
 				conds.awareness = other.token.hidden ? 0 : new Awareness(other.actor).stateIndex
 				conds.attitude = new Attitude(other.actor).stateIndex
 				
-				const cover = new Effect(ref.actor, EFFECT_COVER)
+				const cover = new Effect(other.actor, EFFECT_COVER)
 				conds.cover = cover.badgeValue ?? 0
 			}
 			relativeData[ref.token.id] = rel
@@ -123,7 +123,13 @@ export default class EncounterManager {
 	async applyRelativeConditions(combatant) {
 		const encounter = combatant.parent
 		let relativeData = encounter.flags?.[SYSTEM.moduleId]?.relative ?? {}
-		let actorRelativeConds = relativeData?.[combatant.token.id]
+		let actorRelativeConds = relativeData[combatant.token.id]
+
+		if (!actorRelativeConds) {
+			await this.resetRelativeConds(encounter, false, true)
+			relativeData = encounter.flags?.[SYSTEM.moduleId]?.relative ?? {}
+			actorRelativeConds = relativeData[combatant.token.id]
+		}
 		
 		const combatants = Array.from(encounter.combatants)
 		for (let i = 0; i < combatants.length; i++) {

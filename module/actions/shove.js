@@ -16,12 +16,26 @@ export default class ActionShove extends SystemAction {
 		})
 	}
 
-	pertinent(engagement) {
+	pertinent(engagement, warn) {
 		const equipments = new Equipments(engagement.initiator)
 		const shoveW = equipments.weaponWieldedWithTraits(['shove'])
 
-		return (equipments.handsFree > 0 || shoveW) && engagement.sizeDifference > -2
-			&& (shoveW ? engagement.inMeleeRange : engagement.isAdjacent)
+		const freeHands = equipments.handsFree > 0 || shoveW
+		if (!freeHands) {
+			if (warn) this._.warn("PF2E.Actions.Warning.FreeHands")
+			return false
+		}
+		const sizeOk = engagement.sizeDifference > -2
+		if (!sizeOk) {
+			if (warn) this._.warn("PF2E.Actions.Warning.Size")
+			return false
+		}
+		const reachOk = shoveW ? engagement.inMeleeRange : engagement.isAdjacent
+		if (!reachOk) {
+			if (warn) this._.warn("PF2E.Actions.Warning.Reach")
+			return false
+		}
+		return true
 	}
 
 	async apply(engagement, result) {

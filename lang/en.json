@@ -149,6 +149,8 @@
 	"PF2E.MKS.UI.Actions.remove": "Remove",
 	"PF2E.MKS.UI.Actions.submit": "Submit",
 	"PF2E.MKS.UI.Actions.revert": "Revert",
+	"PF2E.MKS.UI.Actions.complete": "Complete",
+	"PF2E.MKS.UI.Actions.reset": "Reset",
 	"PF2E.MKS.UI.ActionsPanel.Label": "Action Panel",
 	"PF2E.MKS.UI.RelativeCondPanel.Label": "Relative Conditions",
 	"PF2E.MKS.UI.EquipmentsPanel.Label": "Equipments",

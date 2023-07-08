@@ -113,7 +113,7 @@ export class Awareness extends ExclusiveConditions {
 
 	async setState(slug) {
 		super.setState(slug).then(() => {
-			game.MKS.encounterManager.syncRelativeConds(this.actor.combatant)
+			game.MKS.encounterManager.resetRelativeConds(this.actor.combatant)
 		})
 	}
 
@@ -129,7 +129,7 @@ export class Attitude extends ExclusiveConditions {
 
 	async setState(slug) {
 		super.setState(slug).then(() => {
-			game.MKS.encounterManager.syncRelativeConds(this.actor.combatant)
+			game.MKS.encounterManager.resetRelativeConds(this.actor.combatant)
 		})
 	}
 

@@ -1,8 +1,14 @@
 <form id="relative-cond-panel" class="dialog-content" onsubmit="event.preventDefault();" autocomplete="off">
 	{{#with (token relative.token.id)}}
 	<div class="index">
-		<img style="vertical-align: text-bottom; border: none" alt="{{name}}" width="40" height="40" src="{{document.texture.src}}" data-action="sync">
+		<img style="vertical-align: text-bottom; border: none" alt="{{name}}" width="40" height="40" src="{{document.texture.src}}">
 		<label style="font-size: 1.25em;"> {{name}} </label>
+		<a title="{{localize 'PF2E.MKS.UI.Actions.reset'}}" data-action="reset">
+			<i class="fas fa-sync-alt"></i>
+		</a>
+		<a title="{{localize 'PF2E.MKS.UI.Actions.complete'}}" data-action="complete">
+			<i class="fas fa-user-plus"></i>
+		</a>
 	</div>
 	{{/with}}
 

@@ -1,5 +1,6 @@
 import {default as i18n} from "../../lang/pf2e-i18n.js"
 import { SystemAction } from "../action.js"
+import { CONDITION_GRABBED, CONDITION_RESTRAINED } from "../model/condition.js"
 import Equipments from "../model/equipments.js"
 
 export default class ActionGrapple extends SystemAction {
@@ -34,5 +35,17 @@ export default class ActionGrapple extends SystemAction {
 			return false
 		}
 		return true
+	}
+
+	async apply(engagement, result) {
+		super.apply(engagement, result)
+
+		const degreeOfSuccess = result.roll.degreeOfSuccess
+		if (degreeOfSuccess === 0)
+			engagement.setConditionOnInitiator(CONDITION_GRABBED)
+		else if (degreeOfSuccess === 2)
+			engagement.setConditionOnTarget(CONDITION_GRABBED)
+		else if (degreeOfSuccess === 3)
+			engagement.setConditionOnTarget(CONDITION_RESTRAINED)
 	}
 }

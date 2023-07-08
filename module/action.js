@@ -226,7 +226,7 @@ export class SystemAction extends Action {
 		this.dc = dc
 	}
 
-	async act(engagement, options) {
+	async act(engagement, options, modifiers) {
 		const actor = engagement.initiator.actor
 		let difficultyClass = undefined
 		if (this.dc) {
@@ -237,7 +237,7 @@ export class SystemAction extends Action {
 			const callback = (result) => {
 				resolve(result.roll)
 			}
-			game.pf2e.actions[this.name]({ actors: engagement.initiator.actor, callback, difficultyClass})
+			game.pf2e.actions[this.name]({ actors: engagement.initiator.actor, callback, difficultyClass, modifiers})
 		})
 		return this.createResult(engagement, systemRoll)
 	}

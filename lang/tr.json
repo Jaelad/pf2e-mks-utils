@@ -202,6 +202,8 @@
 	"PF2E.MKS.UI.Actions.cancel": "İptal",
 	"PF2E.MKS.UI.Actions.submit": "Uygula",
 	"PF2E.MKS.UI.Actions.revert": "Geri Al",
+	"PF2E.MKS.UI.Actions.complete": "Tamamla",
+	"PF2E.MKS.UI.Actions.reset": "Sıfırla",
 	"PF2E.MKS.Dialog.SelectOne.Title": "Seçiniz",
 	"PF2E.MKS.Dialog.MultipleButtons.Title": "Seçiniz",
 	"PF2E.MKS.UI.ActionsPanel.Label": "Aksiyonlar",

@@ -105,6 +105,20 @@ export class Engagement {
 		return new Condition(this.targeted, condition).ensure()
 	}
 
+	hasInitiatorEffect(effect, any = true) {
+		if (Array.isArray(effect))
+			return Item[any ? 'hasAny' : 'hasAll'](this.initiator, effect)
+		else
+			return new Effect(this.targeted, effect).exists
+	}
+
+	hasTargetEffect(effect, any = true) {
+		if (Array.isArray(effect))
+			return Item[any ? 'hasAny' : 'hasAll'](this.targeted, effect)
+		else
+			return new Effect(this.targeted, effect).exists
+	}
+
 	async setEffectOnInitiator(effect) {
 		return new Effect(this.initiator, effect).ensure()
 	}
