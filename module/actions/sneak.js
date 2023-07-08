@@ -24,7 +24,7 @@ export default class ActionSneak extends SimpleAction {
 		let result = true
 		for (const target of engagement.targets) {
 			const awareness = relative.getAwarenessTowardMe(target)
-			if (awareness < AWARENESS.indexOf(CONDITION_OBSERVED)) {
+			if (awareness === AWARENESS.indexOf(CONDITION_OBSERVED)) {
 				result = false
 				if (warn) this._.warn("PF2E.MKS.Warning.Target.AtLeastHidden")
 				break
