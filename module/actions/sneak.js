@@ -35,6 +35,7 @@ export default class ActionSneak extends SimpleAction {
 
 	async apply(engagement, result) {
 		const relative = new RelativeConditions()
+		const roll = result.roll
 
 		for (const target of engagement.targets) {
 			const dc =  target.actor.perception.dc.value
@@ -42,11 +43,14 @@ export default class ActionSneak extends SimpleAction {
 				, cover = relative.getMyCoverFrom(target) ?? 0
 			const coverBonus = Math.max(0, 2 * (cover-1))
 			if (awareness < 3) {
-				const degree = DCHelper.calculateRollSuccess(result.roll, dc - coverBonus)
+				const degree = DCHelper.calculateRollSuccess(roll, dc - coverBonus)
 				relative.setAwarenessTowardMe(target, degree > 1 ? 1 : (degree == 1 ? 2 : 3))
 				const conditionUuid = degree > 1 ? UUID_CONDITONS.undetected : (degree == 1 ? UUID_CONDITONS.hidden : UUID_CONDITONS.observed)
 
-				const message = i18n.$$('PF2E.Actions.Sneak.Result', {target: target.name, conditionRef: `@UUID[${conditionUuid}]`})
+				const message = i18n.$$('PF2E.Actions.Stealth.Result', {target: target.name
+					, roll: roll.total, dc, cover: coverBonus
+					, currentCondRef: `@UUID[${UUID_CONDITONS[AWARENESS[awareness]]}]`
+					, conditionRef: `@UUID[${conditionUuid}]`})
 				this.messageToChat(engagement.initiator, message, true)
 			}
 		}

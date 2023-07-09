@@ -6,6 +6,7 @@ import Effect, { EFFECT_RESIST_A_DIVERSION } from "../model/effect.js"
 import RelativeConditions from "../model/relative-conditions.js"
 import { UUID_CONDITONS } from "../model/condition.js"
 import Action from "../action.js"
+import { AWARENESS } from "../constants.js"
 
 export default class ActionCreateADiversion extends Action {
 
@@ -61,6 +62,7 @@ export default class ActionCreateADiversion extends Action {
 		const relative = new RelativeConditions()
 
 		for (const target of engagement.targets) {
+			const awareness = relative.getAwarenessTowardMe(target)
 			const resistDiversion = new Effect(target, EFFECT_RESIST_A_DIVERSION)
 			const dc = target.actor.perception.dc.value + (resistDiversion.exists ? 4 : 0)
 
@@ -70,7 +72,10 @@ export default class ActionCreateADiversion extends Action {
 
 			resistDiversion.ensure()
 
-			const message = i18n.$$('PF2E.Actions.CreateADiversion.Result', {target: target.name, conditionRef: `@UUID[${conditionUuid}]`})
+			const message = i18n.$$('PF2E.Actions.Stealth.Result', {target: target.name
+				, roll: roll.total, dc, cover: "NA"
+				, currentCondRef: `@UUID[${UUID_CONDITONS[AWARENESS[awareness]]}]`
+				, conditionRef: `@UUID[${conditionUuid}]`})
 			this.messageToChat(engagement.initiator, message, true)
 		}
 	}

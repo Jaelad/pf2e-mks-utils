@@ -119,9 +119,9 @@
 	"PF2E.Actions.Craft.DropItemDialog.Title": "İmal edilecek Nesneyi Seçiniz",
 	"PF2E.Actions.Craft.Error.ItemReferenceMismatch": "Seçilen fiziksel bir nesne olmalıdır!",
 
-	"PF2E.Actions.Hide.FailureAgainst": "{target}'dan saklanmayı başaramadı!",
-	"PF2E.Actions.Hide.SuccessAgainst": "{target}'dan saklanmayı @UUID[Compendium.pf2e.conditionitems.iU0fEDdBp3rXpTMC] başardı!",
-
+	"PF2E.Actions.Stealth.Result": "{target}'a karşı aksiyon sonucu: {currentCondRef} -> {conditionRef} ({roll} artı siper {cover} <> {dc})",
+	"PF2E.Actions.Seek.Result": "{target}'a karşı aksiyon sonucu: {currentCondRef} -> {conditionRef}",
+	
 	"PF2E.ConditionTypeGrabbed": "Zaptedilmiş",
 	"PF2E.ConditionTypeProne": "Yere Düşmüş",
 	"PF2E.ConditionTypeHidden": "Saklanmış",

@@ -109,11 +109,11 @@ export default class EncounterManager {
 	}
 	
 	async applyAwareness(combatant, targetCombatant, awareness) {
-		return new Awareness(targetCombatant.actor).setStateAsync(awareness)
+		return new Awareness(targetCombatant.actor).setState(awareness)
 	}
 	
 	async applyAttitude(combatant, targetCombatant, attitude) {
-		return new Attitude(targetCombatant.actor).setStateAsync(attitude)
+		return new Attitude(targetCombatant.actor).setState(attitude)
 	}
 	
 	async applyRelativeConditions(combatant) {
@@ -149,8 +149,8 @@ export default class EncounterManager {
 					cover.setBadgeValue(coverState)
 				})
 			
-			awareness.setStateAsync(relativeConds.awareness).then()
-			attitude.setStateAsync(relativeConds.attitude).then()
+			awareness.setState(relativeConds.awareness).then()
+			attitude.setState(relativeConds.attitude).then()
 		}
 	}
 }

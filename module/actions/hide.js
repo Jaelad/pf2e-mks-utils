@@ -3,6 +3,7 @@ import {default as i18n} from "../../lang/pf2e-i18n.js"
 import RelativeConditions from "../model/relative-conditions.js"
 import Condition, { CONDITION_CONCEALED, UUID_CONDITONS } from "../model/condition.js"
 import DCHelper from "../helpers/dc-helper.js"
+import { AWARENESS } from "../constants.js"
 
 export default class ActionHide extends SimpleAction {
 	constructor(MKS) {
@@ -43,22 +44,24 @@ export default class ActionHide extends SimpleAction {
 
 	async apply(engagement, result) {
 		const relative = new RelativeConditions()
+		const roll = result.roll
 
 		for (const target of engagement.targets) {
 			const dc =  target.actor.perception.dc.value
 				, awareness = relative.getAwarenessTowardMe(target)
 				, cover = relative.getMyCoverFrom(target) ?? 0
 			const coverBonus = Math.max(0, 2 * (cover-1))
-			const degree = DCHelper.calculateRollSuccess(result.roll, dc - coverBonus)
-			if (degree < 2) {
-				const message = i18n.$$('PF2E.Actions.Hide.Result', {target: target.name, conditionRef: `@UUID[${UUID_CONDITONS.observed}]`})
-				this.messageToChat(engagement.initiator, message, true)
-			}
-			else {
+			const degree = DCHelper.calculateRollSuccess(roll, dc - coverBonus)
+			const conditionUuid = degree < 2 ? UUID_CONDITONS.observed : UUID_CONDITONS.hidden
+			
+			if (degree > 1)
 				relative.setAwarenessTowardMe(target, Math.min(awareness, 2))
-				const message = i18n.$$('PF2E.Actions.Hide.Result', {target: target.name, conditionRef: `@UUID[${UUID_CONDITONS.hidden}]`})
-				this.messageToChat(engagement.initiator, message, true)
-			}
+				
+			const message = i18n.$$('PF2E.Actions.Stealth.Result', {target: target.name
+				, roll: roll.total, dc, cover: coverBonus
+				, currentCondRef: `@UUID[${UUID_CONDITONS[AWARENESS[awareness]]}]`
+				, conditionRef: `@UUID[${conditionUuid}]`})
+			this.messageToChat(engagement.initiator, message, true)
 		}
 	}
 }

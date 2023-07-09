@@ -110,30 +110,10 @@ export class Awareness extends ExclusiveConditions {
 	constructor(tokenOrActor) {
 		super(tokenOrActor, AWARENESS, 'observed')
 	}
-
-	async setState(slug) {
-		super.setState(slug).then(() => {
-			game.MKS.encounterManager.resetRelativeConds(this.actor.combatant)
-		})
-	}
-
-	async setStateAsync(slug) {
-		super.setState(slug)
-	}
 }
 
 export class Attitude extends ExclusiveConditions {
 	constructor(tokenOrActor) {
 		super(tokenOrActor, ATTITUDES, 'indifferent')
-	}
-
-	async setState(slug) {
-		super.setState(slug).then(() => {
-			game.MKS.encounterManager.resetRelativeConds(this.actor.combatant)
-		})
-	}
-
-	async setStateAsync(slug) {
-		super.setState(slug)
 	}
 }

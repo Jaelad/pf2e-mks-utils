@@ -3,7 +3,7 @@ import Action from "../action.js"
 import Check from "../check.js"
 import CommonUtils from "../helpers/common-utils.js"
 import {ROLL_MODE} from "../constants.js"
-import Condition, {Awareness, CONDITION_HIDDEN, CONDITION_INVISIBLE, CONDITION_OBSERVED, CONDITION_UNDETECTED, CONDITION_UNNOTICED} from "../model/condition.js"
+import Condition, {Awareness, CONDITION_HIDDEN, CONDITION_INVISIBLE, CONDITION_OBSERVED, CONDITION_UNDETECTED, CONDITION_UNNOTICED, UUID_CONDITONS} from "../model/condition.js"
 import {AWARENESS} from "../constants.js"
 import Item from "../model/item.js"
 import RelativeConditions from "../model/relative-conditions.js"
@@ -93,15 +93,20 @@ export default class ActionSeek extends Action {
 				)
 				relative.setMyAwarenessOf(target, newAwarenessState)
 				this._.encounterManager.applyAwareness(engagement.initiator, target, newAwarenessState)
+
+				const message = i18n.$$('PF2E.Actions.Seek.Result', {target: target.name
+					, currentCondRef: `@UUID[${UUID_CONDITONS[AWARENESS[awarenessState]]}]`
+					, conditionRef: `@UUID[${UUID_CONDITONS[newAwarenessState]}]`})
+				this.messageToChat(engagement.initiator, message, true)
 			}
 			else {
 				const awareness = new Awareness(target)
 				const awarenessState = awareness.state
 				
 				if (awarenessState === CONDITION_HIDDEN || step > 1)
-					return awareness.setStateAsync(invisible.exists ? CONDITION_HIDDEN : CONDITION_OBSERVED)
+					return awareness.setState(invisible.exists ? CONDITION_HIDDEN : CONDITION_OBSERVED)
 				else if (awarenessState === CONDITION_UNNOTICED || awarenessState === CONDITION_UNDETECTED)
-					return awareness.setStateAsync(CONDITION_HIDDEN)
+					return awareness.setState(CONDITION_HIDDEN)
 			}
 		}
 

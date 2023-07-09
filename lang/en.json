@@ -95,9 +95,8 @@
 	"PF2E.Actions.TreatWounds.Title": "Treat Wounds",
 	"PF2E.Actions.TreatWounds.Warning.FullHp": "Target is totally healthy.",
 
-	"PF2E.Actions.Hide.Result": "Hide action resulted in {conditionRef} from {target}",
-	"PF2E.Actions.Sneak.Result": "Sneak action resulted in {conditionRef} from {target}",
-	"PF2E.Actions.CreateADiversion.Result": "Create A Diversion resulted in {conditionRef} from {target}",
+	"PF2E.Actions.Stealth.Result": "Resulted in {currentCondRef} to {conditionRef} ({roll} with cover {cover} <> {dc}) from {target}",
+	"PF2E.Actions.Seek.Result": "Resulted in {currentCondRef} to {conditionRef} for {target}",
 	
 	"PF2E.ActionTag.situational": "Situational",
 	"PF2E.ActionTag.combat": "Combat",
