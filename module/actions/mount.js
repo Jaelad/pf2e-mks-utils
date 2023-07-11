@@ -17,7 +17,7 @@ export default class ActionMount extends Action {
 	pertinent(engagement, warn) {
 		const mount = canvas.tokens.ownedTokens.find((t) => {
 			const e = new Engagement(engagement.initiator, t)
-			return e.isAdjacent && e.isAlly && e.sizeDifference <= -1 && e.targetHasTrait('animal')
+			return e.isAdjacent && ((e.isAlly && e.targetHasTrait('animal')) || t.actor.type === 'vehicle') && e.sizeDifference <= -1
 		})
 		if (mount)
 			engagement.options.mountId = mount.id
