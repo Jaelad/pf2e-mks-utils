@@ -72,7 +72,7 @@ export default class ActionsPanel extends BasePanel {
 			else if (event.ctrlKey || (event.altKey && event.shiftKey))
 				game.MKS.actions[dataset.action]?.showSheet()
 			else
-				new ActionRunner(game.MKS.actions[dataset.action]).run()
+				new ActionRunner(game.MKS.actions[dataset.action]).run({}, true)
 		}
 	}
 	
