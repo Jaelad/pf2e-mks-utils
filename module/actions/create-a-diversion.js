@@ -44,7 +44,7 @@ export default class ActionCreateADiversion extends Action {
 		const traits = type === 'trick-gesture' ? ['mental', 'manipulate'] : ['mental', 'auditory', 'linguistic']
 
 		const rollCallback = ({roll}) => {
-			return this.createResult(engagement, roll, options)
+			return roll ? this.createResult(engagement, roll, options) : undefined
 		}
 
 		const check = new Check({

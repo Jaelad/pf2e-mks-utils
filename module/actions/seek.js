@@ -80,7 +80,7 @@ export default class ActionSeek extends Action {
 
 	async apply(engagement, result) {
 		const rollCallback = ({roll, actor, target}) => {
-			const step = roll.degreeOfSuccess - 1
+			const step = roll ? roll.degreeOfSuccess - 1 : 0
 			if (step <= 0)
 				return
 

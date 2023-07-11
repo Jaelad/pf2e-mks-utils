@@ -134,7 +134,7 @@ export class ActionLie extends SystemAction {
 			opposition: 'enemy',
 			// checkType: 'skill[deception]',
 			// traits: ['concentrate', 'auditory', 'linguistic', 'mental', 'secret'],
-			dc: t => t.actor.perception.dc.value,
+			// dc: t => t.actor.perception.dc.value,
 		})
 	}
 }
@@ -149,7 +149,7 @@ export class ActionFeint extends SystemAction {
 			opposition: 'enemy',
 			// checkType: 'skill[deception]',
 			// traits: ['mental'],
-			dc: t => t.actor.perception.dc.value,
+			// dc: t => t.actor.perception.dc.value
 		})
 	}
 	
@@ -163,7 +163,7 @@ export class ActionFeint extends SystemAction {
 	async apply(engagement, result) {
 		await super.apply(engagement, result)
 		
-		const roll = engagement.roll
+		const roll = result.roll
 		if (roll.degreeOfSuccess > 1)
 			return engagement.setConditionOnTarget(CONDITION_FLATFOOTED)
 		else if (roll.degreeOfSuccess < 1)
@@ -230,7 +230,7 @@ export class ActionConcealAnObject extends SystemAction {
 			opposition: 'enemy',
 			// checkType: 'skill[stealth]',
 			// traits: ['manipulate', 'secret'],
-			dc: t => t.actor.perception.dc.value
+			// dc: t => t.actor.perception.dc.value
 		})
 	}
 }
@@ -245,7 +245,7 @@ export class ActionPalmAnObject extends SystemAction {
 			opposition: 'enemy',
 			// checkType: 'skill[thievery]',
 			// traits: ['manipulate'],
-			dc: t => t.actor.perception.dc.value
+			// dc: t => t.actor.perception.dc.value
 		})
 	}
 }

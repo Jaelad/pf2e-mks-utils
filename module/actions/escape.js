@@ -66,7 +66,11 @@ export default class ActionEscape extends Action {
 			modifiers
 		})
 
-		return check.roll(engagement).then(({roll, actor}) => this.createResult(engagement, roll, {condition: selectedCond}))
+		return check.roll(engagement)
+			.then(({roll, actor}) => roll 
+				? this.createResult(engagement, roll, {condition: selectedCond}) 
+				: undefined
+			)
 	}
 
 	async apply(engagement, result) {

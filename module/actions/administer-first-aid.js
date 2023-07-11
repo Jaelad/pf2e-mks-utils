@@ -48,7 +48,7 @@ export default class ActionAdministerFirstAid extends SimpleAction {
 		const bleeding = new PersistentDamage(targeted, PERSISTENT_BLEED)
 		const poisoned = new PersistentDamage(targeted, PERSISTENT_POISON)
 		
-		const ok = (dying.value > 0 || bleeding.exists || poisoned.exists) && healersTools.length > 0
+		const ok = (dying.value > 0 || bleeding.exists || poisoned.exists) && healersTools
 		if (!ok) return
 		
 		const buttons = []

@@ -50,6 +50,6 @@ export default class ActionRecallKnowledge extends Action {
 				defaultDC: dc
 			}
 		})
-		return check.roll(engagement).then(({roll, actor}) => this.createResult(engagement, roll))
+		return check.roll(engagement).then(({roll, actor}) => roll ? this.createResult(engagement, roll) : undefined)
 	}
 }

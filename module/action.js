@@ -192,7 +192,7 @@ export class SimpleAction extends Action {
 		const overrideDC = options?.overrideDC
 
 		const rollCallback = ({roll, actor}) => {
-			return this.createResult(engagement, roll, options)
+			return roll ? this.createResult(engagement, roll, options) : undefined
 		}
 		
 		const check = new Check({
@@ -228,7 +228,7 @@ export class SystemAction extends Action {
 	}
 
 	async act(engagement, options, modifiers) {
-		if (options.applyMAP) {
+		if (options?.applyMAP) {
 			const map = new Effect(engagement.initiator, EFFECT_MAP)
 			if (map.exists) {
 				modifiers = modifiers ?? []
@@ -241,8 +241,8 @@ export class SystemAction extends Action {
 			}
 		}
 		const actor = engagement.initiator.actor
-		let difficultyClass = undefined
-		if (this.dc) {
+		let difficultyClass
+		if (typeof this.dc === 'number') {
 			const dcObj = await DCHelper.requestGmSetDC({action: this.name, defaultDC: this.dc, challenger: actor.name})
 			difficultyClass = dcObj?.dc
 		}
@@ -252,7 +252,7 @@ export class SystemAction extends Action {
 			}
 			game.pf2e.actions[this.name]({ actors: engagement.initiator.actor, callback, difficultyClass, modifiers})
 		})
-		return this.createResult(engagement, systemRoll)
+		return systemRoll ? this.createResult(engagement, systemRoll) : undefined
 	}
 
 	async apply(engagement, result) {
