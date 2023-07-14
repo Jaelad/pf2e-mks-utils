@@ -2,6 +2,7 @@
 .idea/
 **/*.log
 /packs/core-effects/
+/packs/gm-macros/
 /packs/action-attack-macros/
 /packs/action-movement-macros/
 /packs/action-mental-macros/

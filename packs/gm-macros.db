@@ -1,0 +1,3 @@
+{"_id":"4PJwgEctbR0HcmK1","name":"Reset Fog","type":"script","img":"systems/pf2e/icons/spells/power-word-blind.webp","scope":"global","command":"canvas.fog.reset();"}
+{"_id":"r4LhEcTfMO5kHwOa","name":"Delete all Templates","type":"script","img":"systems/pf2e/icons/spells/arcane-weaving.webp","scope":"global","command":"game.MKS?.templateManager.deleteAllTemplates();"}
+{"_id":"xjV9fjpGm3xkQtUI","name":"World Explorer Reset","type":"script","img":"systems/pf2e/icons/spells/dust-storm.webp","scope":"global","command":"canvas.worldExplorer?.clear();"}
