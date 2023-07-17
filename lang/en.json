@@ -1,6 +1,8 @@
 {
 	"FOUNDRY.Concept.Actor": "Actor",   
 	"FOUNDRY.Concept.Token": "Token",
+
+	"ERROR.TokenCollide": "Movement Blocked!",
 	
 	"PF2E.Concept.DC": "DC",
 	"PF2E.Concept.Awareness.Title": "Awareness",

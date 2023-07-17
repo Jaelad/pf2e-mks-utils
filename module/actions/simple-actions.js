@@ -71,6 +71,14 @@ export class ActionClimb extends SystemAction {
 			dc: 15
 		})
 	}
+
+	pertinent(engagement, warn) {
+		const equipments = new Equipments(engagement.initiator)
+
+		const freeHands = equipments.handsFree > 1
+		if (!freeHands && warn) this._.warn("PF2E.Actions.Warning.FreeHands")
+		return freeHands
+	}
 }
 
 export class ActionGrabAnEdge extends SystemAction {

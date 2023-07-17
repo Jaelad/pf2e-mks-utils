@@ -1,6 +1,8 @@
 {
 	"FOUNDRY.Concept.Actor": "Aktör",
 	"FOUNDRY.Concept.Token": "Pul",
+
+	"ERROR.TokenCollide": "Hareket engellendi!",
 	
 	"PF2E.Concept.DC": "DC",
 	"PF2E.Concept.Awareness.Title": "Farkındalık",
@@ -129,9 +131,9 @@
 	"PF2E.MKS.Modifier.partially-disarmed": "Gevşek Tutuş",
 	"PF2E.MKS.Modifier.map": "Ardarda Saldırı Cezası",
 
-	"PF2E.SavesFortitude": "Direnç - Fortitude",
+	"PF2E.SavesFortitude": "Direnç",
 	"PF2E.SavesReflex": "Refleks",
-	"PF2E.SavesWill": "Azim - Will",
+	"PF2E.SavesWill": "Azim",
 	"PF2E.ActionsCheck.acrobatics": "Akrobasi",
 	"PF2E.ActionsCheck.arcana": "Esrar İlmi - Arcana",
 	"PF2E.ActionsCheck.athletics": "Bilek Gücü - Athletics",
