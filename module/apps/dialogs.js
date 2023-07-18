@@ -5,6 +5,37 @@ import Compendium from "../compendium.js";
 
 export default class Dialogs  {
 
+	static inputNumber(title = 'PF2E.MKS.Dialog.InputNumber.Title', label, {currentValue = 0, min = 0, max = 10, step = 1}) {
+		const dialogContent = `
+		<form>
+		<div class="form-group" data-setting-id="dialog.numberValue">
+			<label>${i18n.$(label)}</label>
+			<div class="form-fields">
+				<input type="range" name="dialog.numberValue" data-dtype="Number" value="${currentValue}" min="${min}" max="${max}" step="${step}">
+			</div>
+		</div>
+		</form>
+		`
+		return new Promise((resolve) => {
+			new Dialog({
+				title: i18n.$(title),
+				content: dialogContent,
+				buttons: {
+					yes: {
+						icon: '<i class="fas fa-slider"></i>',
+						label: i18n.uiAction("set"),
+						callback: ($html) => {
+							const value = $html[0].querySelector('[name="dialog.numberValue"]').value
+							resolve(value)
+						},
+					},
+				},
+				default: 'yes',
+				close: () => resolve(null)
+			}).render(true)
+		})
+	}
+
 	static addModifier(title = 'PF2E.MKS.Dialog.AddModifier.Title') {
 		const dialogContent = `
 		<form>

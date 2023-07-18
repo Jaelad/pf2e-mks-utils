@@ -60,6 +60,7 @@ import ActionRestForNight from "./actions/rest-for-night.js"
 import ActionTreatDisease from "./actions/treat-disease.js"
 import ActionTreatPoison from "./actions/treat-poison.js"
 import ActionMount from "./actions/mount.js"
+import Dialogs from "./apps/dialogs.js"
 
 export default class MksTools {
 
@@ -103,6 +104,7 @@ export default class MksTools {
 		this.socketHandler = new SocketHandler(this)
 		this.dcHelper = DCHelper
 		this.commons = CommonUtils
+		this.dialogs = Dialogs
 		
 		this.actions = {
 			administerFirstAid: new ActionAdministerFirstAid(this),

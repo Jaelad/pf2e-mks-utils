@@ -1,6 +1,7 @@
 {
 	"FOUNDRY.Concept.Actor": "Aktör",
 	"FOUNDRY.Concept.Token": "Pul",
+	"FOUNDRY.Concept.LightLevel": "Işık",
 
 	"ERROR.TokenCollide": "Hareket engellendi!",
 	
@@ -206,8 +207,10 @@
 	"PF2E.MKS.UI.Actions.submit": "Uygula",
 	"PF2E.MKS.UI.Actions.revert": "Geri Al",
 	"PF2E.MKS.UI.Actions.complete": "Tamamla",
+	"PF2E.MKS.UI.Actions.set": "Ayarla",
 	"PF2E.MKS.UI.Actions.reset": "Sıfırla",
 	"PF2E.MKS.Dialog.SelectOne.Title": "Seçiniz",
+	"PF2E.MKS.Dialog.InputNumber.Title": "Sayı Giriniz",
 	"PF2E.MKS.Dialog.MultipleButtons.Title": "Seçiniz",
 	"PF2E.MKS.UI.ActionsPanel.Label": "Aksiyonlar",
 	"PF2E.MKS.UI.RelativeCondPanel.Label": "Göreli Durumlar",
@@ -240,6 +243,7 @@
 	"pf2e.mks.check.spell-attack.defaulttitle.firstpart": "${actor.name} Büyü Atağı",
 	"pf2e.mks.check.saving-throw.defaulttitle.firstpart": "${actor.name} ${stat.label} Atışı",
 	"pf2e.mks.check.defaulttitle.dcpart": "DC [${dc}]",
+	"PF2E.MKS.Dialog.SetLightLevel.Title": "Işık Seviyesini Ayarla",
 	"PF2E.MKS.Dialog.aid.ready.title": "Yardımı Hazırla",
 	"PF2E.MKS.Dialog.aid.ready.select": "Nasıl Yardım Edeceksin:",
 	"PF2E.MKS.Dialog.aid.ready.yesaction": "Hazır",

@@ -1,6 +1,7 @@
 {
 	"FOUNDRY.Concept.Actor": "Actor",   
 	"FOUNDRY.Concept.Token": "Token",
+	"FOUNDRY.Concept.LightLevel": "Light Level",
 
 	"ERROR.TokenCollide": "Movement Blocked!",
 	
@@ -152,6 +153,7 @@
 	"PF2E.MKS.UI.Actions.submit": "Submit",
 	"PF2E.MKS.UI.Actions.revert": "Revert",
 	"PF2E.MKS.UI.Actions.complete": "Complete",
+	"PF2E.MKS.UI.Actions.set": "Set",
 	"PF2E.MKS.UI.Actions.reset": "Reset",
 	"PF2E.MKS.UI.ActionsPanel.Label": "Action Panel",
 	"PF2E.MKS.UI.RelativeCondPanel.Label": "Relative Conditions",
@@ -164,6 +166,7 @@
 	"PF2E.MKS.UI.EquipmentsPanel.Change": "Change",
 	"PF2E.MKS.UI.EquipmentsPanel.ToggleInvested": "Toggle Invested",
 	"PF2E.MKS.Dialog.SelectOne.Title": "Select One",
+	"PF2E.MKS.Dialog.InputNumber.Title": "Please Input a Number",
 	"PF2E.MKS.Dialog.MultipleButtons.Title": "Press One",
 	"PF2E.MKS.Warning.Actor.OneMustBeSelected": "You must select exactly one actor!",
 	"PF2E.MKS.Warning.Actor.AtLeastOneMustBeSelected": "You must select at least one actor!",
@@ -186,6 +189,7 @@
 	"pf2e.mks.check.spell-attack.defaulttitle.firstpart": "${actor.name} Spell Attack",
 	"pf2e.mks.check.saving-throw.defaulttitle.firstpart": "${actor.name} ${stat.label} Check",
 	"pf2e.mks.check.defaulttitle.dcpart": "DC [${dc}]",
+	"PF2E.MKS.Dialog.SetLightLevel.Title": "Set Light Level",
 	"PF2E.MKS.Dialog.aid.ready.title": "Ready Aid Reaction",
 	"PF2E.MKS.Dialog.aid.ready.select": "Select How To Aid:",
 	"PF2E.MKS.Dialog.aid.ready.yesaction": "Ready",
